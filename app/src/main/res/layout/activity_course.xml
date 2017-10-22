@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.mnnyang.gzuclassschedule.course.CourseActivity">
+
+    <TextView
+        android:layout_width="100px"
+        android:layout_height="100px"
+        android:background="#9f9f9f"/>
+    <TextView
+        android:layout_marginTop="100px"
+        android:layout_width="100px"
+        android:layout_height="100px"
+        android:background="#9f9f9f"/>
+    <TextView
+        android:layout_marginLeft="100px"
+        android:layout_width="100px"
+        android:layout_height="100px"
+        android:background="#9f9f9f"/>
+</RelativeLayout>

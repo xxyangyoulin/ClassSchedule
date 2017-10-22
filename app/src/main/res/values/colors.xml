@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#3F51B5</color>
+    <color name="colorPrimaryDark">#303F9F</color>
+    <color name="colorAccent">#FF4081</color>
+
+
+    <color name="color_g">#8AD297</color>
+    <color name="color_g_pressed">#5ABF6C</color>
+    <color name="color_er">#F9A883</color>
+    <color name="color_er_pressed">#F79060</color>
+    <color name="color_san">#88CFCC</color>
+    <color name="color_san_pressed">#63C0BD</color>
+    <color name="color_si">#F19C99</color>
+    <color name="color_si_pressed">#ED837F</color>
+    <color name="color_wu">#F7C56B</color>
+    <color name="color_wu_pressed">#F5B94E</color>
+    <color name="color_liu">#D2A596</color>
+    <color name="color_liu_pressed">#CA9483</color>
+    <color name="color_qi">#67BDDE</color>
+    <color name="color_qi_pressed">#31A6D3</color>
+    <color name="color_ba">#9CCF5A</color>
+    <color name="color_ba_pressed">#8BC73D</color>
+    <color name="color_jiu">#9AB4CF</color>
+    <color name="color_jiu_pressed">#87A6C6</color>
+    <color name="color_yier">#E593AD</color>
+    <color name="color_yier_pressed">#6DB69C</color>
+    <color name="color_yisan">#E593AD</color>
+    <color name="color_yisan_pressed">#DF7999</color>
+    <color name="color_yis">#E2C38A</color>
+    <color name="color_yis_pressed">#D6A858</color>
+    <color name="color_yiwu">#B29FD2</color>
+    <color name="color_yiwu_pressed">#997FC3</color>
+    <color name="color_yiliu">#E2C490</color>
+    <color name="color_yiliu_pressed">#DDB97B</color>
+    <color name="color_wuw">#ADADAD</color>
+    <color name="color_wuw_pressed">#7B7B7B</color>
+</resources>

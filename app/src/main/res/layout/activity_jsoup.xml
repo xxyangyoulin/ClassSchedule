@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context="com.mnnyang.gzuclassschedule.Jsoup">
+
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="@color/colorPrimary"
+        app:titleTextColor="@android:color/white"
+        app:title="第5周">
+
+    </android.support.v7.widget.Toolbar>
+
+    <com.mnnyang.gzuclassschedule.custom.CourseView
+        android:id="@+id/course_view"
+        android:layout_width="match_parent"
+        android:background="@drawable/bg"
+        android:layout_height="match_parent">
+
+    </com.mnnyang.gzuclassschedule.custom.CourseView>
+
+</LinearLayout>
