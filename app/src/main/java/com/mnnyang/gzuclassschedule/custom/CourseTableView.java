@@ -21,7 +21,9 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 
+import com.mnnyang.gzuclassschedule.R;
 import com.mnnyang.gzuclassschedule.custom.util.Utils;
+import com.mnnyang.gzuclassschedule.data.bean.Course;
 import com.mnnyang.gzuclassschedule.utils.LogUtils;
 
 import java.util.ArrayList;
@@ -402,7 +404,7 @@ public class CourseTableView extends RelativeLayout {
 
         final int itemHeight = (mDividerSize + mItemHeight) * (course.getNodes().size())
                 - mVerticalDividerMargin * 2;
-        int itemWidth = mItemWidth - 2 * mHorizontalDividerMargin;
+        int itemWidth = mItemWidth - 2 * mHorizontalDividerMargin+mDividerSize;
         int topMargin = startNode * (mItemHeight + mDividerSize)
                 - mDividerSize + mVerticalDividerMargin;
         int leftMargin = mNodeWidth + mDividerSize / 2 + (course.getWeek() - 1)
@@ -440,6 +442,7 @@ public class CourseTableView extends RelativeLayout {
                 itemView.setBackground(drawable);
 
                 TextView tv = (TextView) itemView.getChildAt(0);
+                tv.setTextColor(Utils.getColor(getResources(), R.color.color_text_not_current));
                 tv.setText("[非本周]" + tv.getText());
                 if (((Course) itemView.getTag()).isShowOverlap()) {
                     itemView.setVisibility(VISIBLE);

@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:title="主要">
+        <menu>
+            <group android:checkableBehavior="single">
+                <item
+                    android:checked="true"
+                    android:id="@+id/nav_camera"
+                    android:title="按周查看"/>
+                <item
+                    android:id="@+id/nav_gallery"
+                    android:title="导入课表"/>
+
+            </group>
+        </menu>
+    </item>
+    <item
+        android:id="@+id/nav_slideshow"
+        android:title="管理数据"/>
+    <item
+        android:id="@+id/nav_share"
+        android:title="背景"/>
+    <item
+        android:id="@+id/nav_send"
+        android:title="表格偏好"/>
+    <item
+        android:title="其他">
+        <menu>
+            <item
+                android:id="@+id/nav_about"
+                android:title="设置"/>
+
+        </menu>
+    </item>
+</menu>

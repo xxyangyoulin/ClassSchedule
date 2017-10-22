@@ -8,10 +8,13 @@ import android.support.annotation.Nullable;
 import android.util.AttributeSet;
 import android.view.Gravity;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
+
+import com.mnnyang.gzuclassschedule.data.bean.Course;
 
 import java.util.ArrayList;
 
@@ -23,7 +26,7 @@ import static com.mnnyang.gzuclassschedule.custom.util.Utils.dip2px;
 
 public class CourseView extends LinearLayout {
 
-    public static final String[] WEEK = {"", "周一", "周二", "周三", "周四", "周五", "周六", "周七"};
+    private String[] WEEK = {"周一", "周二", "周三", "周四", "周五", "周六", "周七"};
     /**
      * 星期高度
      */
@@ -75,6 +78,10 @@ public class CourseView extends LinearLayout {
 
     private CourseTableView.OnItemClickListener mItemClickListener;
     private CourseTableView mCourseTableView = new CourseTableView(getContext());
+    private int mMonthTextColor;
+    private int mWeekTextColor;
+
+    private int mMonth = 7;
 
     public CourseView(Context context) {
         super(context);
@@ -96,8 +103,9 @@ public class CourseView extends LinearLayout {
         initDefaultSize();
     }
 
-    public void setCourseData(ArrayList<Course> courses) {
+    public CourseView setCourseData(ArrayList<Course> courses) {
         mCourseTableView.setCourseData(courses);
+        return this;
     }
 
     /**
@@ -109,14 +117,16 @@ public class CourseView extends LinearLayout {
     }
 
     private void initDefaultSize() {
-        mWeekHeight = dip2px(getContext(),45);
-        mMonthWidth = dip2px(getContext(),22);
-        mDividerSize = dip2px(getContext(),1);
+        mWeekHeight = dip2px(getContext(), 45);
+        mMonthWidth = dip2px(getContext(), 22);
+        mDividerSize = dip2px(getContext(), 1);
         mMonthTextSize = 13;
         mWeekTextSize = 13;
 
         mHorizontalDividerColor = 0x15000000;
         mTopWeekBgColor = Color.TRANSPARENT;
+        mWeekTextColor = 0xaa000000;
+        mMonthTextColor = 0xd0000000;
     }
 
     @Override
@@ -132,17 +142,34 @@ public class CourseView extends LinearLayout {
     protected void dispatchDraw(Canvas canvas) {
         if (isFirst) {
             addTopWeekView();
-            addCourseView();
+            addCourseTableView();
             isFirst = false;
         }
         super.dispatchDraw(canvas);
     }
 
-    private void addCourseView() {
+    public void updateView() {
+        removeAllViews();
+        addTopWeekView();
+
+        ViewGroup viewGroup = (ViewGroup) mCourseTableView.getParent();
+        viewGroup.removeAllViews();
+
+        addCourseTableView();
+        invalidate();
+    }
+
+    private void addCourseTableView() {
         ScrollView scrollView = new ScrollView(getContext());
+        scrollView.setVerticalScrollBarEnabled(false);
+//        TODO 记录
+        scrollView.setOverScrollMode(OVER_SCROLL_NEVER);
+
         mCourseTableView.setTopWeekHeight(mWeekHeight)
                 .setOnItemClickListener(mItemClickListener)
                 .setNodeWidth(mMonthWidth);
+
+        mCourseTableView.setHorizontalFadingEdgeEnabled(false);
 
         scrollView.addView(mCourseTableView);
         addView(scrollView);
@@ -168,15 +195,17 @@ public class CourseView extends LinearLayout {
 
     private void setTopWeekView(LinearLayout view) {
         view.setOrientation(HORIZONTAL);
-        TextView month = getTextView("9\n月",
+        TextView month = getTextView(mMonth + "\n月",
                 mMonthTextSize, mMonthWidth + mDividerSize, mWeekHeight);
+        month.setTextColor(mMonthTextColor);
         view.addView(month);
 
         for (int i = 0; i < (mShowWeekend ? 7 : 5); i++) {
-            TextView week = getTextView(WEEK[i + 1],
+            String text = WEEK[i];
+            TextView week = getTextView(text,
                     mWeekTextSize, mWeekWidth + mDividerSize, mWeekHeight);
+            week.setTextColor(mWeekTextColor);
             view.addView(week);
-
         }
     }
 
@@ -286,5 +315,44 @@ public class CourseView extends LinearLayout {
 
     public CourseTableView getCourseTableView() {
         return mCourseTableView;
+    }
+
+    public int getMonthTextColor() {
+        return mMonthTextColor;
+    }
+
+    public CourseView setMonthTextColor(int monthTextColor) {
+        mMonthTextColor = monthTextColor;
+        return this;
+    }
+
+    public int getWeekTextColor() {
+        return mWeekTextColor;
+    }
+
+    public CourseView setWeekTextColor(int weekTextColor) {
+        mWeekTextColor = weekTextColor;
+        return this;
+    }
+
+    public CourseView setWeekText(String ...words) {
+        if (words == null || words.length < 7) {
+            return this;
+        }
+
+        System.arraycopy(words, 0, WEEK, 0, words.length);
+        return this;
+    }
+
+    public int getMonth() {
+        return mMonth;
+    }
+
+    public CourseView setMonth(int month) {
+        mMonth = month;
+        if (!isFirst) {
+            updateView();
+        }
+        return this;
     }
 }

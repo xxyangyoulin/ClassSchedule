@@ -1,3 +1,4 @@
 <resources>
-    <string name="app_name">GzuClassSchedule</string>
+    <string name="app_name">星星课表</string>
+    <string name="text_description">不辜负每一个清晨</string>
 </resources>

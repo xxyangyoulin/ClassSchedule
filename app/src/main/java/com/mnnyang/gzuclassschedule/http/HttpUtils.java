@@ -1,4 +1,4 @@
-package com.mnnyang.gzuclassschedule.utils;
+package com.mnnyang.gzuclassschedule.http;
 
 /**
  * Created by mnnyang on 17-10-19.

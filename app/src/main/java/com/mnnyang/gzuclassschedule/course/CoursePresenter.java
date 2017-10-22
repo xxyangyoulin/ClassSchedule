@@ -15,5 +15,7 @@ public class CoursePresenter implements CourseContract.Presenter {
 
     @Override
     public void start() {
+
     }
+
 }

@@ -1,11 +1,13 @@
 package com.mnnyang.gzuclassschedule;
 
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.LinearLayout;
 
-import com.mnnyang.gzuclassschedule.custom.Course;
+import com.mnnyang.gzuclassschedule.custom.util.Utils;
+import com.mnnyang.gzuclassschedule.data.bean.Course;
 import com.mnnyang.gzuclassschedule.custom.CourseTableView;
 import com.mnnyang.gzuclassschedule.custom.CourseView;
 import com.mnnyang.gzuclassschedule.utils.CourseParse;
@@ -26,8 +28,16 @@ public class Jsoup extends AppCompatActivity {
 //        view.setCourseTextColor(Color.BLACK);
 
         ArrayList<Course> parse = CourseParse.parse(html2);
-        couseView.setCourseData(parse);
+        couseView.setCourseData(parse)
+                .setDividerSize(0)
+                .setWeekText("一", "二", "三", "四", "五", "六", "日")
+                .setWeekTextSize(13)
+                .setWeekTextColor(0xa0000000)
+                .setMonthTextSize(0);
 
+        couseView.getCourseTableView().setCourseItemRadius(5)
+//                .setShowVerticalDivider(true)
+        .setVerticalDividerMargin(5).setHorizontalDividerMargin(5);
         for (Course c : parse) {
             System.out.println(c.toString());
         }
@@ -48,7 +58,8 @@ public class Jsoup extends AppCompatActivity {
                 couseView.addCourse(course);
 //                view.setCourseTextColor(Color.GREEN);
                 view.setCurrentWeekCount(view.getCurrentWeekCount() == 2 ? 1 : 2);
-                view.updateView();
+//                view.updateView();
+                couseView.setMonth(10).updateView();
             }
         });
     }
@@ -522,7 +533,7 @@ public class Jsoup extends AppCompatActivity {
             "        <td align=\"Center\">&nbsp;</td>\n" +
             "        <td align=\"Center\" rowspan=\"2\">服务端开发技术实验<br>周五第7,8节{第4-11周}<br>薛现斌<br>博学楼实验室709</td>\n" +
             "        <td class=\"noprint\" align=\"Center\">&nbsp;</td>\n" +
-            "        <td class=\"noprint\" align=\"Center\">&nbsp;</td>\n" +
+            "        <td class=\"noprint\" align=\"Center\">移动平台开发课程设计<br>周日第3,4节{第1-2周}<br>涂孝颖<br>博学楼实验室804</td>\n" +
             "    </tr>\n" +
             "    <tr>\n" +
             "        <td>第8节</td>\n" +

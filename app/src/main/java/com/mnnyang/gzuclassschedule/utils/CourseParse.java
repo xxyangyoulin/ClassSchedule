@@ -3,7 +3,8 @@ package com.mnnyang.gzuclassschedule.utils;
 import android.util.Log;
 
 
-import com.mnnyang.gzuclassschedule.custom.Course;
+import com.mnnyang.gzuclassschedule.app.Constant;
+import com.mnnyang.gzuclassschedule.data.bean.Course;
 
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -19,10 +20,9 @@ import java.util.regex.Pattern;
  */
 
 public class CourseParse {
-
     private static final String pattern = "第.*节";
-    private static final String[] other = {"时间", "星期一", "星期二", "星期三", "星期四", "星期五", "星期六", "星期日", "早晨", "上午", "下午", "晚上"};
-    private static final String[] week = {"", "周一", "周二", "周三", "周四", "周五", "周六", "周七"};
+    private static final String[] other = {"时间", "星期一", "星期二", "星期三", "星期四", "星期五", "星期六",
+            "星期日", "早晨", "上午", "下午", "晚上"};
     private static final Pattern pattern1 = Pattern.compile("第\\d{1,2}.*节");
     private static final Pattern pattern2 = Pattern.compile("第\\d{1,2},\\d{1,2}周");
 
@@ -168,8 +168,8 @@ public class CourseParse {
      * 汉字转换int
      */
     private static int getIntWeek(String chinaWeek) {
-        for (int i = 0; i < week.length; i++) {
-            if (week[i].equals(chinaWeek)) {
+        for (int i = 0; i < Constant.WEEK.length; i++) {
+            if (Constant.WEEK[i].equals(chinaWeek)) {
                 return i;
             }
         }

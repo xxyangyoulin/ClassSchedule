@@ -2,74 +2,75 @@ package com.mnnyang.gzuclassschedule.data.bean;
 
 import android.support.annotation.NonNull;
 
+
+import com.mnnyang.gzuclassschedule.utils.LogUtils;
+
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
 /**
- * 课程
- * Created by mnnyang on 17-10-19.
+ * Created by mnnyang on 17-10-22.
  */
 
 public class Course implements Comparable<Course> {
+    //所有周
+    public static final int ALL_WEEK = 0;
+    //双周
+    public static final int DOUBLE_WEEK = 1;
+    //单周
+    public static final int SINGLE_WEEK = 2;
+
+    public static final int NODE_NOON = -1;
+
     /**
      * 课程名称
      */
-    private String name;
+    protected String name;
     /**
      * 教室
      */
-    private String classRoom;
+    protected String classRoom;
 
     /**
      * 星期几 1-7
      */
-    private int week;
+    protected int week;
 
     /**
      * 节数 -1为中午(-_-!!中午还有上课的...)
      */
-    private List<Integer> nodes = new ArrayList<>();
+    protected List<Integer> nodes = new ArrayList<>();
 
     /**
      * 起始周
      */
-    private int startWeek;
+    protected int startWeek;
     /**
      * 结束周
      */
-    private int endWeek;
+    protected int endWeek;
 
     /**
-     * 单双周  all single double
+     * 单双周类型
      */
-    private char ads = 'a';
+    protected int weekType = ALL_WEEK;
 
     /**
      * 上课教师
      */
-    private String teacher;
+    protected String teacher;
 
     /**
      * 原文本
      */
-    private String source;
+    protected String source;
 
-    private int rowSpan = 1;
-
-    public int getRowSpan() {
-        return rowSpan;
-    }
-
-    public Course setRowSpan(int rowSpan) {
-        this.rowSpan = rowSpan;
-        return this;
-    }
-
-    public Course() {
-    }
+    /**
+     * 是否显示
+     */
+    protected boolean showOverlap = true;
 
     public String getName() {
         return name;
@@ -98,24 +99,6 @@ public class Course implements Comparable<Course> {
         return this;
     }
 
-    public List<Integer> getNodes() {
-        return nodes;
-    }
-
-    public Course addNode(int node) {
-        if (!this.nodes.contains(node)) {
-            this.nodes.add(node);
-            //TODO
-            Collections.sort(this.nodes, new Comparator<Integer>() {
-                @Override
-                public int compare(Integer o1, Integer o2) {
-                    return o1 - o2;
-                }
-            });
-        }
-        return this;
-    }
-
     public int getStartWeek() {
         return startWeek;
     }
@@ -134,12 +117,12 @@ public class Course implements Comparable<Course> {
         return this;
     }
 
-    public char getAds() {
-        return ads;
+    public int getWeekType() {
+        return weekType;
     }
 
-    public Course setAds(char ads) {
-        this.ads = ads;
+    public Course setWeekType(int weekType) {
+        this.weekType = weekType;
         return this;
     }
 
@@ -161,37 +144,146 @@ public class Course implements Comparable<Course> {
         return this;
     }
 
-    @Override
-    public String toString() {
-        return "Course{" +
-                "name='" + name + '\'' +
-                ", classRoom='" + classRoom + '\'' +
-                ", week='" + week + '\'' +
-                ", nodes=" + nodes +
-                ", startWeek='" + startWeek + '\'' +
-                ", endWeek='" + endWeek + '\'' +
-                ", ads=" + ads +
-                ", teacher='" + teacher + '\'' +
-                ", source='" + source + '\'' +
-                '}';
+    public boolean isShowOverlap() {
+        return showOverlap;
     }
 
+    public Course setShowOverlap(boolean showOverlap) {
+        this.showOverlap = showOverlap;
+        return this;
+    }
 
+    public List<Integer> getNodes() {
+        return nodes;
+    }
+
+    /**
+     * 设置课程节数
+     * *必须升序排列 例如:3 4 节课
+     * *错位部分将会被抛弃 例如:2 4节课程将会抛弃4
+     */
     public void setNodes(String[] nodes) {
+        int intNodes[] = new int[nodes.length];
+
         try {
-            for (String node : nodes) {
-                addNode(Integer.decode(node));
+            for (int i = 0; i < nodes.length; i++) {
+                intNodes[i] = Integer.decode(nodes[i]);
+            }
+            setNodes(intNodes);
+        } catch (Exception e) {
+            LogUtils.d(this, "setNodes(String[] nodes) Integer.decode(nodes[i]); err");
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * 设置课程节数
+     * 必须生序排列
+     */
+    public void setNodes(int[] nodes) {
+        if (nodes.length == 0) {
+            return;
+        }
+
+        try {
+            int lastNode = nodes[0];
+            int tempNode = 0;
+
+            addNode(lastNode);
+            for (int i = 1; i < nodes.length; i++) {
+                tempNode = nodes[i];
+                if (tempNode - lastNode != 1) {
+                    LogUtils.d(this, "setNodes(String[] nodes) { --> incontinuity" + lastNode + "-" + tempNode);
+                    return;
+                }
+                addNode(tempNode);
+                lastNode = tempNode;
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
+    /**
+     * 添加课程节数
+     */
+    public Course addNode(int node) {
+        if (!this.nodes.contains(node)) {
+            this.nodes.add(node);
+            Collections.sort(this.nodes, new Comparator<Integer>() {
+                @Override
+                public int compare(Integer o1, Integer o2) {
+                    return o1 - o2;
+                }
+            });
+        }
+        return this;
+    }
+
+    @Override
+    public String toString() {
+        return "Course{" +
+                "name='" + name + '\'' +
+                ", classRoom='" + classRoom + '\'' +
+                ", week=" + week +
+                ", nodes=" + nodes +
+                ", startWeek=" + startWeek +
+                ", endWeek=" + endWeek +
+                ", weekType=" + weekType +
+                ", teacher='" + teacher + '\'' +
+                ", source='" + source + '\'' +
+                '}';
+    }
+
     @Override
     public int compareTo(@NonNull Course o) {
-        if (week - o.getWeek() != 0) {
-            return week - o.getWeek();
+        int weekStatus = week - o.getWeek();
+        if (weekStatus != 0) {
+            return weekStatus;
         }
+
+        if (getNodes().size() == 0) {
+            return 1;
+        }
+
+        if (o.getNodes().size() == 0) {
+            return -1;
+        }
+
         return nodes.get(0) - o.getNodes().get(0);
+
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == null) {
+            return false;
+        }
+
+        if (obj == this) {
+            return true;
+        }
+
+        if (obj.getClass() != this.getClass()) {
+            return false;
+        }
+
+        Course course = (Course) obj;
+        if (getWeek() != course.getWeek()) {
+            return false;
+        }
+        if (getNodes().size() == 0 || course.getNodes().size() == 0) {
+            return false;
+        }
+
+        if (!getNodes().get(0).equals(course.getNodes().get(0))) {
+            return false;
+        }
+
+        if (getWeekType() != course.getWeekType()) {
+            return false;
+        }
+
+        return true;
     }
 }

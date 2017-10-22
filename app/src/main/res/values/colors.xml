@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#3F51B5</color>
-    <color name="colorPrimaryDark">#303F9F</color>
-    <color name="colorAccent">#FF4081</color>
+    <color name="colorPrimary">#ECECEC</color>
+    <color name="colorPrimaryDark">#ECECEC</color>
+    <color name="colorAccent">#6E828A</color>
 
 
     <color name="color_g">#8AD297</color>
@@ -33,6 +33,14 @@
     <color name="color_yiwu_pressed">#997FC3</color>
     <color name="color_yiliu">#E2C490</color>
     <color name="color_yiliu_pressed">#DDB97B</color>
-    <color name="color_wuw">#ADADAD</color>
-    <color name="color_wuw_pressed">#7B7B7B</color>
+    <color name="color_wuw">#E3EEF5</color>
+    <color name="color_wuw_pressed">#d3dEe5</color>
+
+    <color name="color_text_not_current">#badac9</color>
+    <color name="color_normal_ic">#ffffff</color>
+
+    <color name="color_text_normal">#505050</color>
+    <color name="color_fab">#F7C56B</color>
+
+
 </resources>
