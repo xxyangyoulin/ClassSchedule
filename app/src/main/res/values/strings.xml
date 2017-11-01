@@ -1,4 +1,10 @@
 <resources>
     <string name="app_name">星星课表</string>
     <string name="text_description">不辜负每一个清晨</string>
+    <string name="login">登录</string>
+    <string name="app_version">V 1.0</string>
+    <string name="user_add">手动添加</string>
+    <string name="import_gzu">导入贵大课表</string>
+    <string name="select_kb">选择课表</string>
+    <string name="del_all">删除全部</string>
 </resources>

@@ -9,8 +9,8 @@ import android.util.Log;
 
 public class LogUtils {
 
-    public static final String prefix = "mnnyang----->";
-    public static final String suffix = ":::::";
+    public static final String STRING = "mnnyang----->";
+    public static final String SUFFIX = ":::::";
     public static final boolean DEBUG = true;
 
     //信息级别
@@ -60,6 +60,9 @@ public class LogUtils {
 
     private static String getNewTag(Object tag) {
         String newTag = "";
+        if (tag == null) {
+            tag = "";
+        }
 
         if (tag instanceof String) {
             newTag = (String) tag;
@@ -68,6 +71,6 @@ public class LogUtils {
         } else {
             newTag = tag.getClass().getSimpleName();
         }
-        return prefix + newTag + suffix;
+        return STRING + newTag + SUFFIX;
     }
 }

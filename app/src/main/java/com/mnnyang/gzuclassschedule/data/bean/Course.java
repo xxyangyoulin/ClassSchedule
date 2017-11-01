@@ -15,6 +15,7 @@ import java.util.List;
  */
 
 public class Course implements Comparable<Course> {
+    private int id;
     //所有周
     public static final int ALL_WEEK = 0;
     //双周
@@ -71,6 +72,8 @@ public class Course implements Comparable<Course> {
      * 是否显示
      */
     protected boolean showOverlap = true;
+
+    protected String courseTime;
 
     public String getName() {
         return name;
@@ -150,6 +153,24 @@ public class Course implements Comparable<Course> {
 
     public Course setShowOverlap(boolean showOverlap) {
         this.showOverlap = showOverlap;
+        return this;
+    }
+
+    public String getCourseTime() {
+        return courseTime;
+    }
+
+    public Course setCourseTime(String courseTime) {
+        this.courseTime = courseTime;
+        return this;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public Course setId(int id) {
+        this.id = id;
         return this;
     }
 
@@ -286,4 +307,5 @@ public class Course implements Comparable<Course> {
 
         return true;
     }
+
 }

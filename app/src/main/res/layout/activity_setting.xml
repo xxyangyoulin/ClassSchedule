@@ -1,20 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.design.widget.CoordinatorLayout
+<LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context="com.mnnyang.gzuclassschedule.course.CourseActivity">
+    tools:context="com.mnnyang.gzuclassschedule.setting.SettingActivity">
 
     <include layout="@layout/layout_toolbar"/>
-
-    <com.mnnyang.gzuclassschedule.custom.CourseView
-        android:id="@+id/course_view"
+    <FrameLayout
+        android:id="@+id/content"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_marginTop="?attr/actionBarSize"
-        android:paddingLeft="8dp"/>
+        android:layout_height="match_parent"/>
 
-</android.support.design.widget.CoordinatorLayout>
+
+</LinearLayout>

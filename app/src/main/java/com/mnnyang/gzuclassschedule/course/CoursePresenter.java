@@ -10,7 +10,6 @@ public class CoursePresenter implements CourseContract.Presenter {
 
     public CoursePresenter(CourseContract.View mCourseView) {
         this.mCourseView = mCourseView;
-        mCourseView.setPresenter(this);
     }
 
     @Override

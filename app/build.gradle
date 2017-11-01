@@ -31,6 +31,6 @@ dependencies {
     compile 'org.jsoup:jsoup:1.9.2'
     compile 'com.squareup.okhttp3:okhttp:3.9.0'
     compile 'com.zhy:okhttputils:2.6.2'
-    testCompile 'junit:junit:4.12'
     compile 'com.android.support:design:26.0.0-alpha1'
+    testCompile 'junit:junit:4.12'
 }

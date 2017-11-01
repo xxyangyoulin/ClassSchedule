@@ -1,4 +1,4 @@
-package com.mnnyang.starmusic.util.general;
+package com.mnnyang.gzuclassschedule.utils;
 
 import android.content.Context;
 import android.os.Handler;

@@ -389,9 +389,9 @@ public class CourseTableView extends RelativeLayout {
         setBgAndVisiable(course, itemView);
         //startNode
         int startNode = course.getNodes().get(0);
-        for (Integer integer : course.getNodes()) {
+        /*for (Integer integer : course.getNodes()) {
             System.out.println(integer);
-        }
+        }*/
         if (mShowNoon) {
             if (startNode > mNoonNode) {
                 startNode++;

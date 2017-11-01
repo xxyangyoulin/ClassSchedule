@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?><!--最新栏目的新闻-->
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+                  android:layout_width="match_parent"
+                  android:layout_height="match_parent"
+                  android:layout="@layout/preference_item"
+                  android:title="设置">
+
+    <PreferenceCategory
+        android:title="编辑课表">
+        <Preference
+            android:layout="@layout/preference_item"
+            android:summary="删除已缓存的文章内容及图片"
+            android:title="@string/user_add"/>
+        <Preference
+            android:layout="@layout/preference_item"
+            android:summary="登录贵州大学教务系统导入课程表"
+            android:title="@string/import_gzu"/>
+
+        <Preference
+            android:layout="@layout/preference_item"
+            android:summary="删除全部数据"
+            android:title="@string/select_kb"/>
+
+        <Preference
+            android:layout="@layout/preference_item"
+            android:summary="删除全部数据"
+            android:title="@string/del_all"/>
+    </PreferenceCategory>
+
+
+    <!--
+    <CheckBoxPreference
+            android:layout="@layout/preference_item"
+            android:summary="仅在Wi-"
+            android:title=""/>
+    -->
+    <PreferenceCategory
+        android:title="偏好设置">
+
+        <Preference
+            android:layout="@layout/preference_item"
+            android:summary="..."
+            android:title="..."/>
+    </PreferenceCategory>
+
+    <!--android:layout="@layout/preference_category_widget"-->
+    <PreferenceCategory
+        android:title="其他">
+
+        <Preference
+            android:layout="@layout/preference_item"
+            android:summary="@string/app_version"
+            android:title="当前版本"/>
+
+        <Preference
+            android:layout="@layout/preference_item"
+            android:summary="博客：http"
+            android:title="TomChen"/>
+    </PreferenceCategory>
+
+</PreferenceScreen>
