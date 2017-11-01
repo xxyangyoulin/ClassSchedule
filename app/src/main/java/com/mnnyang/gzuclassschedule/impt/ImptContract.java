@@ -13,6 +13,7 @@ import com.mnnyang.gzuclassschedule.BaseView;
 public interface ImptContract {
     interface Presenter extends BasePresenter {
         void importCourses(String xh, String pwd, String captcha);
+        void getCaptcha();
     }
 
     interface View extends BaseView<Presenter> {

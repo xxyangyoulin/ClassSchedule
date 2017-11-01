@@ -18,6 +18,7 @@ import okhttp3.Call;
  */
 
 public class HttpUtils {
+    public static final String ACCESS_ERR = "访问故障,请重试";
 
     private HttpUtils() {
     }
@@ -32,18 +33,18 @@ public class HttpUtils {
 
 
     public void captcha(final File dir, final HttpCallback<Bitmap> callback) {
-        OkHttpUtils.post().url("http://210.40.2.253:8888/default2.aspx").build()
-                .execute(new StringCallback() {
-                    @Override
-                    public void onError(Call call, Exception e, int id) {
-                        callback.onFail(e);
-                    }
+        OkHttpUtils.post().url(Url.URL_LOGIN_PAGE)
+                .build().execute(new StringCallback() {
+            @Override
+            public void onError(Call call, Exception e, int id) {
+                callback.onFail(ACCESS_ERR);
+            }
 
-                    @Override
-                    public void onResponse(String response, int id) {
-                        toLoadCaptcha(dir, callback);
-                    }
-                });
+            @Override
+            public void onResponse(String response, int id) {
+                toLoadCaptcha(dir, callback);
+            }
+        });
     }
 
     private void toLoadCaptcha(final File dir, final HttpCallback<Bitmap> callback) {
@@ -52,7 +53,7 @@ public class HttpUtils {
                     @Override
                     public void onError(Call call, Exception e, int id) {
                         e.printStackTrace();
-                        callback.onFail(e);
+                        callback.onFail(ACCESS_ERR);
                     }
 
                     @Override
@@ -64,9 +65,9 @@ public class HttpUtils {
                 });
     }
 
-    public void impt(String xh, String passwd,
+    public void impt(final String xh, String passwd,
                      String catpcha, final HttpCallback<String> callback) {
-        OkHttpUtils.post().url("http://210.40.2.253:8888/default2.aspx")
+        OkHttpUtils.post().url(Url.URL_LOGIN_PAGE)
                 .addParams("__VIEWSTATE", "dDwtNTE2MjI4MTQ7Oz4I55DQ6KPcVdzTLmjGjlJPRWgYUQ==")
                 .addParams("txtUserName", xh)
                 .addParams("Textbox1", "")
@@ -81,15 +82,41 @@ public class HttpUtils {
             @Override
             public void onError(Call call, Exception e, int id) {
                 e.printStackTrace();
-                callback.onFail(e);
+                callback.onFail(ACCESS_ERR);
             }
 
             @Override
             public void onResponse(String response, int id) {
-                LogUtils.d(this, response);
-                callback.onSuccess(response);
+                LogUtils.e(this, response);
+//                callback.onSuccess(response);
+                if (response.contains("验证码不正确")) {
+                    callback.onFail("验证码不正确");
+                } else if (response.contains("密码错误")) {
+                    callback.onFail("密码错误");
+                } else {
+                    toImpt(xh, callback);
+                }
             }
         });
+    }
+
+    private void toImpt(String xh, final HttpCallback<String> callback) {
+        OkHttpUtils.get().url(Url.URL_LOAD_COURSE)
+                .addHeader("Referer", "http://210.40.2.253:8888/xskbcx.aspx?xh=1500170110")
+                .addParams(Url.PARAM_XH, xh)
+                .build()
+                .execute(new StringCallback() {
+                    @Override
+                    public void onError(Call call, Exception e, int id) {
+                        e.printStackTrace();
+                        callback.onFail(ACCESS_ERR);
+                    }
+
+                    @Override
+                    public void onResponse(String response, int id) {
+                        callback.onSuccess(response);
+                    }
+                });
     }
 
 

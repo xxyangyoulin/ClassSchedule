@@ -13,6 +13,8 @@ import com.mnnyang.gzuclassschedule.data.bean.Course;
 import com.mnnyang.gzuclassschedule.data.db.CourseDbDao;
 import com.mnnyang.gzuclassschedule.setting.SettingActivity;
 
+import java.util.ArrayList;
+
 public class CourseActivity extends BaseActivity implements CourseContract.View {
 
     CourseContract.Presenter mPresenter;
@@ -52,19 +54,12 @@ public class CourseActivity extends BaseActivity implements CourseContract.View 
                 .setDividerSize(0)
                 .getCourseTableView()
                 .setNodeWidth(28);
-        CourseDbDao dao = CourseDbDao.newInstance();
-        Course course = new Course().setName("科学与技术1").setClassRoom("博学楼234").setWeek(1).addNode(1).addNode(2);
-        courseView.addCourse(course);
-        dao.addCourse(course);
-        dao.getCourses("null");
 
         courseView.getCourseTableView().setHorizontalDividerMargin(2);
 
-        courseView.addCourse(new Course().setName("科学与技术2").setClassRoom("博学楼234").setWeek(2).addNode(3).addNode(4));
-        courseView.addCourse(new Course().setName("科学与技术65").setClassRoom("博学楼234").setWeek(3).addNode(5).addNode(6));
-        courseView.addCourse(new Course().setName("科学与技术4").setClassRoom("博学楼234").setWeek(2).addNode(5).addNode(6));
-        courseView.addCourse(new Course().setName("科学与技术7").setClassRoom("博学楼234").setWeek(4).addNode(1).addNode(2));
-        courseView.addCourse(new Course().setName("科学与技术8").setClassRoom("博学楼234").setWeek(5).addNode(7).addNode(8));
+        CourseDbDao dao = CourseDbDao.newInstance();
+        ArrayList<Course> courses = dao.getCourses("");
+        courseView.setCourseData(courses);
     }
 
     @Override

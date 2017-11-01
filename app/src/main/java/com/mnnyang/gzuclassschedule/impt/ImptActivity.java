@@ -6,6 +6,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 
 import com.mnnyang.gzuclassschedule.BaseActivity;
 import com.mnnyang.gzuclassschedule.R;
@@ -43,11 +44,14 @@ public class ImptActivity extends BaseActivity implements ImptContract.View, Vie
 
         Button btnSkip = (Button) findViewById(R.id.btn_skip);
         Button btnConfirm = (Button) findViewById(R.id.btn_confirm);
+        LinearLayout layoutCaptcha = (LinearLayout) findViewById(R.id.layout_refresh_captcha);
 
         mEtXh.setText(Preferences.getString(Constant.XH, ""));
 
         btnSkip.setOnClickListener(this);
         btnConfirm.setOnClickListener(this);
+        layoutCaptcha.setOnClickListener(this);
+
     }
 
     @Override
@@ -76,13 +80,20 @@ public class ImptActivity extends BaseActivity implements ImptContract.View, Vie
     @Override
     public void showFail(String errMsg) {
         ToastUtils.show(errMsg);
+        reLoadCaptcha();
+    }
 
+    private void reLoadCaptcha() {
+        mPresenter.getCaptcha();
     }
 
     @Override
     public void showSucceed() {
         ToastUtils.show("导入成功");
         Preferences.putString(Constant.XH, mXh);
+        Intent intent = new Intent(this, CourseActivity.class);
+        startActivity(intent);
+        finish();
     }
 
     @Override
@@ -93,6 +104,9 @@ public class ImptActivity extends BaseActivity implements ImptContract.View, Vie
                 break;
             case R.id.btn_confirm:
                 confirm();
+                break;
+            case R.id.layout_refresh_captcha:
+                mPresenter.start();
                 break;
         }
     }

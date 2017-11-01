@@ -24,9 +24,8 @@ public class ImptModel implements ImptContract.Model {
                     }
 
                     @Override
-                    public void onFail(Exception e) {
-                        e.printStackTrace();
-                        ToastUtils.show("验证码获取失败");
+                    public void onFail(String errMsg) {
+                        ToastUtils.show(errMsg);
                     }
                 });
     }

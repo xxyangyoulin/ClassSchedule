@@ -1,7 +1,19 @@
 package com.mnnyang.gzuclassschedule.impt;
 
+import android.view.View;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+
+import com.mnnyang.gzuclassschedule.R;
+import com.mnnyang.gzuclassschedule.custom.CourseTableView;
+import com.mnnyang.gzuclassschedule.data.bean.Course;
+import com.mnnyang.gzuclassschedule.data.db.CourseDbDao;
 import com.mnnyang.gzuclassschedule.http.HttpCallback;
 import com.mnnyang.gzuclassschedule.http.HttpUtils;
+import com.mnnyang.gzuclassschedule.utils.CourseParse;
+import com.mnnyang.gzuclassschedule.utils.LogUtils;
+
+import java.util.ArrayList;
 
 /**
  * Created by mnnyang on 17-10-23.
@@ -18,7 +30,7 @@ public class ImptPresenter implements ImptContract.Presenter {
 
     @Override
     public void start() {
-        mModel.getCaptcha(mImptView.getCaptchaIV());
+        getCaptcha();
     }
 
     @Override
@@ -27,16 +39,53 @@ public class ImptPresenter implements ImptContract.Presenter {
         HttpUtils.newInstance().impt(xh, pwd, captcha, new HttpCallback<String>() {
             @Override
             public void onSuccess(String s) {
-                mImptView.hideImpting();
-                mImptView.showSucceed();
-
+                LogUtils.i(this, "课表\n" + s);
+                parseHtml(s);
             }
 
             @Override
-            public void onFail(Exception e) {
+            public void onFail(String errMsg) {
                 mImptView.hideImpting();
-                mImptView.showFail(e.getMessage());
+                mImptView.showFail(errMsg);
             }
+
         });
+    }
+
+    private void parseHtml(String html) {
+        try {
+            ArrayList<Course> courses = CourseParse.parse(html);
+
+            new Thread(new dbRun(courses)).start();
+            mImptView.showSucceed();
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            mImptView.hideImpting();
+        }
+    }
+
+    static class dbRun implements Runnable {
+        ArrayList<Course> mCourses;
+
+        public dbRun(ArrayList<Course> courses) {
+            mCourses = courses;
+        }
+
+        @Override
+        public void run() {
+            if (mCourses == null) {
+                LogUtils.e(this, "data is null");
+                return;
+            }
+            for (Course cours : mCourses) {
+                CourseDbDao.newInstance().addCourse(cours);
+            }
+        }
+    }
+
+    @Override
+    public void getCaptcha() {
+        mModel.getCaptcha(mImptView.getCaptchaIV());
     }
 }

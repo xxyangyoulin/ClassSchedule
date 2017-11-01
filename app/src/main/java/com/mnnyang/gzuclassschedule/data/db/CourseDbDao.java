@@ -34,10 +34,24 @@ public class CourseDbDao {
 
         putAllNotId(course, values);
 
-        db.insert(CoursesPsc.CourseEntry.TABLE_NAME,
-                null, values);
+        db.beginTransaction();
+        try {
+            long courseId = db.insert(CoursesPsc.CourseEntry.TABLE_NAME, null, values);
 
-        LogUtils.i(this, "ok");
+            for (Integer integer : course.getNodes()) {
+                values.clear();
+                values.put(CoursesPsc.NodeEntry.COLUMN_NAME_COURSE_ID, courseId);
+                values.put(CoursesPsc.NodeEntry.COLUMN_NAME_NODE_NUM, integer);
+                db.insert(CoursesPsc.NodeEntry.TABLE_NAME, null, values);
+            }
+            db.setTransactionSuccessful();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            db.endTransaction();
+        }
+
         db.close();
     }
 
@@ -75,10 +89,22 @@ public class CourseDbDao {
         while (cursor.moveToNext()) {
             Course course = parse(cursor);
             courses.add(course);
+
+            sql = "select * from " + CoursesPsc.NodeEntry.TABLE_NAME
+                    + " where " + CoursesPsc.NodeEntry.COLUMN_NAME_COURSE_ID + "=" + course.getId();
+            Cursor nodeCursor = db.rawQuery(sql, null);
+
+            while (nodeCursor.moveToNext()) {
+                course.addNode(nodeCursor.getInt(nodeCursor.getColumnIndex(CoursesPsc.NodeEntry.COLUMN_NAME_NODE_NUM)));
+                System.out.println("找到ndoe"+course.getNodes());
+            }
+
+            nodeCursor.close();
         }
         cursor.close();
-        db.close();
 
+
+        db.close();
         return courses;
     }
 
