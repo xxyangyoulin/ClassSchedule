@@ -21,13 +21,13 @@
         <activity
             android:name=".course.CourseActivity"
             android:launchMode="singleTask">
-        </activity>
-        <activity android:name=".guide.GuideActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
 
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
+        </activity>
+        <activity android:name=".guide.GuideActivity">
         </activity>
         <activity android:name=".setting.SettingActivity">
         </activity>

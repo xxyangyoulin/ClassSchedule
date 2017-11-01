@@ -2,9 +2,11 @@ package com.mnnyang.gzuclassschedule.course;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 
 import com.mnnyang.gzuclassschedule.BaseActivity;
 import com.mnnyang.gzuclassschedule.R;
@@ -26,8 +28,20 @@ public class CourseActivity extends BaseActivity implements CourseContract.View 
 
         initToolbar();
         initCourseView();
+        initFab();
 
         mPresenter = new CoursePresenter(this);
+    }
+
+    private void initFab() {
+        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(CourseActivity.this,SettingActivity.class);
+                startActivity(intent);
+            }
+        });
     }
 
     private void initToolbar() {

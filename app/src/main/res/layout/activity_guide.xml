@@ -10,37 +10,42 @@
 
     <Button
         android:id="@+id/btn_into"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
         android:layout_marginBottom="40dp"
+        android:layout_marginLeft="32dp"
+        android:layout_marginRight="32dp"
         android:layout_marginTop="8dp"
         android:background="@drawable/selector_btn_login"
         android:paddingLeft="8dp"
         android:paddingRight="8dp"
         android:text="　直接进入　"
         android:textColor="@android:color/white"
-        android:textSize="24sp"/>
+        android:textSize="20sp"/>
 
     <Button
         android:id="@+id/btn_gzu_login"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_above="@id/btn_into"
         android:layout_centerHorizontal="true"
+        android:layout_marginLeft="32dp"
+        android:layout_marginRight="32dp"
         android:background="@drawable/selector_btn_login"
         android:paddingLeft="8dp"
         android:paddingRight="8dp"
-        android:text="贵大学生登录"
+        android:text="导入贵大课表"
         android:textColor="@android:color/white"
-        android:textSize="24sp"/>
+        android:textSize="20sp"/>
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="60dp"
+
         android:lineSpacingExtra="4dp"
         android:text="星星课表"
         android:textColor="@color/primary_dark"

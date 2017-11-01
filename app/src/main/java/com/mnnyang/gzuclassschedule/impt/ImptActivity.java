@@ -2,11 +2,14 @@ package com.mnnyang.gzuclassschedule.impt;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import com.mnnyang.gzuclassschedule.BaseActivity;
 import com.mnnyang.gzuclassschedule.R;
@@ -32,9 +35,17 @@ public class ImptActivity extends BaseActivity implements ImptContract.View, Vie
         ScreenUtils.setSystemBarTransparent(this);
         setContentView(R.layout.activity_impt);
 
+        initToolbar();
         initView();
 
         mPresenter = new ImptPresenter(this);
+    }
+
+    private void initToolbar() {
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setTitle("导入课表");
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 
     private void initView() {
@@ -125,6 +136,16 @@ public class ImptActivity extends BaseActivity implements ImptContract.View, Vie
     private void skip() {
         Intent intent = new Intent(this, CourseActivity.class);
         startActivity(intent);
+        finish();
     }
 
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                finish();
+                break;
+        }
+        return super.onOptionsItemSelected(item);
+    }
 }
