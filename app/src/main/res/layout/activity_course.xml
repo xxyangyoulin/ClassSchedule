@@ -8,7 +8,7 @@
     android:orientation="vertical"
     tools:context="com.mnnyang.gzuclassschedule.course.CourseActivity">
 
-    <include layout="@layout/layout_toolbar"/>
+    <include layout="@layout/main_toolbar"/>
 
     <com.mnnyang.gzuclassschedule.custom.CourseView
         android:id="@+id/course_view"

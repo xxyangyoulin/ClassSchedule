@@ -7,4 +7,7 @@
     <string name="import_gzu">导入贵大课表</string>
     <string name="select_kb">选择课表</string>
     <string name="del_all">删除全部</string>
+    <string name="app_preference_hide_fab">hide_fab</string>
+    <string name="app_preference_current_week_flag">current_week_flag</string>
+    <string name="app_preference_start_week_begin_millis">start_week_begin_date</string>
 </resources>

@@ -29,18 +29,20 @@
 
 
     <!--
-    <CheckBoxPreference
-            android:layout="@layout/preference_item"
-            android:summary="仅在Wi-"
-            android:title=""/>
+
     -->
     <PreferenceCategory
         android:title="偏好设置">
+        <CheckBoxPreference
+            android:key="@string/app_preference_hide_fab"
+            android:layout="@layout/preference_item"
+            android:summary="隐藏主界面右下角添加按钮"
+            android:title="隐藏添加按钮"/>
 
         <Preference
             android:layout="@layout/preference_item"
             android:summary="..."
-            android:title="..."/>
+            android:title="其他待开发TODO"/>
     </PreferenceCategory>
 
     <!--android:layout="@layout/preference_category_widget"-->

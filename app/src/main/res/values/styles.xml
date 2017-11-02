@@ -18,4 +18,9 @@
         <item name="textColorError">#ff0000</item>
     </style>
 
+    <style name="animDown" parent="@android:style/Animation">
+        <item name="android:windowEnterAnimation">@anim/left_in</item>
+        <item name="android:windowExitAnimation">@anim/left_out</item>
+    </style>
+
 </resources>

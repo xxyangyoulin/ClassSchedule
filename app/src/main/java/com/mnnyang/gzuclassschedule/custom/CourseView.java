@@ -155,6 +155,7 @@ public class CourseView extends LinearLayout {
         ViewGroup viewGroup = (ViewGroup) mCourseTableView.getParent();
         viewGroup.removeAllViews();
 
+        mCourseTableView.updateView();
         addCourseTableView();
         invalidate();
     }

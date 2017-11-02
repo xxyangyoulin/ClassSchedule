@@ -56,12 +56,20 @@ public class ImptPresenter implements ImptContract.Presenter {
         try {
             ArrayList<Course> courses = CourseParse.parse(html);
 
+            demo(courses);
+
             new Thread(new dbRun(courses)).start();
             mImptView.showSucceed();
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
             mImptView.hideImpting();
+        }
+    }
+
+    private void demo(ArrayList<Course> courses) {
+        for (Course cours : courses) {
+            cours.setCourseTime("2017-2018");
         }
     }
 

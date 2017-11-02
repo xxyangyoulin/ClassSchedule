@@ -78,10 +78,10 @@ public class CourseDbDao {
         db.close();
     }
 
-    public ArrayList<Course> getCourses(String courseTime) {
+    public ArrayList<Course> loadCourses(String courseTime) {
         SQLiteDatabase db = new CourseDbHelper(app.mContext).getWritableDatabase();
-        String sql = "select * from " + CoursesPsc.CourseEntry.TABLE_NAME;/*+" where "
-                + CoursesPsc.CourseEntry.COLUMN_NAME_COURSE_TIME + "='"+courseTime+"'";*/
+        String sql = "select * from " + CoursesPsc.CourseEntry.TABLE_NAME+" where "
+                + CoursesPsc.CourseEntry.COLUMN_NAME_COURSE_TIME + "='"+courseTime+"'";
 
         Cursor cursor = db.rawQuery(sql, null);
 

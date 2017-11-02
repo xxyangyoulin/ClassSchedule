@@ -404,7 +404,7 @@ public class CourseTableView extends RelativeLayout {
 
         final int itemHeight = (mDividerSize + mItemHeight) * (course.getNodes().size())
                 - mVerticalDividerMargin * 2;
-        int itemWidth = mItemWidth - 2 * mHorizontalDividerMargin+mDividerSize;
+        int itemWidth = mItemWidth - 2 * mHorizontalDividerMargin + mDividerSize;
         int topMargin = startNode * (mItemHeight + mDividerSize)
                 - mDividerSize + mVerticalDividerMargin;
         int leftMargin = mNodeWidth + mDividerSize / 2 + (course.getWeek() - 1)
@@ -933,6 +933,9 @@ public class CourseTableView extends RelativeLayout {
     }
 
     public CourseTableView setCurrentWeekCount(int currentWeekCount) {
+        if (currentWeekCount <= 0) {
+            throw new IllegalArgumentException("weekCount must be >0");
+        }
         this.mCurrentWeekCount = currentWeekCount;
         return this;
     }

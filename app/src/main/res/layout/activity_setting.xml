@@ -8,7 +8,7 @@
     android:orientation="vertical"
     tools:context="com.mnnyang.gzuclassschedule.setting.SettingActivity">
 
-    <include layout="@layout/layout_toolbar"/>
+    <include layout="@layout/main_toolbar"/>
     <FrameLayout
         android:id="@+id/content"
         android:layout_width="match_parent"

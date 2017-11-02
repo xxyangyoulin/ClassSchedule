@@ -5,6 +5,7 @@ import android.content.Context;
 
 import com.mnnyang.gzuclassschedule.MainActivity;
 import com.mnnyang.gzuclassschedule.utils.Preferences;
+import com.mnnyang.gzuclassschedule.utils.ScreenUtils;
 import com.mnnyang.gzuclassschedule.utils.ToastUtils;
 import com.zhy.http.okhttp.OkHttpUtils;
 import com.zhy.http.okhttp.cookie.CookieJarImpl;
@@ -72,5 +73,6 @@ public class app extends Application {
     private void initUtils() {
         ToastUtils.init(mContext);
         Preferences.init(mContext);
+        ScreenUtils.init(mContext);
     }
 }
