@@ -2,8 +2,9 @@ package com.mnnyang.gzuclassschedule.app;
 
 import android.app.Application;
 import android.content.Context;
+import android.os.Handler;
+import android.os.Looper;
 
-import com.mnnyang.gzuclassschedule.MainActivity;
 import com.mnnyang.gzuclassschedule.utils.Preferences;
 import com.mnnyang.gzuclassschedule.utils.ScreenUtils;
 import com.mnnyang.gzuclassschedule.utils.ToastUtils;
@@ -27,11 +28,13 @@ import okhttp3.OkHttpClient;
 
 public class app extends Application {
     public static Context mContext;
+    public static Handler mHandler;
 
     @Override
     public void onCreate() {
         super.onCreate();
         mContext = getApplicationContext();
+        mHandler = new Handler(Looper.getMainLooper());
         initOkHttp();
         initUtils();
     }

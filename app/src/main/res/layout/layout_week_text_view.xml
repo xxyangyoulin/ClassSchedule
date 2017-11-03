@@ -12,7 +12,6 @@
     android:paddingRight="8dp"
     android:paddingTop="16dp"
     android:paddingBottom="16dp"
-    android:text="第1周"
+    tools:text="第1周"
     android:textColor="#ffffff"
-    android:textSize="16sp"
-    tools:showIn="@layout/popup_week_list"/>
+    android:textSize="16sp"/>

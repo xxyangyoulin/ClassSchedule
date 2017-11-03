@@ -28,8 +28,6 @@ public class SettingActivity extends BaseActivity {
 
     private void initToolbar() {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        TextView tvTitle = (TextView) findViewById(R.id.tv_toolbar_title);
-        tvTitle.setText("");
 
         setSupportActionBar(toolbar);
         getSupportActionBar().setTitle("设置");

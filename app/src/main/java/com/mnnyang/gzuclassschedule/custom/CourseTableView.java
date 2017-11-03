@@ -386,12 +386,10 @@ public class CourseTableView extends RelativeLayout {
         final LinearLayout itemView = getCourseItemView(course);
         itemView.setTag(course);
         //单双周背景处理与隐藏和显示
-        setBgAndVisiable(course, itemView);
+        setBgAndVisible(course, itemView);
         //startNode
         int startNode = course.getNodes().get(0);
-        /*for (Integer integer : course.getNodes()) {
-            System.out.println(integer);
-        }*/
+
         if (mShowNoon) {
             if (startNode > mNoonNode) {
                 startNode++;
@@ -420,37 +418,52 @@ public class CourseTableView extends RelativeLayout {
         addView(itemView);
     }
 
-    private void setBgAndVisiable(Course course, LinearLayout itemView) {
-        StateListDrawable drawable;
-        if (course.getWeekType() == Course.ALL_WEEK) {
-            drawable = Utils.getPressedSelector(getContext(),
-                    nameColorMap.get(course.getName()),
-                    nameColorMap.get(course.getName() + "_p"), mCourseItemRadius);
-            itemView.setBackground(drawable);
-        } else {
+    private void setBgAndVisible(Course course, LinearLayout itemView) {
+        if (course.getStartWeek() <= mCurrentWeekCount && course.getEndWeek() >= mCurrentWeekCount) {
+            if (course.getWeekType() == Course.ALL_WEEK) {
+                setCurBg(course, itemView);
+                return;
+            }
             int remainder = mCurrentWeekCount % 2;
             if (remainder == 1 && course.getWeekType() == Course.SINGLE_WEEK
                     || remainder == 0 && course.getWeekType() == Course.DOUBLE_WEEK) {
                 //当前周的
-                drawable = Utils.getPressedSelector(getContext(),
-                        nameColorMap.get(course.getName()),
-                        nameColorMap.get(course.getName() + "_p"), mCourseItemRadius);
-                itemView.setBackground(drawable);
+                setCurBg(course, itemView);
             } else {
-                drawable = Utils.getPressedSelector(getContext(),
-                        colors[colors.length - 2], colors[colors.length - 1], mCourseItemRadius);
-                itemView.setBackground(drawable);
-
-                TextView tv = (TextView) itemView.getChildAt(0);
-                tv.setTextColor(Utils.getColor(getResources(), R.color.color_text_not_current));
-                tv.setText("[非本周]" + tv.getText());
-                if (((Course) itemView.getTag()).isShowOverlap()) {
-                    itemView.setVisibility(VISIBLE);
-                } else {
-                    itemView.setVisibility(GONE);
-                }
+                setNoCurBgAndVisible(itemView);
             }
+        } else {
+            setNoCurBgAndVisible(itemView);
         }
+    }
+
+    private void setCurBg(Course course, LinearLayout itemView) {
+        StateListDrawable drawable;
+        drawable = getShowBgDrawable(nameColorMap.get(course.getName()),
+                nameColorMap.get(course.getName() + "_p"));
+        itemView.setBackground(drawable);
+    }
+
+    private void setNoCurBgAndVisible(LinearLayout itemView) {
+        StateListDrawable drawable;
+        drawable = getShowBgDrawable(colors[colors.length - 2], colors[colors.length - 1]);
+        itemView.setBackground(drawable);
+
+        TextView tv = (TextView) itemView.getChildAt(0);
+        tv.setTextColor(Utils.getColor(getResources(), R.color.color_text_not_current));
+        tv.setText("[非本周]" + tv.getText());
+        if (((Course) itemView.getTag()).isShowOverlap()) {
+            itemView.setVisibility(VISIBLE);
+        } else {
+            itemView.setVisibility(GONE);
+        }
+    }
+
+    private StateListDrawable getShowBgDrawable(int color, int color2) {
+        StateListDrawable drawable;
+        drawable = Utils.getPressedSelector(getContext(),
+                color, color2, mCourseItemRadius);
+        return drawable;
     }
 
     /**
@@ -678,15 +691,6 @@ public class CourseTableView extends RelativeLayout {
 
 
     /**********************event**************************/
-
-    @Override
-    public boolean onTouchEvent(MotionEvent event) {
-        LogUtils.v(this, "触摸");
-
-
-        return super.onTouchEvent(event);
-    }
-
     private OnItemClickListener mItemClickListener;
 
     public interface OnItemClickListener {

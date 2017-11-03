@@ -24,7 +24,25 @@ public class CourseParse {
     private static final String[] other = {"时间", "星期一", "星期二", "星期三", "星期四", "星期五", "星期六",
             "星期日", "早晨", "上午", "下午", "晚上"};
     private static final Pattern pattern1 = Pattern.compile("第\\d{1,2}.*节");
-    private static final Pattern pattern2 = Pattern.compile("第\\d{1,2},\\d{1,2}周");
+    private static final Pattern pattern2 = Pattern.compile("\\{第\\d{1,2}[-]*\\d*周");
+
+
+    public static ArrayList<String> parseTime(String html) {
+        Document doc = org.jsoup.Jsoup.parse(html);
+        ArrayList<String> times = new ArrayList<>();
+        Elements elements = doc.getElementsByTag("select");
+        if (elements == null || elements.size() == 0) {
+            return null;
+        }
+        Elements options = elements.get(0).getElementsByTag("option");
+
+        for (Element option : options) {
+            String time = option.text().trim();
+            times.add(time);
+            System.out.println(time);
+        }
+        return times;
+    }
 
     public static ArrayList<Course> parse(String html) {
 
@@ -129,16 +147,13 @@ public class CourseParse {
 
         //节数
         Matcher matcher = pattern1.matcher(time);
-        System.out.println(time);
 
         if (matcher.find()) {
             String nodeInfo = matcher.group(0);
             String[] nodes = nodeInfo.substring(1, nodeInfo.length() - 1).split(",");
-            System.out.println("-----node");
-            for (String node : nodes) {
+          /*  for (String node : nodes) {
                 System.out.print(node);
-            }
-            System.out.println("-----nodee");
+            }*/
             course.setNodes(nodes);
         } else if (htmlNode != 0) {
             course.addNode(htmlNode);
@@ -148,11 +163,11 @@ public class CourseParse {
         matcher = pattern2.matcher(time);
         if (matcher.find()) {
             String weekInfo = matcher.group(0);//第2-16周
-            String[] weeks = weekInfo.substring(1, weekInfo.length() - 1).split("-");
-            System.out.println("转换");
-            for (String s : weeks) {
-                System.out.println(s);
+            if (weekInfo.length() < 2) {
+                return;
             }
+            String[] weeks = weekInfo.substring(2, weekInfo.length() - 1).split("-");
+
             if (weeks.length > 0) {
                 int startWeek = Integer.decode(weeks[0]);
                 course.setStartWeek(startWeek);

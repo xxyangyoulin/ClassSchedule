@@ -9,7 +9,7 @@
         android:title="编辑课表">
         <Preference
             android:layout="@layout/preference_item"
-            android:summary="删除已缓存的文章内容及图片"
+            android:summary="手动添加课程表数据"
             android:title="@string/user_add"/>
         <Preference
             android:layout="@layout/preference_item"
@@ -18,12 +18,12 @@
 
         <Preference
             android:layout="@layout/preference_item"
-            android:summary="删除全部数据"
+            android:summary=""
             android:title="@string/select_kb"/>
 
         <Preference
             android:layout="@layout/preference_item"
-            android:summary="删除全部数据"
+            android:summary="删除全部课程数据"
             android:title="@string/del_all"/>
     </PreferenceCategory>
 

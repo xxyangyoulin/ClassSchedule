@@ -57,8 +57,6 @@ public class Utils {
                 getColor(resources, R.color.color_ba_pressed),
                 getColor(resources, R.color.color_jiu),
                 getColor(resources, R.color.color_jiu_pressed),
-                getColor(resources, R.color.color_yier),
-                getColor(resources, R.color.color_yier_pressed),
                 getColor(resources, R.color.color_yisan),
                 getColor(resources, R.color.color_yisan_pressed),
                 getColor(resources, R.color.color_yis),

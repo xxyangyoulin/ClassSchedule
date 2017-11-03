@@ -10,4 +10,7 @@
     <string name="app_preference_hide_fab">hide_fab</string>
     <string name="app_preference_current_week_flag">current_week_flag</string>
     <string name="app_preference_start_week_begin_millis">start_week_begin_date</string>
+    <string name="xh">学号</string>
+    <string name="pwd">密码</string>
+    <string name="chptcha">验证码</string>
 </resources>

@@ -14,6 +14,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
 import android.widget.HorizontalScrollView;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
@@ -23,7 +24,6 @@ import com.mnnyang.gzuclassschedule.BaseActivity;
 import com.mnnyang.gzuclassschedule.R;
 import com.mnnyang.gzuclassschedule.custom.CourseView;
 import com.mnnyang.gzuclassschedule.data.bean.Course;
-import com.mnnyang.gzuclassschedule.data.db.CourseDbDao;
 import com.mnnyang.gzuclassschedule.setting.SettingActivity;
 import com.mnnyang.gzuclassschedule.utils.LogUtils;
 import com.mnnyang.gzuclassschedule.utils.Preferences;
@@ -41,6 +41,8 @@ public class CourseActivity extends BaseActivity implements CourseContract.View,
     private TextView mTvWeekCount;
     private int mCurrentWeekCount;
     private PopupWindow mPopupWindow;
+    private int mCurrentMonth;
+    private FloatingActionButton mFab;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -58,18 +60,14 @@ public class CourseActivity extends BaseActivity implements CourseContract.View,
     private void initWeekTitle() {
         mLayoutWeekTitle = (LinearLayout) findViewById(R.id.layout_week_title);
         mTvWeekCount = (TextView) findViewById(R.id.tv_week_count);
+        TextView tvTitle = (TextView) findViewById(R.id.tv_toolbar_title);
+        tvTitle.setText(getString(R.string.app_name));
         mTvWeekCount.setOnClickListener(this);
     }
 
     private void initFab() {
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        if (PreferenceManager.getDefaultSharedPreferences(getBaseContext())
-                .getBoolean(getString(R.string.app_preference_hide_fab), false)) {
-            fab.hide();
-            return;
-        }
-
-        fab.setOnClickListener(this);
+        mFab = (FloatingActionButton) findViewById(R.id.fab);
+        mFab.setOnClickListener(this);
     }
 
     private void initToolbar() {
@@ -99,15 +97,26 @@ public class CourseActivity extends BaseActivity implements CourseContract.View,
                 .setNodeWidth(28);
 
         mCourseView.getCourseTableView().setHorizontalDividerMargin(2);
-
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        //TODO use rxjava
         initCurrentWeek();
-        setCourseViewData();
+        fabVisible();
+
+        mCurrentMonth = TimeUtils.getNowMonth();
+        mCourseView.setMonth(mCurrentMonth);
+        mPresenter.updateCourseData("2017-2018");
+    }
+
+    private void fabVisible() {
+        if (PreferenceManager.getDefaultSharedPreferences(getBaseContext())
+                .getBoolean(getString(R.string.app_preference_hide_fab), false)) {
+            mFab.hide();
+            return;
+        }
+        mFab.show();
     }
 
     private void initCurrentWeek() {
@@ -129,18 +138,7 @@ public class CourseActivity extends BaseActivity implements CourseContract.View,
             PreferencesCurrentWeek(1);
         }
         mTvWeekCount.setText("第" + mCurrentWeekCount + "周");
-    }
-
-    private void setCourseViewData() {
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                CourseDbDao dao = CourseDbDao.newInstance();
-                ArrayList<Course> courses = dao.loadCourses("2017-2018");
-                mCourseView.getCourseTableView().setCurrentWeekCount(mCurrentWeekCount);
-                mCourseView.setCourseData(courses);
-            }
-        }).start();
+        mCourseView.getCourseTableView().setCurrentWeekCount(mCurrentWeekCount);
     }
 
     @Override
@@ -149,8 +147,10 @@ public class CourseActivity extends BaseActivity implements CourseContract.View,
     }
 
     @Override
-    public void addCourse(Course course) {
-
+    public void setCourseData(ArrayList<Course> courses) {
+        if (mCourseView != null) {
+            mCourseView.setCourseData(courses);
+        }
     }
 
     @Override
@@ -174,7 +174,7 @@ public class CourseActivity extends BaseActivity implements CourseContract.View,
         mPopupWindow = new PopupWindow(
                 ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
 
-        HorizontalScrollView popupView = getPopupWindowView();
+        final HorizontalScrollView popupView = getPopupWindowView();
         mPopupWindow.setContentView(popupView);
         mPopupWindow.setBackgroundDrawable(new ColorDrawable(0x00000000));
         mPopupWindow.setOutsideTouchable(true);
@@ -186,6 +186,21 @@ public class CourseActivity extends BaseActivity implements CourseContract.View,
         int xoff = mLayoutWeekTitle.getWidth() - mPopupWindow.getContentView().getMeasuredWidth();
         int yoff = -mTvWeekCount.getHeight();
         mPopupWindow.showAsDropDown(v, xoff / 2, yoff);
+
+        if (mCurrentWeekCount <= 3) {
+            return;
+        }
+        popupView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+            @Override
+            public void onGlobalLayout() {
+                popupView.getViewTreeObserver()
+                        .removeGlobalOnLayoutListener(this);
+                ViewGroup llView = (ViewGroup) popupView.getChildAt(0);
+                int width = llView.getChildAt(0).getWidth();
+                int x = width * (mCurrentWeekCount - 3);
+                popupView.scrollTo(x, 0);
+            }
+        });
     }
 
     @NonNull

@@ -39,4 +39,13 @@ public class TimeUtils {
 
         return currentDate.getTime();
     }
+
+    /**
+     * 获取当前月份
+     * @return
+     */
+    public static int getNowMonth() {
+        Calendar calendar = Calendar.getInstance();
+        return 1 + calendar.get(Calendar.MONTH);
+    }
 }

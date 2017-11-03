@@ -1,5 +1,6 @@
 package com.mnnyang.gzuclassschedule.impt;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
@@ -9,18 +10,22 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.TextView;
 
 import com.mnnyang.gzuclassschedule.BaseActivity;
 import com.mnnyang.gzuclassschedule.R;
 import com.mnnyang.gzuclassschedule.app.Constant;
 import com.mnnyang.gzuclassschedule.course.CourseActivity;
 import com.mnnyang.gzuclassschedule.utils.DialogHelper;
+import com.mnnyang.gzuclassschedule.utils.DialogListener;
+import com.mnnyang.gzuclassschedule.utils.LogUtils;
 import com.mnnyang.gzuclassschedule.utils.Preferences;
 import com.mnnyang.gzuclassschedule.utils.ScreenUtils;
 import com.mnnyang.gzuclassschedule.utils.ToastUtils;
 
-public class ImptActivity extends BaseActivity implements ImptContract.View, View.OnClickListener {
+import java.util.ArrayList;
+
+public class ImptActivity extends BaseActivity implements
+        ImptContract.View, View.OnClickListener, View.OnFocusChangeListener {
 
     ImptContract.Presenter mPresenter;
     private ImageView mIvCaptcha;
@@ -28,6 +33,10 @@ public class ImptActivity extends BaseActivity implements ImptContract.View, Vie
     private EditText mEtPwd;
     private String mXh;
     private DialogHelper mHelper;
+    private ImageView mIvClearXh;
+    private ImageView mIvClearPwd;
+    private ImageView mIvClearCaptcha;
+    private EditText mEtCaptcha;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -52,12 +61,26 @@ public class ImptActivity extends BaseActivity implements ImptContract.View, Vie
         mIvCaptcha = (ImageView) findViewById(R.id.iv_captcha);
         mEtXh = (EditText) findViewById(R.id.et_xh);
         mEtPwd = (EditText) findViewById(R.id.et_pwd);
+        mEtCaptcha = (EditText) findViewById(R.id.et_captcha);
 
         Button btnSkip = (Button) findViewById(R.id.btn_skip);
         Button btnConfirm = (Button) findViewById(R.id.btn_confirm);
         LinearLayout layoutCaptcha = (LinearLayout) findViewById(R.id.layout_refresh_captcha);
 
+        mIvClearXh = (ImageView) findViewById(R.id.iv_clear_xh);
+        mIvClearPwd = (ImageView) findViewById(R.id.iv_clear_pwd);
+        mIvClearCaptcha = (ImageView) findViewById(R.id.iv_clear_captcha);
+
         mEtXh.setText(Preferences.getString(Constant.XH, ""));
+
+        mEtXh.setOnFocusChangeListener(this);
+        mEtPwd.setOnFocusChangeListener(this);
+        mEtCaptcha.setOnFocusChangeListener(this);
+
+
+        mIvClearXh.setOnClickListener(this);
+        mIvClearPwd.setOnClickListener(this);
+        mIvClearCaptcha.setOnClickListener(this);
 
         btnSkip.setOnClickListener(this);
         btnConfirm.setOnClickListener(this);
@@ -85,13 +108,14 @@ public class ImptActivity extends BaseActivity implements ImptContract.View, Vie
 
     @Override
     public void hideImpting() {
+        LogUtils.d(this, "hideimp");
         if (mHelper != null) mHelper.hideProgressDialog();
     }
 
     @Override
-    public void showFail(String errMsg) {
+    public void showErrToast(String errMsg, boolean reLoad) {
         ToastUtils.show(errMsg);
-        reLoadCaptcha();
+        if (reLoad) reLoadCaptcha();
     }
 
     private void reLoadCaptcha() {
@@ -108,6 +132,27 @@ public class ImptActivity extends BaseActivity implements ImptContract.View, Vie
     }
 
     @Override
+    public void showCourseTimeDialog(ArrayList<String> times) {
+        final DialogHelper dialogHelper = new DialogHelper();
+        dialogHelper.showListDialog(this, "",
+                (String[]) times.toArray(new String[0]), new DialogListener() {
+                    @Override
+                    public void onItemClick(DialogInterface dialog, int which) {
+                        super.onItemClick(dialog, which);
+                        dialog.dismiss();
+                        dialogHelper.showListDialog(ImptActivity.this, "",
+                                new String[]{"1", "2"}, new DialogListener() {
+                                    @Override
+                                    public void onItemClick(DialogInterface dialog, int which) {
+                                        super.onItemClick(dialog, which);
+                                        dialog.dismiss();
+                                    }
+                                });
+                    }
+                });
+    }
+
+    @Override
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.btn_skip:
@@ -119,18 +164,27 @@ public class ImptActivity extends BaseActivity implements ImptContract.View, Vie
             case R.id.layout_refresh_captcha:
                 mPresenter.start();
                 break;
+            case R.id.iv_clear_xh:
+                mEtXh.setText("");
+                break;
+            case R.id.iv_clear_pwd:
+                mEtPwd.setText("");
+                break;
+            case R.id.iv_clear_captcha:
+                mEtCaptcha.setText("");
+                break;
         }
     }
 
     private void confirm() {
-        EditText etCaptcha = (EditText) findViewById(R.id.et_captcha);
-
         //TODO 数据验证
         mXh = mEtXh.getText().toString().trim();
         String pwd = mEtPwd.getText().toString().trim();
-        String captcha = etCaptcha.getText().toString().trim();
-
-        mPresenter.importCourses(mXh, pwd, captcha);
+        String captcha = mEtCaptcha.getText().toString().trim();
+        String courseTime = "2016-2017";
+        String term = "3";
+//        mPresenter.importCourses(mXh, pwd, captcha, courseTime, term);
+        mPresenter.loadCourseTimeAndTerm(mXh, pwd, captcha);
     }
 
     private void skip() {
@@ -147,5 +201,25 @@ public class ImptActivity extends BaseActivity implements ImptContract.View, Vie
                 break;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onFocusChange(View v, boolean hasFocus) {
+        switch (v.getId()) {
+            case R.id.et_xh:
+                mIvClearXh.setVisibility(hasFocus ? View.VISIBLE : View.INVISIBLE);
+                mEtXh.setHint(hasFocus ? "" : getString(R.string.xh));
+                break;
+            case R.id.et_pwd:
+                mIvClearPwd.setVisibility(hasFocus ? View.VISIBLE : View.INVISIBLE);
+                mEtPwd.setHint(hasFocus ? "" : getString(R.string.pwd));
+                break;
+            case R.id.et_captcha:
+                mIvClearCaptcha.setVisibility(hasFocus ? View.VISIBLE : View.INVISIBLE);
+                mEtCaptcha.setHint(hasFocus ? "" : getString(R.string.chptcha));
+                break;
+            default:
+                break;
+        }
     }
 }
