@@ -1,5 +1,6 @@
 package com.mnnyang.gzuclassschedule.add;
 
+import android.content.Intent;
 import android.os.Bundle;
 
 import com.mnnyang.gzuclassschedule.BaseActivity;
@@ -15,5 +16,14 @@ public class AddActivity extends BaseActivity implements AddContract.View {
         setContentView(R.layout.activity_add);
 
         mPresenter = new AddPresenter(this);
+    }
+
+    /**
+     * 通知更新
+     */
+    private void notifiUpdate() {
+        Intent intent = new Intent();
+        intent.setAction("com.mnnyang.update");
+        sendBroadcast(intent);
     }
 }

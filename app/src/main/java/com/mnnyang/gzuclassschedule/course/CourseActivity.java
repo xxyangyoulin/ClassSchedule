@@ -1,7 +1,9 @@
 package com.mnnyang.gzuclassschedule.course;
 
-import android.content.DialogInterface;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
@@ -23,12 +25,13 @@ import android.widget.TextView;
 
 import com.mnnyang.gzuclassschedule.BaseActivity;
 import com.mnnyang.gzuclassschedule.R;
+import com.mnnyang.gzuclassschedule.app.Constant;
 import com.mnnyang.gzuclassschedule.custom.CourseView;
 import com.mnnyang.gzuclassschedule.data.bean.Course;
 import com.mnnyang.gzuclassschedule.setting.SettingActivity;
+import com.mnnyang.gzuclassschedule.utils.LogUtils;
 import com.mnnyang.gzuclassschedule.utils.Preferences;
 import com.mnnyang.gzuclassschedule.utils.TimeUtils;
-import com.mnnyang.gzuclassschedule.utils.spec.ShowDialog;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -45,6 +48,7 @@ public class CourseActivity extends BaseActivity implements CourseContract.View,
     private int mCurrentMonth;
     private String mCurrentScheduleName;
     private FloatingActionButton mFab;
+    private UpdateReceiver mUpdateReceiver;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -57,6 +61,22 @@ public class CourseActivity extends BaseActivity implements CourseContract.View,
         initFab();
 
         mPresenter = new CoursePresenter(this);
+        registerReceiver();
+
+        updateView();
+    }
+
+    private void registerReceiver() {
+        mUpdateReceiver = new UpdateReceiver();
+        IntentFilter intentFilter = new IntentFilter(Constant.INTENT_UPDATE);
+        registerReceiver(mUpdateReceiver, intentFilter);
+    }
+
+    class UpdateReceiver extends BroadcastReceiver {
+        public void onReceive(Context context, Intent intent) {
+            LogUtils.d(this, "soudao");
+            updateView();
+        }
     }
 
     private void initWeekTitle() {
@@ -65,6 +85,12 @@ public class CourseActivity extends BaseActivity implements CourseContract.View,
         TextView tvTitle = (TextView) findViewById(R.id.tv_toolbar_title);
         tvTitle.setText(getString(R.string.app_name));
         mTvWeekCount.setOnClickListener(this);
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        System.exit(0);
     }
 
     private void initFab() {
@@ -104,6 +130,10 @@ public class CourseActivity extends BaseActivity implements CourseContract.View,
     @Override
     protected void onResume() {
         super.onResume();
+//        updateView();
+    }
+
+    private void updateView() {
         initCurrentWeek();
         fabVisible();
 
@@ -113,7 +143,7 @@ public class CourseActivity extends BaseActivity implements CourseContract.View,
         mCurrentScheduleName = Preferences.getString(
                 getString(R.string.app_preference_current_sd_name), "");
         //TODO 为空应该弹出选择框 获取必须在之前设置数据
-        System.out.println("当前课表:"+mCurrentScheduleName);
+        System.out.println("当前课表:" + mCurrentScheduleName);
         mPresenter.updateCourseViewData(mCurrentScheduleName);
     }
 
@@ -252,23 +282,15 @@ public class CourseActivity extends BaseActivity implements CourseContract.View,
     }
 
     private void fab(View v) {
-//        Intent intent = new Intent(CourseActivity.this, SettingActivity.class);
-//        startActivity(intent);
-        new ShowDialog().showSelectTimeTermDialog(this, new String[]{"33", "332"}, new ShowDialog.TimeTermCallback() {
-            @Override
-            public void onTimeChanged(String time) {
-                System.out.println(time);
-            }
+        Intent intent = new Intent(CourseActivity.this, SettingActivity.class);
+        startActivity(intent);
+    }
 
-            @Override
-            public void onTermChanged(String term) {
-                System.out.println(term);
-            }
-
-            @Override
-            public void onPositive(DialogInterface dialog, int which) {
-                System.out.println("kk");
-            }
-        });
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (mUpdateReceiver != null) {
+            unregisterReceiver(mUpdateReceiver);
+        }
     }
 }

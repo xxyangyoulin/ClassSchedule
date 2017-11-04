@@ -117,6 +117,7 @@ public class ImptActivity extends BaseActivity implements
 
     @Override
     public void showSucceed() {
+        notifiUpdate();
         ToastUtils.show("导入成功");
         Preferences.putString(Constant.XH, mXh);
         Intent intent = new Intent(this, CourseActivity.class);
@@ -214,5 +215,14 @@ public class ImptActivity extends BaseActivity implements
             default:
                 break;
         }
+    }
+
+    /**
+     * 通知更新
+     */
+    private void notifiUpdate() {
+        Intent intent = new Intent();
+        intent.setAction("com.mnnyang.update");
+        sendBroadcast(intent);
     }
 }

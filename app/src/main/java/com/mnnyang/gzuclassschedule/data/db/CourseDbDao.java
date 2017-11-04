@@ -6,6 +6,8 @@ import android.database.sqlite.SQLiteDatabase;
 
 import com.mnnyang.gzuclassschedule.app.app;
 import com.mnnyang.gzuclassschedule.data.bean.Course;
+import com.mnnyang.gzuclassschedule.data.bean.CsItem;
+import com.mnnyang.gzuclassschedule.data.bean.CsName;
 import com.mnnyang.gzuclassschedule.utils.LogUtils;
 
 import java.util.ArrayList;
@@ -118,6 +120,24 @@ public class CourseDbDao {
         deleteNodeByCourseId(courseId, db);
     }
 
+    public boolean removeAllData() {
+        SQLiteDatabase db = new CourseDbHelper(app.mContext).getWritableDatabase();
+        try {
+            db.beginTransaction();
+            db.delete(CoursesPsc.NodeEntry.TABLE_NAME, null, null);
+            db.delete(CoursesPsc.CsNameEntry.TABLE_NAME, null, null);
+            db.delete(CoursesPsc.CourseEntry.TABLE_NAME, null, null);
+            db.setTransactionSuccessful();
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        } finally {
+            db.endTransaction();
+            db.close();
+        }
+    }
+
     private void deleteNodeByCourseId(int courseId, SQLiteDatabase db) {
         db.delete(CoursesPsc.NodeEntry.TABLE_NAME,
                 CoursesPsc.NodeEntry.COLUMN_NAME_COURSE_ID + "=?",
@@ -170,7 +190,7 @@ public class CourseDbDao {
      * @param csName
      * @return
      */
-    private int getCsNameId(String csName) {
+    public int getCsNameId(String csName) {
         SQLiteDatabase db = new CourseDbHelper(app.mContext).getWritableDatabase();
         String sql = "select * from " + CoursesPsc.CsNameEntry.TABLE_NAME
                 + " where `" + CoursesPsc.CsNameEntry.COLUMN_NAME_NAME + "`='" + csName + "'";
@@ -189,6 +209,22 @@ public class CourseDbDao {
             db.close();
             return id;
         }
+    }
+
+    public String getCsName(int csNameId) {
+        SQLiteDatabase db = new CourseDbHelper(app.mContext).getWritableDatabase();
+        String sql = "select * from " + CoursesPsc.CsNameEntry.TABLE_NAME
+                + " where `" + CoursesPsc.CsNameEntry.COLUMN_NAME_NAME_ID + "`='" + csNameId + "'";
+        System.out.println(sql);
+        Cursor cursor = db.rawQuery(sql, null);
+        if (cursor.moveToNext()) {
+            String name = cursor.getString(cursor.getColumnIndex(CoursesPsc.CsNameEntry.COLUMN_NAME_NAME));
+
+            cursor.close();
+            db.close();
+            return name;
+        }
+        return "";
     }
 
     /**
@@ -224,6 +260,30 @@ public class CourseDbDao {
         db.close();
         return courses;
     }
+
+    public ArrayList<CsItem> loadCsNameList() {
+        ArrayList<CsItem> csItems = new ArrayList<>();
+
+        SQLiteDatabase db = new CourseDbHelper(app.mContext).getWritableDatabase();
+        Cursor cursor = db.query(CoursesPsc.CsNameEntry.TABLE_NAME, null, null,
+                null, null, null, null);
+        while (cursor.moveToNext()) {
+            int nameId = cursor.getInt(cursor.getColumnIndex(CoursesPsc.CsNameEntry.COLUMN_NAME_NAME_ID));
+            String name = cursor.getString(cursor.getColumnIndex(CoursesPsc.CsNameEntry.COLUMN_NAME_NAME));
+
+            //TODO 额外数据
+//            db.query(CoursesPsc.CourseEntry.TABLE_NAME,);
+
+            CsItem csItem = new CsItem();
+            csItem.setCsName(new CsName().setName(name).setCsNameId(nameId));
+            csItems.add(csItem);
+        }
+        cursor.close();
+        db.close();
+
+        return csItems;
+    }
+
 
     private void putAllNotId(Course course, ContentValues values) {
         values.put(CoursesPsc.CourseEntry.COLUMN_NAME_NAME, course.getName());

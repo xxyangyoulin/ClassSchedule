@@ -14,15 +14,16 @@ public interface SettingContract {
     interface Presenter extends BasePresenter {
         boolean addCourse(Course course);
         boolean updateCourse(int courseId);
-        boolean deleteAllCourse();
+        void deleteAllCourse();
         void manageCourse();
         void imptGzuCourse();
     }
 
     interface View extends BaseView<Presenter> {
+        void showNotice(String notice);
         void gotoImptActivity();
         void gotoCourseMgActivity();
+        void showDeleting();
+        void hideDeleting();
     }
-
-
 }

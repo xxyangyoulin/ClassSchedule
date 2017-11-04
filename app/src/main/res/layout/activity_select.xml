@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context="com.mnnyang.gzuclassschedule.mg.CourseMgActivity">
+    tools:context="com.mnnyang.gzuclassschedule.mg.MgActivity">
 
     <include layout="@layout/title_toolbar"/>
 

@@ -31,7 +31,7 @@
         </activity>
         <activity android:name=".add.AddActivity">
         </activity>
-        <activity android:name=".mg.CourseMgActivity">
+        <activity android:name=".mg.MgActivity">
         </activity>
     </application>
 
