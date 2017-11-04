@@ -250,6 +250,10 @@ public class CourseTableView extends RelativeLayout {
     public CourseTableView setCourseData(ArrayList<Course> courseData) {
         mCourses.clear();
         mNameColorMap.clear();
+
+        //没有插入时候,导致页面没有刷新
+        updateView();
+
         for (Course course : courseData) {
             addCourse(course);
         }

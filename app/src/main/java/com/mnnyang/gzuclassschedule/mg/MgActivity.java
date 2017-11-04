@@ -16,6 +16,7 @@ import com.mnnyang.gzuclassschedule.course.CourseActivity;
 import com.mnnyang.gzuclassschedule.data.bean.CsItem;
 import com.mnnyang.gzuclassschedule.utils.DialogHelper;
 import com.mnnyang.gzuclassschedule.utils.DialogListener;
+import com.mnnyang.gzuclassschedule.utils.Preferences;
 import com.mnnyang.gzuclassschedule.utils.ToastUtils;
 import com.mnnyang.gzuclassschedule.utils.spec.RecyclerBaseAdapter;
 
@@ -87,6 +88,8 @@ public class MgActivity extends BaseActivity implements MgContract.View {
 
     @Override
     public void showList(ArrayList<CsItem> csNames) {
+        String curName = Preferences.getString(getString(R.string.app_preference_current_sd_name), "");
+        mAdapter.setCurrentName(curName);
         mAdapter.notifyDataSetChanged();
     }
 

@@ -127,13 +127,8 @@ public class CourseActivity extends BaseActivity implements CourseContract.View,
         mCourseView.getCourseTableView().setHorizontalDividerMargin(2);
     }
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-//        updateView();
-    }
-
     private void updateView() {
+        LogUtils.i(this, "updateView");
         initCurrentWeek();
         fabVisible();
 

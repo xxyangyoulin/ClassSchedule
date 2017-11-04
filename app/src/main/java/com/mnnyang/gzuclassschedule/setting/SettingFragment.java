@@ -10,7 +10,6 @@ import com.mnnyang.gzuclassschedule.BaseActivity;
 import com.mnnyang.gzuclassschedule.R;
 import com.mnnyang.gzuclassschedule.add.AddActivity;
 import com.mnnyang.gzuclassschedule.app.Constant;
-import com.mnnyang.gzuclassschedule.course.CourseActivity;
 import com.mnnyang.gzuclassschedule.mg.MgActivity;
 import com.mnnyang.gzuclassschedule.impt.ImptActivity;
 import com.mnnyang.gzuclassschedule.utils.DialogHelper;
@@ -41,7 +40,7 @@ public class SettingFragment extends PreferenceFragment implements SettingContra
             gotoImptActivity();
             return true;
         } else if (title.equals(getString(R.string.kb_manage))) {
-            gotoCourseMgActivity();
+            gotoMgActivity();
             return true;
         } else if (title.equals(getString(R.string.del_all))) {
             mPresenter.deleteAllCourse();
@@ -60,8 +59,8 @@ public class SettingFragment extends PreferenceFragment implements SettingContra
         getActivity().finish();
     }
 
-    public void gotoCourseMgActivity() {
-        ((BaseActivity) getActivity()).gotoActivity(CourseActivity.class);
+    public void gotoMgActivity() {
+        ((BaseActivity) getActivity()).gotoActivity(MgActivity.class);
     }
 
     public void gotoAddActivity() {
