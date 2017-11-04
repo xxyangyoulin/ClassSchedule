@@ -1,11 +1,13 @@
 package com.mnnyang.gzuclassschedule;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 
+import com.mnnyang.gzuclassschedule.mg.MgActivity;
 import com.mnnyang.gzuclassschedule.utils.LogUtils;
 
 
@@ -30,6 +32,12 @@ public abstract class BaseActivity extends AppCompatActivity {
             getSupportActionBar().setTitle(title);
             actionBar.setDisplayHomeAsUpEnabled(true);
         }
+    }
+
+
+    public void gotoActivity(Class clzz) {
+        Intent intent = new Intent(this, clzz);
+        startActivity(intent);
     }
 
     @Override

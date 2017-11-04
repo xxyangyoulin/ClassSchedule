@@ -30,16 +30,6 @@ public class SettingPresenter implements SettingContract.Presenter {
     }
 
     @Override
-    public boolean addCourse(Course course) {
-        return false;
-    }
-
-    @Override
-    public boolean updateCourse(int courseId) {
-        return false;
-    }
-
-    @Override
     public void deleteAllCourse() {
         mView.showDeleting();
         Observable.create(new Observable.OnSubscribe<Boolean>() {
@@ -74,13 +64,4 @@ public class SettingPresenter implements SettingContract.Presenter {
                 });
     }
 
-    @Override
-    public void manageCourse() {
-        mView.gotoCourseMgActivity();
-    }
-
-    @Override
-    public void imptGzuCourse() {
-        mView.gotoImptActivity();
-    }
 }

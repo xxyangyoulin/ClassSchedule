@@ -6,8 +6,11 @@ import android.preference.Preference;
 import android.preference.PreferenceFragment;
 import android.preference.PreferenceScreen;
 
+import com.mnnyang.gzuclassschedule.BaseActivity;
 import com.mnnyang.gzuclassschedule.R;
+import com.mnnyang.gzuclassschedule.add.AddActivity;
 import com.mnnyang.gzuclassschedule.app.Constant;
+import com.mnnyang.gzuclassschedule.course.CourseActivity;
 import com.mnnyang.gzuclassschedule.mg.MgActivity;
 import com.mnnyang.gzuclassschedule.impt.ImptActivity;
 import com.mnnyang.gzuclassschedule.utils.DialogHelper;
@@ -32,12 +35,13 @@ public class SettingFragment extends PreferenceFragment implements SettingContra
         String title = (String) preference.getTitle();
 
         if (title.equals(getString(R.string.user_add))) {
+            gotoAddActivity();
             return true;
         } else if (title.equals(getString(R.string.import_gzu))) {
-            mPresenter.imptGzuCourse();
+            gotoImptActivity();
             return true;
         } else if (title.equals(getString(R.string.kb_manage))) {
-            mPresenter.manageCourse();
+            gotoCourseMgActivity();
             return true;
         } else if (title.equals(getString(R.string.del_all))) {
             mPresenter.deleteAllCourse();
@@ -51,17 +55,17 @@ public class SettingFragment extends PreferenceFragment implements SettingContra
         ToastUtils.show(notice);
     }
 
-    @Override
     public void gotoImptActivity() {
-        Intent intent = new Intent(getActivity(), ImptActivity.class);
-        startActivity(intent);
+        ((BaseActivity) getActivity()).gotoActivity(ImptActivity.class);
         getActivity().finish();
     }
 
-    @Override
     public void gotoCourseMgActivity() {
-        Intent intent = new Intent(getActivity(), MgActivity.class);
-        startActivity(intent);
+        ((BaseActivity) getActivity()).gotoActivity(CourseActivity.class);
+    }
+
+    public void gotoAddActivity() {
+        ((BaseActivity) getActivity()).gotoActivity(AddActivity.class);
     }
 
     @Override

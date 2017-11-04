@@ -7,7 +7,7 @@ import com.mnnyang.gzuclassschedule.data.bean.CourseTime;
 import com.mnnyang.gzuclassschedule.data.db.CourseDbDao;
 import com.mnnyang.gzuclassschedule.http.HttpCallback;
 import com.mnnyang.gzuclassschedule.http.HttpUtils;
-import com.mnnyang.gzuclassschedule.utils.CourseParse;
+import com.mnnyang.gzuclassschedule.utils.spec.CourseParse;
 import com.mnnyang.gzuclassschedule.utils.LogUtils;
 import com.mnnyang.gzuclassschedule.utils.Preferences;
 

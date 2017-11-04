@@ -7,7 +7,7 @@ import android.text.TextUtils;
 import com.mnnyang.gzuclassschedule.R;
 import com.mnnyang.gzuclassschedule.app.Url;
 import com.mnnyang.gzuclassschedule.app.app;
-import com.mnnyang.gzuclassschedule.utils.CourseParse;
+import com.mnnyang.gzuclassschedule.utils.spec.CourseParse;
 import com.mnnyang.gzuclassschedule.utils.LogUtils;
 import com.zhy.http.okhttp.OkHttpUtils;
 import com.zhy.http.okhttp.callback.FileCallBack;

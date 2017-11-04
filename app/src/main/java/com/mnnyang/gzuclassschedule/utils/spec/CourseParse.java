@@ -1,4 +1,4 @@
-package com.mnnyang.gzuclassschedule.utils;
+package com.mnnyang.gzuclassschedule.utils.spec;
 
 import android.util.Log;
 
@@ -8,6 +8,7 @@ import com.mnnyang.gzuclassschedule.app.Url;
 import com.mnnyang.gzuclassschedule.data.bean.Course;
 import com.mnnyang.gzuclassschedule.data.bean.CourseTime;
 import com.mnnyang.gzuclassschedule.data.db.CoursesPsc;
+import com.mnnyang.gzuclassschedule.utils.LogUtils;
 
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -44,8 +45,8 @@ public class CourseParse {
     }
 
     /**
-     * @param html 解析失敗返回空
-     * @return
+     * @param html
+     * @return 解析失敗返回空
      */
     public static CourseTime parseTime(String html) {
         String SELECTED = "selected";

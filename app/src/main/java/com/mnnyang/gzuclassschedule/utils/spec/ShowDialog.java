@@ -34,13 +34,17 @@ public class ShowDialog {
 
         View dialogView = LayoutInflater.from(context)
                 .inflate(R.layout.layout_course_time_dialog, null);
-        RadioGroup rg = dialogView.findViewById(R.id.rg_course_time);
+        final RadioGroup rg = dialogView.findViewById(R.id.rg_course_time);
+
+        int i = 1;
         for (String time : times) {
             AppCompatRadioButton tempButton = new AppCompatRadioButton(context);
             tempButton.setTextColor(context.getResources().getColor(R.color.primary_dark));
             tempButton.setText(time);
+            tempButton.setId(i);
             rg.addView(tempButton, LinearLayout.LayoutParams.FILL_PARENT,
                     LinearLayout.LayoutParams.WRAP_CONTENT);
+            i++;
         }
 
         rg.invalidate();
@@ -49,6 +53,7 @@ public class ShowDialog {
             @Override
             public void onCheckedChanged(RadioGroup group, int checkedId) {
                 AppCompatRadioButton arb = group.findViewById(checkedId);
+                System.out.println("6:" + arb);
                 callback.onTimeChanged(arb.getText().toString());
             }
         });

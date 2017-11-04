@@ -217,7 +217,7 @@ public class CourseActivity extends BaseActivity implements CourseContract.View,
         mPopupWindow.setOutsideTouchable(true);
         mPopupWindow.setAnimationStyle(R.style.animDown);
         //是否允许popup超出屏幕范围
-        mPopupWindow.setClippingEnabled(false);
+        mPopupWindow.setClippingEnabled(true);
 
         mPopupWindow.getContentView().measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED);
         int xoff = mLayoutWeekTitle.getWidth() - mPopupWindow.getContentView().getMeasuredWidth();
@@ -227,6 +227,7 @@ public class CourseActivity extends BaseActivity implements CourseContract.View,
         if (mCurrentWeekCount <= 3) {
             return;
         }
+
         popupView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
             @Override
             public void onGlobalLayout() {
