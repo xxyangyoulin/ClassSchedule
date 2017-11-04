@@ -31,6 +31,8 @@
         </activity>
         <activity android:name=".add.AddActivity">
         </activity>
+        <activity android:name=".mg.CourseMgActivity">
+        </activity>
     </application>
 
 </manifest>

@@ -15,14 +15,13 @@ import com.mnnyang.gzuclassschedule.BaseActivity;
 import com.mnnyang.gzuclassschedule.R;
 import com.mnnyang.gzuclassschedule.app.Constant;
 import com.mnnyang.gzuclassschedule.course.CourseActivity;
+import com.mnnyang.gzuclassschedule.data.bean.CourseTime;
 import com.mnnyang.gzuclassschedule.utils.DialogHelper;
-import com.mnnyang.gzuclassschedule.utils.DialogListener;
 import com.mnnyang.gzuclassschedule.utils.LogUtils;
 import com.mnnyang.gzuclassschedule.utils.Preferences;
 import com.mnnyang.gzuclassschedule.utils.ScreenUtils;
 import com.mnnyang.gzuclassschedule.utils.ToastUtils;
-
-import java.util.ArrayList;
+import com.mnnyang.gzuclassschedule.utils.spec.ShowDialog;
 
 public class ImptActivity extends BaseActivity implements
         ImptContract.View, View.OnClickListener, View.OnFocusChangeListener {
@@ -44,18 +43,12 @@ public class ImptActivity extends BaseActivity implements
         ScreenUtils.setSystemBarTransparent(this);
         setContentView(R.layout.activity_impt);
 
-        initToolbar();
+        initBackToolbar("导入课程表");
         initView();
 
         mPresenter = new ImptPresenter(this);
     }
 
-    private void initToolbar() {
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-        getSupportActionBar().setTitle("导入课表");
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-    }
 
     private void initView() {
         mIvCaptcha = (ImageView) findViewById(R.id.iv_captcha);
@@ -131,23 +124,25 @@ public class ImptActivity extends BaseActivity implements
         finish();
     }
 
+    String selectedTime, selectedTerm;
+
     @Override
-    public void showCourseTimeDialog(ArrayList<String> times) {
-        final DialogHelper dialogHelper = new DialogHelper();
-        dialogHelper.showListDialog(this, "",
-                (String[]) times.toArray(new String[0]), new DialogListener() {
+    public void showCourseTimeDialog(CourseTime ct) {
+        new ShowDialog().showSelectTimeTermDialog(this,
+                ct.years.toArray(new String[0]), new ShowDialog.TimeTermCallback() {
                     @Override
-                    public void onItemClick(DialogInterface dialog, int which) {
-                        super.onItemClick(dialog, which);
-                        dialog.dismiss();
-                        dialogHelper.showListDialog(ImptActivity.this, "",
-                                new String[]{"1", "2"}, new DialogListener() {
-                                    @Override
-                                    public void onItemClick(DialogInterface dialog, int which) {
-                                        super.onItemClick(dialog, which);
-                                        dialog.dismiss();
-                                    }
-                                });
+                    public void onTimeChanged(String time) {
+                        selectedTime = time;
+                    }
+
+                    @Override
+                    public void onTermChanged(String term) {
+                        selectedTerm = term;
+                    }
+
+                    @Override
+                    public void onPositive(DialogInterface dialog, int which) {
+                        mPresenter.importCustomCourses(selectedTime, selectedTerm);
                     }
                 });
     }
@@ -181,9 +176,7 @@ public class ImptActivity extends BaseActivity implements
         mXh = mEtXh.getText().toString().trim();
         String pwd = mEtPwd.getText().toString().trim();
         String captcha = mEtCaptcha.getText().toString().trim();
-        String courseTime = "2016-2017";
-        String term = "3";
-//        mPresenter.importCourses(mXh, pwd, captcha, courseTime, term);
+
         mPresenter.loadCourseTimeAndTerm(mXh, pwd, captcha);
     }
 

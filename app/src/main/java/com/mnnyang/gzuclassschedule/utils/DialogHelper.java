@@ -7,7 +7,10 @@ import android.content.DialogInterface;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.view.LayoutInflater;
 import android.view.View;
+
+import com.mnnyang.gzuclassschedule.R;
 
 /**
  * 对话框工具
@@ -17,6 +20,7 @@ import android.view.View;
 public class DialogHelper {
 
     private ProgressDialog progressDialog;
+
     /**
      * 不确定不可关闭等待对话框<br>
      */
@@ -75,4 +79,26 @@ public class DialogHelper {
                 .show();
     }
 
+    /**
+     * 自定义弹框
+     */
+    public void showCustomDialog(@NonNull Context context, View dialogView, String title,
+                                 @NonNull final DialogListener listener) {
+        new AlertDialog.Builder(context)
+                .setTitle(title)
+                .setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        listener.onPositive(dialog, which);
+                    }
+                })
+                .setNegativeButton("取消", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        listener.onNegative(dialog, which);
+                    }
+                })
+                .setView(dialogView)
+                .show();
+    }
 }

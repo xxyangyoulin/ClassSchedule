@@ -22,7 +22,7 @@ public class CourseDbHelper extends SQLiteOpenHelper {
     private static final String SQL_CREATE_COURSES =
             "CREATE TABLE " + CoursesPsc.CourseEntry.TABLE_NAME + " (" +
                     CoursesPsc.CourseEntry.COLUMN_NAME_COURSE_ID + INTEGER_TYPE + " PRIMARY KEY AUTOINCREMENT" + COMMA_SEP +
-                    CoursesPsc.CourseEntry.COLUMN_NAME_COURSE_TIME + TEXT_TYPE + COMMA_SEP +
+                    CoursesPsc.CourseEntry.COLUMN_NAME_CS_NAME_ID + INTEGER_TYPE + COMMA_SEP +
 
                     CoursesPsc.CourseEntry.COLUMN_NAME_NAME + TEXT_TYPE + COMMA_SEP +
                     CoursesPsc.CourseEntry.COLUMN_NAME_CLASS_ROOM + TEXT_TYPE + COMMA_SEP +
@@ -42,12 +42,19 @@ public class CourseDbHelper extends SQLiteOpenHelper {
                     CoursesPsc.NodeEntry.COLUMN_NAME_NODE_NUM + INTEGER_TYPE +
                     " )";
 
+    private static final String SQL_CREATE_CS_NAME =
+            "CREATE TABLE " + CoursesPsc.CsNameEntry.TABLE_NAME + " (" +
+                    CoursesPsc.CsNameEntry.COLUMN_NAME_NAME_ID + INTEGER_TYPE + " PRIMARY KEY AUTOINCREMENT" + COMMA_SEP +
+                    CoursesPsc.CsNameEntry.COLUMN_NAME_NAME + TEXT_TYPE +
+                    " )";
+
     public CourseDbHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
     }
 
     @Override
     public void onCreate(SQLiteDatabase db) {
+        db.execSQL(SQL_CREATE_CS_NAME);
         db.execSQL(SQL_CREATE_NODE);
         db.execSQL(SQL_CREATE_COURSES);
     }

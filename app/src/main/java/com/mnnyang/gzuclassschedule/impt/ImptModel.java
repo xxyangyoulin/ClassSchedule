@@ -16,7 +16,7 @@ public class ImptModel implements ImptContract.Model {
     @Override
     public void getCaptcha(final ImageView iv) {
 
-        HttpUtils.newInstance().captcha(app.mContext.getCacheDir(),
+        HttpUtils.newInstance().loadCaptcha(app.mContext.getCacheDir(),
                 new HttpCallback<Bitmap>() {
                     @Override
                     public void onSuccess(Bitmap bitmap) {

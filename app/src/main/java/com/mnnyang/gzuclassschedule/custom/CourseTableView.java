@@ -12,7 +12,6 @@ import android.support.annotation.Nullable;
 import android.text.TextPaint;
 import android.util.AttributeSet;
 import android.view.Gravity;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
@@ -249,6 +248,8 @@ public class CourseTableView extends RelativeLayout {
     }
 
     public CourseTableView setCourseData(ArrayList<Course> courseData) {
+        mCourses.clear();
+        mNameColorMap.clear();
         for (Course course : courseData) {
             addCourse(course);
         }
@@ -288,18 +289,18 @@ public class CourseTableView extends RelativeLayout {
         return null;
     }
 
-    HashMap<String, Integer> nameColorMap = new HashMap<>();
+    HashMap<String, Integer> mNameColorMap = new HashMap<>();
 
     private void setCourseItemViewColor(Course course) {
-        Integer integer = nameColorMap.get(course.getName());
+        Integer integer = mNameColorMap.get(course.getName());
         if (integer == null) {
-            int size = nameColorMap.size();
+            int size = mNameColorMap.size();
             if (size >= colors.length - 2) {
                 size = size % (colors.length - 2);
             }
 
-            nameColorMap.put(course.getName(), colors[size]);
-            nameColorMap.put(course.getName() + "_p", colors[size + 1]);
+            mNameColorMap.put(course.getName(), colors[size]);
+            mNameColorMap.put(course.getName() + "_p", colors[size + 1]);
         }
     }
 
@@ -439,8 +440,8 @@ public class CourseTableView extends RelativeLayout {
 
     private void setCurBg(Course course, LinearLayout itemView) {
         StateListDrawable drawable;
-        drawable = getShowBgDrawable(nameColorMap.get(course.getName()),
-                nameColorMap.get(course.getName() + "_p"));
+        drawable = getShowBgDrawable(mNameColorMap.get(course.getName()),
+                mNameColorMap.get(course.getName() + "_p"));
         itemView.setBackground(drawable);
     }
 

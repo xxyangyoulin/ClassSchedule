@@ -35,6 +35,11 @@ public class SettingPresenter implements SettingContract.Presenter {
     }
 
     @Override
+    public void manageCourse() {
+        mView.gotoCourseMgActivity();
+    }
+
+    @Override
     public void imptGzuCourse() {
         mView.gotoImptActivity();
     }

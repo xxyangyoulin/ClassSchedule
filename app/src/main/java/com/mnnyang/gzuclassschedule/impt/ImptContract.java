@@ -5,8 +5,7 @@ import android.widget.ImageView;
 
 import com.mnnyang.gzuclassschedule.BasePresenter;
 import com.mnnyang.gzuclassschedule.BaseView;
-
-import java.util.ArrayList;
+import com.mnnyang.gzuclassschedule.data.bean.CourseTime;
 
 /**
  * Created by mnnyang on 17-10-3.
@@ -14,8 +13,10 @@ import java.util.ArrayList;
 
 public interface ImptContract {
     interface Presenter extends BasePresenter {
-        void importCourses(String xh, String pwd, String captcha,
-                           String courseTime, String term);
+
+        void importCustomCourses(String courseTime, String term);
+
+        void importDefaultCourses(String courseTime, String term);
 
         void loadCourseTimeAndTerm(String xh, String pwd, String captcha);
 
@@ -33,7 +34,7 @@ public interface ImptContract {
 
         void showSucceed();
 
-        void showCourseTimeDialog(ArrayList<String> times);
+        void showCourseTimeDialog(CourseTime times);
     }
 
     interface Model {

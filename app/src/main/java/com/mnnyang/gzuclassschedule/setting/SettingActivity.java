@@ -1,15 +1,7 @@
 package com.mnnyang.gzuclassschedule.setting;
 
-import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.preference.Preference;
-import android.preference.PreferenceFragment;
-import android.preference.PreferenceManager;
-import android.preference.PreferenceScreen;
-import android.support.v7.app.ActionBar;
-import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
-import android.widget.TextView;
 
 import com.mnnyang.gzuclassschedule.BaseActivity;
 import com.mnnyang.gzuclassschedule.R;
@@ -20,18 +12,10 @@ public class SettingActivity extends BaseActivity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_setting);
-        initToolbar();
+        initBackToolbar(getString(R.string.setting));
 
         getFragmentManager().beginTransaction()
                 .replace(R.id.content, new SettingFragment()).commit();
-    }
-
-    private void initToolbar() {
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-
-        setSupportActionBar(toolbar);
-        getSupportActionBar().setTitle("设置");
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 
     @Override

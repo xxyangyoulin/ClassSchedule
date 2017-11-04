@@ -7,6 +7,7 @@ import android.preference.PreferenceFragment;
 import android.preference.PreferenceScreen;
 
 import com.mnnyang.gzuclassschedule.R;
+import com.mnnyang.gzuclassschedule.mg.CourseMgActivity;
 import com.mnnyang.gzuclassschedule.impt.ImptActivity;
 
 public class SettingFragment extends PreferenceFragment implements SettingContract.View {
@@ -31,7 +32,8 @@ public class SettingFragment extends PreferenceFragment implements SettingContra
         } else if (title.equals(getString(R.string.import_gzu))) {
             mPresenter.imptGzuCourse();
             return true;
-        } else if (title.equals(getString(R.string.select_kb))) {
+        } else if (title.equals(getString(R.string.kb_manage))) {
+            mPresenter.manageCourse();
             return true;
         } else if (title.equals(getString(R.string.del_all))) {
             mPresenter.deleteAllCourse();
@@ -47,5 +49,11 @@ public class SettingFragment extends PreferenceFragment implements SettingContra
         Intent intent = new Intent(getActivity(), ImptActivity.class);
         startActivity(intent);
         getActivity().finish();
+    }
+
+    @Override
+    public void gotoCourseMgActivity() {
+        Intent intent = new Intent(getActivity(), CourseMgActivity.class);
+        startActivity(intent);
     }
 }

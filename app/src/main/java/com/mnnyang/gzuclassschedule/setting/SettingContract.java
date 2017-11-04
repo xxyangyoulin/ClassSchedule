@@ -15,11 +15,13 @@ public interface SettingContract {
         boolean addCourse(Course course);
         boolean updateCourse(int courseId);
         boolean deleteAllCourse();
+        void manageCourse();
         void imptGzuCourse();
     }
 
     interface View extends BaseView<Presenter> {
         void gotoImptActivity();
+        void gotoCourseMgActivity();
     }
 
 

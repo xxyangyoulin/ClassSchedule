@@ -1,5 +1,6 @@
 package com.mnnyang.gzuclassschedule.course;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
@@ -25,9 +26,9 @@ import com.mnnyang.gzuclassschedule.R;
 import com.mnnyang.gzuclassschedule.custom.CourseView;
 import com.mnnyang.gzuclassschedule.data.bean.Course;
 import com.mnnyang.gzuclassschedule.setting.SettingActivity;
-import com.mnnyang.gzuclassschedule.utils.LogUtils;
 import com.mnnyang.gzuclassschedule.utils.Preferences;
 import com.mnnyang.gzuclassschedule.utils.TimeUtils;
+import com.mnnyang.gzuclassschedule.utils.spec.ShowDialog;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -42,6 +43,7 @@ public class CourseActivity extends BaseActivity implements CourseContract.View,
     private int mCurrentWeekCount;
     private PopupWindow mPopupWindow;
     private int mCurrentMonth;
+    private String mCurrentScheduleName;
     private FloatingActionButton mFab;
 
     @Override
@@ -59,7 +61,7 @@ public class CourseActivity extends BaseActivity implements CourseContract.View,
 
     private void initWeekTitle() {
         mLayoutWeekTitle = (LinearLayout) findViewById(R.id.layout_week_title);
-        mTvWeekCount = (TextView) findViewById(R.id.tv_week_count);
+        mTvWeekCount = (TextView) findViewById(R.id.tv_toolbar_subtitle);
         TextView tvTitle = (TextView) findViewById(R.id.tv_toolbar_title);
         tvTitle.setText(getString(R.string.app_name));
         mTvWeekCount.setOnClickListener(this);
@@ -107,7 +109,12 @@ public class CourseActivity extends BaseActivity implements CourseContract.View,
 
         mCurrentMonth = TimeUtils.getNowMonth();
         mCourseView.setMonth(mCurrentMonth);
-        mPresenter.updateCourseData("2017-2018");
+
+        mCurrentScheduleName = Preferences.getString(
+                getString(R.string.app_preference_current_sd_name), "");
+        //TODO 为空应该弹出选择框 获取必须在之前设置数据
+        System.out.println("当前课表:"+mCurrentScheduleName);
+        mPresenter.updateCourseViewData(mCurrentScheduleName);
     }
 
     private void fabVisible() {
@@ -159,7 +166,7 @@ public class CourseActivity extends BaseActivity implements CourseContract.View,
             case R.id.fab:
                 fab(v);
                 break;
-            case R.id.tv_week_count:
+            case R.id.tv_toolbar_subtitle:
                 weekTitle(v);
                 break;
         }
@@ -245,8 +252,23 @@ public class CourseActivity extends BaseActivity implements CourseContract.View,
     }
 
     private void fab(View v) {
-        Intent intent = new Intent(CourseActivity.this,
-                SettingActivity.class);
-        startActivity(intent);
+//        Intent intent = new Intent(CourseActivity.this, SettingActivity.class);
+//        startActivity(intent);
+        new ShowDialog().showSelectTimeTermDialog(this, new String[]{"33", "332"}, new ShowDialog.TimeTermCallback() {
+            @Override
+            public void onTimeChanged(String time) {
+                System.out.println(time);
+            }
+
+            @Override
+            public void onTermChanged(String term) {
+                System.out.println(term);
+            }
+
+            @Override
+            public void onPositive(DialogInterface dialog, int which) {
+                System.out.println("kk");
+            }
+        });
     }
 }

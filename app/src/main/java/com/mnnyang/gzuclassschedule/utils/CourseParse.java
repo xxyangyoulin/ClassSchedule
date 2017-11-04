@@ -4,7 +4,10 @@ import android.util.Log;
 
 
 import com.mnnyang.gzuclassschedule.app.Constant;
+import com.mnnyang.gzuclassschedule.app.Url;
 import com.mnnyang.gzuclassschedule.data.bean.Course;
+import com.mnnyang.gzuclassschedule.data.bean.CourseTime;
+import com.mnnyang.gzuclassschedule.data.db.CoursesPsc;
 
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -26,27 +29,67 @@ public class CourseParse {
     private static final Pattern pattern1 = Pattern.compile("第\\d{1,2}.*节");
     private static final Pattern pattern2 = Pattern.compile("\\{第\\d{1,2}[-]*\\d*周");
 
-
-    public static ArrayList<String> parseTime(String html) {
+    public static String parseViewStateCode(String html) {
+        String code = "";
         Document doc = org.jsoup.Jsoup.parse(html);
-        ArrayList<String> times = new ArrayList<>();
-        Elements elements = doc.getElementsByTag("select");
-        if (elements == null || elements.size() == 0) {
-            return null;
+        Elements inputs = doc.getElementsByAttributeValue("name", Url.__VIEWSTATE);
+        if (inputs.size() > 0) {
+            code = inputs.get(0).attr("value");
+            LogUtils.d(CoursesPsc.class, "找到code=" + code);
+        } else {
+            LogUtils.d(CoursesPsc.class, "没有找到code");
         }
-        Elements options = elements.get(0).getElementsByTag("option");
 
-        for (Element option : options) {
-            String time = option.text().trim();
-            times.add(time);
-            System.out.println(time);
-        }
-        return times;
+        return code;
     }
 
+    /**
+     * @param html 解析失敗返回空
+     * @return
+     */
+    public static CourseTime parseTime(String html) {
+        String SELECTED = "selected";
+        String OPTION = "option";
+
+        Document doc = org.jsoup.Jsoup.parse(html);
+        CourseTime courseTime = new CourseTime();
+
+        Elements selects = doc.getElementsByTag("select");
+        if (selects == null || selects.size() < 2) {
+            LogUtils.e(CourseParse.class, "select < 2 ");
+            return null;
+        }
+
+        Elements options = selects.get(0).getElementsByTag(OPTION);
+
+        for (Element o : options) {
+            String year = o.text().trim();
+            courseTime.years.add(year);
+            if (o.attr(SELECTED).equals(SELECTED)) {
+                courseTime.selectYear = year;
+            }
+        }
+
+        options = selects.get(1).getElementsByTag(OPTION);
+        for (Element o : options) {
+            String term = o.text().trim();
+            courseTime.terms.add(term);
+            if (o.attr(SELECTED).equals(SELECTED)) {
+                courseTime.selectTerm = term;
+            }
+        }
+
+        return courseTime;
+    }
+
+    /**
+     * @param html
+     * @return 解析失败返回空
+     */
     public static ArrayList<Course> parse(String html) {
 
         Document doc = org.jsoup.Jsoup.parse(html);
+
         Element table1 = doc.getElementById("Table1");
         Elements trs = table1.getElementsByTag("tr");
 
@@ -77,14 +120,14 @@ public class CourseParse {
                     //other data
                     continue;
                 }
-                courses.addAll(CourseParse.parseText(courseSource, node));
+                courses.addAll(CourseParse.parseTextInfo(courseSource, node));
             }
         }
 
         return courses;
     }
 
-    private static ArrayList<Course> parseText(String source, int node) {
+    private static ArrayList<Course> parseTextInfo(String source, int node) {
 
         ArrayList<Course> courses = new ArrayList<>();
         String[] split = source.split(" ");
@@ -120,7 +163,7 @@ public class CourseParse {
             course.setSource(source);
             course.setName(source);
 
-            Log.e("CourseParse", "parseText omit:" + source);
+            Log.e("CourseParse", "parseTextInfo omit:" + source);
         }
 
         return courses;

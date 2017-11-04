@@ -24,18 +24,18 @@
                 android:id="@+id/tv_toolbar_title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                tools:text="@string/app_name"
+                tools:text="title"
                 android:textColor="@android:color/white"
                 android:textSize="20sp"/>
 
             <TextView
-                android:id="@+id/tv_week_count"
+                android:id="@+id/tv_toolbar_subtitle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:clickable="true"
                 android:focusable="true"
                 android:gravity="center"
-                tools:text="第1周"
+                tools:text="subTitle"
                 android:background="?attr/selectableItemBackgroundBorderless"
                 android:textColor="@color/white_f1"
                 android:textSize="12sp"/>

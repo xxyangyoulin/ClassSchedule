@@ -17,10 +17,16 @@ public class CoursesPsc {
         public static final String COLUMN_NAME_NODE_NUM = "node_num";
     }
 
+    public static abstract class CsNameEntry implements BaseColumns {
+        public static final String TABLE_NAME = "cs_name";
+        public static final String COLUMN_NAME_NAME_ID = "name_id";
+        public static final String COLUMN_NAME_NAME = "name";
+    }
+
     public static abstract class CourseEntry implements BaseColumns {
         public static final String TABLE_NAME = "courses";
         public static final String COLUMN_NAME_COURSE_ID = "course_id";
-        public static final String COLUMN_NAME_COURSE_TIME = "course_time";
+        public static final String COLUMN_NAME_CS_NAME_ID = "cs_name_id";
         public static final String COLUMN_NAME_NAME = "name";
         public static final String COLUMN_NAME_CLASS_ROOM = "class_room";
 

@@ -19,7 +19,7 @@
         <Preference
             android:layout="@layout/preference_item"
             android:summary=""
-            android:title="@string/select_kb"/>
+            android:title="@string/kb_manage"/>
 
         <Preference
             android:layout="@layout/preference_item"

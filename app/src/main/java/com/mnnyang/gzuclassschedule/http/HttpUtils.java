@@ -4,7 +4,10 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.text.TextUtils;
 
+import com.mnnyang.gzuclassschedule.R;
 import com.mnnyang.gzuclassschedule.app.Url;
+import com.mnnyang.gzuclassschedule.app.app;
+import com.mnnyang.gzuclassschedule.utils.CourseParse;
 import com.mnnyang.gzuclassschedule.utils.LogUtils;
 import com.zhy.http.okhttp.OkHttpUtils;
 import com.zhy.http.okhttp.callback.FileCallBack;
@@ -33,7 +36,7 @@ public class HttpUtils {
     }
 
 
-    public void captcha(final File dir, final HttpCallback<Bitmap> callback) {
+    public void loadCaptcha(final File dir, final HttpCallback<Bitmap> callback) {
         OkHttpUtils.post().url(Url.URL_LOGIN_PAGE)
                 .build().execute(new StringCallback() {
             @Override
@@ -43,6 +46,8 @@ public class HttpUtils {
 
             @Override
             public void onResponse(String response, int id) {
+                Url.VIEWSTATE_LOGIN_CODE = CourseParse.parseViewStateCode(response);
+                LogUtils.d(this, "login_code:" + Url.VIEWSTATE_LOGIN_CODE);
                 toLoadCaptcha(dir, callback);
             }
         });
@@ -50,7 +55,7 @@ public class HttpUtils {
 
     private void toLoadCaptcha(final File dir, final HttpCallback<Bitmap> callback) {
         OkHttpUtils.get().url(Url.URL_CHECK_CODE).build().execute(
-                new FileCallBack(dir.getAbsolutePath(), "captcha.jpg") {
+                new FileCallBack(dir.getAbsolutePath(), "loadCaptcha.jpg") {
                     @Override
                     public void onError(Call call, Exception e, int id) {
                         e.printStackTrace();
@@ -60,7 +65,7 @@ public class HttpUtils {
                     @Override
                     public void onResponse(File response, int id) {
                         Bitmap bitmap = BitmapFactory.decodeFile(
-                                dir.getAbsolutePath() + "/captcha.jpg");
+                                dir.getAbsolutePath() + "/loadCaptcha.jpg");
                         callback.onSuccess(bitmap);
                     }
                 });
@@ -70,7 +75,7 @@ public class HttpUtils {
                       final String courseTime, final String term,
                       final HttpCallback<String> callback) {
         OkHttpUtils.post().url(Url.URL_LOGIN_PAGE)
-                .addParams("__VIEWSTATE", "dDwtNTE2MjI4MTQ7Oz4I55DQ6KPcVdzTLmjGjlJPRWgYUQ==")
+                .addParams("__VIEWSTATE", Url.VIEWSTATE_LOGIN_CODE)
                 .addParams("txtUserName", xh)
                 .addParams("Textbox1", "")
                 .addParams("Textbox2", passwd)
@@ -90,10 +95,11 @@ public class HttpUtils {
             @Override
             public void onResponse(String response, int id) {
                 LogUtils.e(this, response);
-                if (response.contains("验证码不正确")) {
-                    callback.onFail("验证码不正确");
-                } else if (response.contains("密码错误")) {
-                    callback.onFail("密码错误");
+
+                if (response.contains(app.mContext.getString(R.string.captcha_err))) {
+                    callback.onFail(app.mContext.getString(R.string.captcha_err));
+                } else if (response.contains(app.mContext.getString(R.string.pwd_err))) {
+                    callback.onFail(app.mContext.getString(R.string.pwd_err));
                 } else {
                     if (TextUtils.isEmpty(courseTime) || TextUtils.isEmpty(term)) {
                         toImpt(xh, callback);
@@ -105,7 +111,14 @@ public class HttpUtils {
         });
     }
 
+    /**
+     * get normal
+     *
+     * @param xh
+     * @param callback
+     */
     public void toImpt(String xh, final HttpCallback<String> callback) {
+        LogUtils.d(this, "get normal+"+xh);
         OkHttpUtils.get().url(Url.URL_LOAD_COURSE)
                 .addHeader("Referer", Url.URL_LOAD_COURSE + "?xh=" + xh)
                 .addParams(Url.PARAM_XH, xh)
@@ -119,6 +132,8 @@ public class HttpUtils {
 
                     @Override
                     public void onResponse(String response, int id) {
+                        System.out.println(response);
+                        Url.VIEWSTATE_POST_CODE = CourseParse.parseViewStateCode(response);
                         callback.onSuccess(response);
                     }
                 });
@@ -130,12 +145,30 @@ public class HttpUtils {
      * @param term       学期num
      * @param callback
      */
-    public void toImpt(String xh, String courseTime, String term, final HttpCallback<String> callback) {
+    public void toImpt(String xh, String courseTime, String term,
+                       final HttpCallback<String> callback) {
+        LogUtils.d("toImpt","xh"+xh+"c"+courseTime+"t"+term);
         OkHttpUtils.post().url(Url.URL_LOAD_COURSE + "?xh=" + xh + "&xm=%D1%EE%D3%D1%C1%D6&gnmkdm=N121603")
                 .addHeader("Referer", Url.URL_LOAD_COURSE + "?xh=" + xh + "&xm=%D1%EE%D3%D1%C1%D6&gnmkdm=N121603")
+                .addHeader("Connection", "keep-alive")
+
+                .addHeader("Accept", "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8")
+                .addHeader("Accept-Encoding", "gzip, deflate")
+                .addHeader("Accept-Language", "zh-CN,zh;q=0.9")
+                .addHeader("Cache-Control", "max-age=0")
+                .addHeader("Connection", "keep-alive")
+                .addHeader("Content-Length", "5443")
+                .addHeader("Content-Type", "application/x-www-form-urlencoded")
+                .addHeader("Host", "210.40.2.253:8888")
+                .addHeader("Origin", "http://210.40.2.253:8888")
+                .addHeader("Upgrade-Insecure-Requests", "1")
+                .addHeader("User-Agent", "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/62.0.3202.75 Safari/537.36")
+
+
+
                 .addParams("__EVENTTARGET", "xnd")
                 .addParams("__EVENTARGUMENT", "")
-                .addParams("__VIEWSTATE", Url.VIEWSTATE)
+                .addParams("__VIEWSTATE", Url.VIEWSTATE_POST_CODE)
                 .addParams(Url.PARAM_XND, courseTime)
                 .addParams(Url.PARAM_XQD, term)
                 .build()
@@ -148,23 +181,11 @@ public class HttpUtils {
 
                     @Override
                     public void onResponse(String response, int id) {
+                        Url.VIEWSTATE_POST_CODE = CourseParse.parseViewStateCode(response);
                         callback.onSuccess(response);
                     }
                 });
     }
 }
 
-//.addHeader("Connection", "keep-alive")
-//.addHeader("Accept", "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8")
-//.addHeader("Accept-Encoding", "gzip, deflate")
-//.addHeader("Accept-Language", "zh-CN,zh;q=0.9")
-//.addHeader("Cache-Control", "max-age=0")
-//.addHeader("Connection", "keep-alive")
-//.addHeader("Content-Length", "5443")
-//.addHeader("Content-Type", "application/x-www-form-urlencoded")
-//.addHeader("Cookie", "ASP.NET_SessionId=; SESSION_COOKIE=")
-//.addHeader("Host", "210.40.2.253:8888")
-//.addHeader("Origin", "http://210.40.2.253:8888")
-//.addHeader("Upgrade-Insecure-Requests", "1")
-//.addHeader("User-Agent", "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/62.0.3202.75 Safari/537.36")
 

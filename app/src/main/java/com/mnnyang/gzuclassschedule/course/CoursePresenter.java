@@ -29,7 +29,7 @@ public class CoursePresenter implements CourseContract.Presenter {
     }
 
     @Override
-    public void updateCourseData(final String courseTime) {
+    public void updateCourseViewData(final String courseTime) {
         Observable.create(new Observable.OnSubscribe<ArrayList<Course>>() {
             @Override
             public void call(Subscriber<? super ArrayList<Course>> subscriber) {

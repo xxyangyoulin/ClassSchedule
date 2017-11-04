@@ -1,11 +1,15 @@
 package com.mnnyang.gzuclassschedule.impt;
 
+import com.mnnyang.gzuclassschedule.R;
+import com.mnnyang.gzuclassschedule.app.app;
 import com.mnnyang.gzuclassschedule.data.bean.Course;
+import com.mnnyang.gzuclassschedule.data.bean.CourseTime;
 import com.mnnyang.gzuclassschedule.data.db.CourseDbDao;
 import com.mnnyang.gzuclassschedule.http.HttpCallback;
 import com.mnnyang.gzuclassschedule.http.HttpUtils;
 import com.mnnyang.gzuclassschedule.utils.CourseParse;
 import com.mnnyang.gzuclassschedule.utils.LogUtils;
+import com.mnnyang.gzuclassschedule.utils.Preferences;
 
 import java.util.ArrayList;
 
@@ -20,8 +24,14 @@ import rx.schedulers.Schedulers;
  */
 
 public class ImptPresenter implements ImptContract.Presenter {
+
     private ImptContract.View mImptView;
     private ImptModel mModel;
+
+    private String xh;
+    private String mNormalCourseHtml;
+    private String mSelectYear;
+    private String mSelectterm;
 
     public ImptPresenter(ImptContract.View imptView) {
         mImptView = imptView;
@@ -33,32 +43,40 @@ public class ImptPresenter implements ImptContract.Presenter {
         getCaptcha();
     }
 
-    @Override
-    public void importCourses(String xh, String pwd, String captcha,
-                              String courseTime, String term) {
 
-        if (!verify(xh, pwd, captcha)) return;
+    @Override
+    public void importCustomCourses(final String year, final String term) {
+        LogUtils.d(this, "importCustomCourses");
+        LogUtils.d(this,"sy"+mSelectYear+"st"+mSelectterm+"y"+year+"t"+term);
+        if (year.equals(mSelectYear) && term.equals(mSelectterm)) {
+            importDefaultCourses(year, term);
+            return;
+        }
 
         mImptView.showImpting();
-        HttpUtils.newInstance().login(xh, pwd, captcha, courseTime, term,
-                new HttpCallback<String>() {
+        HttpUtils.newInstance().toImpt(xh, year, term, new HttpCallback<String>() {
+            @Override
+            public void onSuccess(String s) {
+                parseCoursesHtmlToDb(s, year + "-" + term);
+            }
 
-                    @Override
-                    public void onSuccess(String s) {
-                        LogUtils.i(this, "课表\n" + s);
-                        parseCoursesHtmlToDb(s);
-                    }
-
-                    @Override
-                    public void onFail(String errMsg) {
-                        mImptView.hideImpting();
-                        mImptView.showErrToast(errMsg, true);
-                    }
-                });
+            @Override
+            public void onFail(String errMsg) {
+                mImptView.hideImpting();
+                mImptView.showErrToast(errMsg, true);
+            }
+        });
     }
 
     @Override
-    public void loadCourseTimeAndTerm(String xh, String pwd, String captcha) {
+    public void importDefaultCourses(final String year, final String term) {
+        LogUtils.d(this, "importCustomCourses");
+        mImptView.showImpting();
+        parseCoursesHtmlToDb(mNormalCourseHtml, year + "-" + term);
+    }
+
+    @Override
+    public void loadCourseTimeAndTerm(final String xh, String pwd, String captcha) {
         if (!verify(xh, pwd, captcha)) return;
         mImptView.showImpting();
         HttpUtils.newInstance().login(xh, pwd, captcha, null, null,
@@ -66,7 +84,8 @@ public class ImptPresenter implements ImptContract.Presenter {
 
                     @Override
                     public void onSuccess(String s) {
-                        LogUtils.i(this, "课表time:\n" + s);
+                        ImptPresenter.this.xh = xh;
+                        mNormalCourseHtml = s;
                         mImptView.hideImpting();
                         parseTimeTermHtmlToShow(s);
                     }
@@ -81,26 +100,32 @@ public class ImptPresenter implements ImptContract.Presenter {
     }
 
     private void parseTimeTermHtmlToShow(String html) {
-        ArrayList<String> times = CourseParse.parseTime(html);
-        mImptView.showCourseTimeDialog(times);
+        CourseTime ct = CourseParse.parseTime(html);
+        LogUtils.e(this,ct.toString());
+
+
+        if (ct == null || ct.years.size() == 0) {
+            mImptView.showErrToast("导入学期失败", true);
+            return;
+        }
+        mSelectYear = ct.selectYear;
+        mSelectterm = ct.selectTerm;
+        mImptView.showCourseTimeDialog(ct);
     }
 
-    private void parseCoursesHtmlToDb(final String html) {
+    private void parseCoursesHtmlToDb(final String html, final String courseTimeTerm) {
         try {
-            //TODO rxjava
             Observable.create(new Observable.OnSubscribe<String>() {
 
                 @Override
                 public void call(Subscriber<? super String> subscriber) {
                     final ArrayList<Course> courses = CourseParse.parse(html);
-                    //TODO 删除
-                    demo(courses);
-                    for (Course cours : courses) {
-                        CourseDbDao.newInstance().addCourse(cours);
+                    for (Course c : courses) {
+                        c.setCsName(courseTimeTerm);
+                        CourseDbDao.newInstance().addCourse(c);
                     }
                     subscriber.onNext("导入成功");
                     subscriber.onCompleted();
-
                 }
             }).subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
@@ -119,18 +144,21 @@ public class ImptPresenter implements ImptContract.Presenter {
 
                         @Override
                         public void onNext(String s) {
+
+                            System.out.println("导入成功:" + courseTimeTerm);
+                            Preferences.putString(app.mContext.getString(
+                                    R.string.app_preference_current_sd_name), courseTimeTerm);
                             mImptView.hideImpting();
                             mImptView.showSucceed();
                         }
                     });
-
-
         } catch (Exception e) {
             e.printStackTrace();
             mImptView.hideImpting();
             mImptView.showErrToast("导入错误", true);
         }
     }
+
 
     private boolean verify(String xh, String pwd, String captcha) {
         if (xh.isEmpty()) {
@@ -148,12 +176,6 @@ public class ImptPresenter implements ImptContract.Presenter {
             return false;
         }
         return true;
-    }
-
-    private void demo(ArrayList<Course> courses) {
-        for (Course cours : courses) {
-            cours.setCourseTime("2017-2018");
-        }
     }
 
     @Override

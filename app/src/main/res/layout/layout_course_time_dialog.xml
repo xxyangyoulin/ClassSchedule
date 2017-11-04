@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:id="@+id/layout_audio"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingLeft="8dp"
+            android:paddingTop="16dp"
+            android:text="选择课表时间"
+            android:textColor="@color/primary"
+            android:textSize="14sp"/>
+
+        <RadioGroup
+            android:id="@+id/rg_course_time"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+        </RadioGroup>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingLeft="8dp"
+            android:paddingTop="8dp"
+            android:text="选择学期"
+            android:textColor="@color/primary"
+            android:textSize="14sp"/>
+
+        <RadioGroup
+            android:id="@+id/rg_term"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <android.support.v7.widget.AppCompatRadioButton
+                android:id="@+id/crb_1_term"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:tag="1"
+                android:text="第1学期"
+                android:textColor="@color/primary_dark"/>
+
+            <android.support.v7.widget.AppCompatRadioButton
+                android:id="@+id/crb_2_term"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:tag="2"
+                android:text="第2学期"
+                android:textColor="@color/primary_dark"/>
+
+            <android.support.v7.widget.AppCompatRadioButton
+                android:id="@+id/crb_3_term"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:tag="3"
+                android:text="第3学期"
+                android:textColor="@color/primary_dark"/>
+        </RadioGroup>
+    </LinearLayout>
+</ScrollView>
