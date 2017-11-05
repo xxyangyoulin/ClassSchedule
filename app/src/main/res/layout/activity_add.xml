@@ -22,14 +22,13 @@
             app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"/>
 
         <EditText
-            android:id="@+id/tv_course_name"
+            android:id="@+id/et_course_name"
             android:layout_width="match_parent"
-            android:layout_height="120dp"
+            android:layout_height="100dp"
             android:background="@color/primary"
-            android:gravity="center"
-            android:hint="课程名称"
-            android:paddingLeft="8dp"
-            android:paddingRight="8dp"
+            android:hint="@string/course_name"
+            android:paddingLeft="18dp"
+            android:paddingRight="18dp"
             android:singleLine="true"
             android:textColor="#90000000"
             android:textSize="32sp"/>
@@ -45,7 +44,53 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="8dp"
+                android:layout_marginRight="8dp"
+                android:layout_marginTop="8dp"
+                android:background="@drawable/shape_shadow_bg"
+                android:orientation="vertical"
+                android:padding="8dp">
+
+                <com.mnnyang.gzuclassschedule.custom.EditTextLayout
+                    android:id="@+id/etl_classroom"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:hint="输入上课教室"
+                    app:icon="@drawable/ic_svg_classroom"/>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1px"
+                    android:background="#20000000"/>
+
+                <com.mnnyang.gzuclassschedule.custom.EditTextLayout
+                    android:id="@+id/etl_teacher"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:hint="输入上课教师"
+                    app:icon="@drawable/ic_svg_teacher"/>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1px"
+                    android:background="#20000000"/>
+
+                <com.mnnyang.gzuclassschedule.custom.EditTextLayout
+                    android:id="@+id/etl_week_range"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:hint="选择周数始末"
+                    app:icon="@drawable/ic_svg_node"
+                    app:input_enabled="false"/>
+
+
+            </LinearLayout>
+
+            <include layout="@layout/layout_add_time_item"/>
+
         </LinearLayout>
     </ScrollView>
-
 </LinearLayout>

@@ -3,34 +3,71 @@
               android:layout_width="match_parent"
               android:layout_height="match_parent"
               android:gravity="center_vertical"
-              android:orientation="horizontal">
+              android:orientation="vertical">
 
-    <com.wx.wheelview.widget.WheelView
-        android:id="@+id/wv_week"
-        android:layout_width="0dp"
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="8dp"
-        android:layout_weight="1"/>
-
-    <com.wx.wheelview.widget.WheelView
-        android:id="@+id/wv_start_node"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="8dp"
-        android:layout_weight="1"/>
-
-    <TextView
+        android:layout_gravity="center"
         android:gravity="center"
-        android:layout_width="wrap_content"
-        android:textSize="20sp"
-        android:layout_height="match_parent"
-        android:text="-"/>
+        android:orientation="horizontal">
 
-    <com.wx.wheelview.widget.WheelView
-        android:id="@+id/wv_end_node"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="8dp"
-        android:layout_marginRight="8dp"
-        android:layout_weight="1"/>
+        <RadioGroup
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <android.support.v7.widget.AppCompatRadioButton
+                android:id="@+id/arb_all"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:checked="true"
+                android:text="连续"/>
+
+            <android.support.v7.widget.AppCompatRadioButton
+                android:id="@+id/arb_single"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="4dp"
+                android:layout_marginRight="4dp"
+                android:text="单周"/>
+
+            <android.support.v7.widget.AppCompatRadioButton
+                android:id="@+id/arb_double"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="双周"/>
+
+
+        </RadioGroup>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="8dp"
+        android:gravity="center"
+        android:orientation="horizontal">
+
+        <com.wx.wheelview.widget.WheelView
+            android:id="@+id/wv_week_start"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="8dp"
+            android:layout_weight="1"/>
+        <TextView
+            android:textSize="16sp"
+            android:textColor="@color/primary_dark"
+            android:text="至"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+        <com.wx.wheelview.widget.WheelView
+            android:id="@+id/wv_week_end"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="8dp"
+            android:layout_weight="1"/>
+
+    </LinearLayout>
+
 </LinearLayout>

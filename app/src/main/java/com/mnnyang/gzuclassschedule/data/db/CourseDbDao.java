@@ -154,8 +154,7 @@ public class CourseDbDao {
         course.setCsNameId(csNameId);
 
         String sql = "select * from " + CoursesPsc.CourseEntry.TABLE_NAME
-                + " where " + CoursesPsc.CourseEntry.COLUMN_NAME_CS_NAME_ID + "='" + course.getCsName() + "'"
-                + " AND " + CoursesPsc.CourseEntry.COLUMN_NAME_WEEK + "='" + course.getWeek() + "'"
+                + " where " + CoursesPsc.CourseEntry.COLUMN_NAME_WEEK + "='" + course.getWeek() + "'"
                 + " AND " + CoursesPsc.CourseEntry.COLUMN_NAME_CS_NAME_ID + "='" + csNameId + "'"
                 + " AND " + CoursesPsc.CourseEntry.COLUMN_NAME_WEEK_TYPE + "='" + course.getWeekType() + "'"
                 + " AND " + CoursesPsc.CourseEntry.COLUMN_NAME_COURSE_ID + "!='" + course.getCourseId() + "'";
@@ -173,7 +172,7 @@ public class CourseDbDao {
             nodeCursor.close();
 
             if (course.equals(conflictCourse)) {
-                LogUtils.e(this, course.getName() + " 和 " + conflictCourse.getName() + "冲突!!");
+                LogUtils.e(this, course.getName() + " 和 " + conflictCourse.toString() + "冲突!!");
                 cursor.close();
                 db.close();
                 return conflictCourse;

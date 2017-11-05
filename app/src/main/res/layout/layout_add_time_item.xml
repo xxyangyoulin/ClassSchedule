@@ -1,6 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
-<temp_root xmlns:android="http://schemas.android.com/apk/res/android"
-           android:layout_width="match_parent"
-           android:layout_height="match_parent">
+<LinearLayout
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginLeft="8dp"
+    android:layout_marginRight="8dp"
+    android:layout_marginTop="8dp"
+    android:background="@drawable/shape_shadow_bg"
+    android:orientation="vertical"
+    android:padding="8dp"
+    tools:showIn="@layout/activity_add">
 
-</temp_root>
+
+    <com.mnnyang.gzuclassschedule.custom.EditTextLayout
+        android:id="@+id/etl_time"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:hint="选择上课时间"
+        app:icon="@drawable/ic_svg_week"
+        app:input_enabled="false"/>
+
+</LinearLayout>

@@ -1,3 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <declare-styleable name="EditTextLayout">
+        <attr name="icon" format="reference"/>
+        <attr name="hint" format="string|reference"/>
+        <attr name="text" format="string|reference"/>
+        <attr name="input_enabled" format="boolean"/>
+    </declare-styleable>
 </resources>

@@ -78,4 +78,8 @@ public class Preferences {
                 .getLong(key, defValue);
     }
 
+    public static void clear(String key) {
+        context.getSharedPreferences(configFileName, Context.MODE_PRIVATE).edit().remove(key).apply();
+    }
+
 }

@@ -30,6 +30,7 @@
         <activity android:name=".impt.ImptActivity">
         </activity>
         <activity android:name=".add.AddActivity">
+
         </activity>
         <activity android:name=".mg.MgActivity">
         </activity>

@@ -9,6 +9,7 @@ import android.support.v7.widget.Toolbar;
 
 import com.mnnyang.gzuclassschedule.mg.MgActivity;
 import com.mnnyang.gzuclassschedule.utils.LogUtils;
+import com.mnnyang.gzuclassschedule.utils.ToastUtils;
 
 
 /**
@@ -38,6 +39,10 @@ public abstract class BaseActivity extends AppCompatActivity {
     public void gotoActivity(Class clzz) {
         Intent intent = new Intent(this, clzz);
         startActivity(intent);
+    }
+
+    public void toast(String msg) {
+        ToastUtils.show(msg);
     }
 
     @Override

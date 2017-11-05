@@ -258,7 +258,8 @@ public class Course implements Comparable<Course> {
     @Override
     public String toString() {
         return "Course{" +
-                "name='" + name + '\'' +
+                "courseId=" + courseId +
+                ", name='" + name + '\'' +
                 ", classRoom='" + classRoom + '\'' +
                 ", week=" + week +
                 ", nodes=" + nodes +
@@ -267,6 +268,9 @@ public class Course implements Comparable<Course> {
                 ", weekType=" + weekType +
                 ", teacher='" + teacher + '\'' +
                 ", source='" + source + '\'' +
+                ", showOverlap=" + showOverlap +
+                ", csName='" + csName + '\'' +
+                ", csNameId=" + csNameId +
                 '}';
     }
 

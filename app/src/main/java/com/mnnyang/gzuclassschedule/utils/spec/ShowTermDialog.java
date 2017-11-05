@@ -17,7 +17,7 @@ import com.mnnyang.gzuclassschedule.utils.ToastUtils;
  * Created by mnnyang on 17-11-4.
  */
 
-public class ShowDialog {
+public class ShowTermDialog {
 
     public interface TimeTermCallback {
         void onTimeChanged(String time);

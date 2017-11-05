@@ -1,8 +1,11 @@
 package com.mnnyang.gzuclassschedule.setting;
 
+import com.mnnyang.gzuclassschedule.R;
+import com.mnnyang.gzuclassschedule.app.app;
 import com.mnnyang.gzuclassschedule.data.bean.Course;
 import com.mnnyang.gzuclassschedule.data.db.CourseDbDao;
 import com.mnnyang.gzuclassschedule.http.HttpUtils;
+import com.mnnyang.gzuclassschedule.utils.Preferences;
 
 import java.util.ArrayList;
 
@@ -56,6 +59,8 @@ public class SettingPresenter implements SettingContract.Presenter {
                     public void onNext(Boolean aBoolean) {
                         mView.hideDeleting();
                         if (aBoolean) {
+                            Preferences.clear(app.mContext.getString(
+                                    R.string.app_preference_current_sd_name));
                             mView.showNotice("清除成功");
                         } else {
                             mView.showNotice("清除失败,请重试");

@@ -17,4 +17,12 @@
     <string name="pwd_err">密码错误</string>
     <string name="app_preference_current_sd_name">current_sd_name</string>
     <string name="setting">设置</string>
+    <string name="add_course">添加课程</string>
+    <string name="course_name">课程名称</string>
+
+    <string name="string_course_time">%1$s&#160;&#160;%2$d-%3$d节</string>
+    <string name="string_course_time_2">%1$s&#160;&#160;%2$d节</string>
+    <string name="string_week_range">第%1$d周到%2$d周</string>
+    <string name="app_preference_max_node">max_node</string>
+    <string name="default_course_name">课表1</string>
 </resources>

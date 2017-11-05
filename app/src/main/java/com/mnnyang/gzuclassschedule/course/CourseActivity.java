@@ -2,6 +2,7 @@ package com.mnnyang.gzuclassschedule.course;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.Color;
@@ -13,7 +14,6 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
-import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
@@ -29,9 +29,13 @@ import com.mnnyang.gzuclassschedule.app.Constant;
 import com.mnnyang.gzuclassschedule.custom.CourseView;
 import com.mnnyang.gzuclassschedule.data.bean.Course;
 import com.mnnyang.gzuclassschedule.setting.SettingActivity;
+import com.mnnyang.gzuclassschedule.utils.DialogHelper;
+import com.mnnyang.gzuclassschedule.utils.DialogListener;
 import com.mnnyang.gzuclassschedule.utils.LogUtils;
 import com.mnnyang.gzuclassschedule.utils.Preferences;
 import com.mnnyang.gzuclassschedule.utils.TimeUtils;
+import com.wx.wheelview.adapter.ArrayWheelAdapter;
+import com.wx.wheelview.widget.WheelView;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -87,11 +91,6 @@ public class CourseActivity extends BaseActivity implements CourseContract.View,
         mTvWeekCount.setOnClickListener(this);
     }
 
-    @Override
-    public void onBackPressed() {
-        super.onBackPressed();
-        System.exit(0);
-    }
 
     private void initFab() {
         mFab = (FloatingActionButton) findViewById(R.id.fab);
@@ -120,11 +119,13 @@ public class CourseActivity extends BaseActivity implements CourseContract.View,
         mCourseView = (CourseView) findViewById(R.id.course_view);
         mCourseView.setWeekText("一", "二", "三", "四", "五", "六", "日")
                 .setMonthTextSize(10)
-                .setDividerSize(0)
-                .getCourseTableView()
-                .setNodeWidth(28);
+                .setDividerSize(0);
 
-        mCourseView.getCourseTableView().setHorizontalDividerMargin(2);
+
+        mCourseView.getCourseTableView()
+                .setShowVerticalDivider(true)
+                .setVerticalDividerColor(Color.GRAY)
+                .setHorizontalDividerMargin(2);
     }
 
     private void updateView() {
@@ -136,9 +137,10 @@ public class CourseActivity extends BaseActivity implements CourseContract.View,
         mCourseView.setMonth(mCurrentMonth);
 
         mCurrentScheduleName = Preferences.getString(
-                getString(R.string.app_preference_current_sd_name), "");
+                getString(R.string.app_preference_current_sd_name),
+                getString(R.string.default_course_name));
         //TODO 为空应该弹出选择框 获取必须在之前设置数据
-        System.out.println("当前课表:" + mCurrentScheduleName);
+        LogUtils.d(this, "当前课表:" + mCurrentScheduleName);
         mPresenter.updateCourseViewData(mCurrentScheduleName);
     }
 
@@ -171,11 +173,6 @@ public class CourseActivity extends BaseActivity implements CourseContract.View,
         }
         mTvWeekCount.setText("第" + mCurrentWeekCount + "周");
         mCourseView.getCourseTableView().setCurrentWeekCount(mCurrentWeekCount);
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        return super.onCreateOptionsMenu(menu);
     }
 
     @Override
@@ -280,6 +277,13 @@ public class CourseActivity extends BaseActivity implements CourseContract.View,
     private void fab(View v) {
         Intent intent = new Intent(CourseActivity.this, SettingActivity.class);
         startActivity(intent);
+    }
+
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+//        System.exit(0);
     }
 
     @Override
