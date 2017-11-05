@@ -10,6 +10,7 @@ import android.graphics.drawable.StateListDrawable;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.text.TextPaint;
+import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.Gravity;
 import android.view.View;
@@ -275,6 +276,8 @@ public class CourseTableView extends RelativeLayout {
             setShowAble(c, course);
         }
 
+        LogUtils.d(this,course.toString());
+
         if (course.getNodes().size() > 0
                 && course.getWeek() > 0) {
 
@@ -323,7 +326,7 @@ public class CourseTableView extends RelativeLayout {
             throw new IllegalArgumentException("CourseTableView too small !");
         }
 
-        mItemWidth = (int) ((mViewWidth - mNodeWidth) /
+        mItemWidth = (int) ((mViewWidth - mNodeWidth-mDividerSize-mHorizontalDividerMargin) /
                 (mShowWeekend ? 7 : 5) + 0.5f);
 
         ViewGroup.LayoutParams params = getLayoutParams();
@@ -411,7 +414,7 @@ public class CourseTableView extends RelativeLayout {
         int topMargin = startNode * (mItemHeight + mDividerSize)
                 - mDividerSize + mVerticalDividerMargin;
         int leftMargin = mNodeWidth + mDividerSize / 2 + (course.getWeek() - 1)
-                * (mItemWidth + mDividerSize) + mHorizontalDividerMargin;
+                * (mItemWidth + mDividerSize) + mHorizontalDividerMargin/2;
 
         LayoutParams params = new LayoutParams(
                 itemWidth, itemHeight);
@@ -521,6 +524,7 @@ public class CourseTableView extends RelativeLayout {
 
         if (mIsFirst) {
             mIsFirst = false;
+            LogUtils.d(this,"addNodeView 1 ndoeWidth="+mNodeWidth);
             addNodeView();
             addCourseItemView();
         }
@@ -531,7 +535,8 @@ public class CourseTableView extends RelativeLayout {
 
     public void updateView() {
         removeAllViews();
-        addNodeView();
+        LogUtils.d(this,"addNodeView 2 ndoeWidth="+mNodeWidth);
+//        addNodeView();
 
         resetShowAble();
 
@@ -732,7 +737,7 @@ public class CourseTableView extends RelativeLayout {
         return mNodeWidth;
     }
 
-    public CourseTableView setNodeWidth(int nodeWidth) {
+    protected CourseTableView setNodeWidth(int nodeWidth) {
         mNodeWidth = nodeWidth;
         return this;
     }

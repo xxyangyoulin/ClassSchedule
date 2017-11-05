@@ -14,11 +14,13 @@ import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
+import com.mnnyang.gzuclassschedule.R;
 import com.mnnyang.gzuclassschedule.data.bean.Course;
 
 import java.util.ArrayList;
 
 import static com.mnnyang.gzuclassschedule.custom.util.Utils.dip2px;
+import static com.mnnyang.gzuclassschedule.custom.util.Utils.getDrawable;
 
 /**
  * Created by mnnyang on 17-10-20.
@@ -133,6 +135,7 @@ public class CourseView extends LinearLayout {
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         mViewWidth = MeasureSpec.getSize(widthMeasureSpec);
         mWeekWidth = (int) ((mViewWidth - mMonthWidth) / (mShowWeekend ? 7 : 5) + 0.5f);
+
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
     }
 
@@ -197,14 +200,14 @@ public class CourseView extends LinearLayout {
     private void setTopWeekView(LinearLayout view) {
         view.setOrientation(HORIZONTAL);
         TextView month = getTextView(mMonth + "\n月",
-                mMonthTextSize, mMonthWidth + mDividerSize, mWeekHeight);
+                mMonthTextSize, mMonthWidth, mWeekHeight);
         month.setTextColor(mMonthTextColor);
         view.addView(month);
 
         for (int i = 0; i < (mShowWeekend ? 7 : 5); i++) {
             String text = WEEK[i];
             TextView week = getTextView(text,
-                    mWeekTextSize, mWeekWidth + mDividerSize, mWeekHeight);
+                    mWeekTextSize, mWeekWidth, mWeekHeight);
             week.setTextColor(mWeekTextColor);
             view.addView(week);
         }
@@ -336,7 +339,7 @@ public class CourseView extends LinearLayout {
         return this;
     }
 
-    public CourseView setWeekText(String ...words) {
+    public CourseView setWeekText(String... words) {
         if (words == null || words.length < 7) {
             return this;
         }

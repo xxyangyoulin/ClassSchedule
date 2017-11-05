@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TextView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="60dp"
+    android:layout_height="60dp"
+    android:gravity="center"
+    android:text="烦烦烦"
+    android:id="@+id/tv_title"
+    android:textColor="@color/secondary_text"
+    android:textSize="14sp">
+
+</TextView>
