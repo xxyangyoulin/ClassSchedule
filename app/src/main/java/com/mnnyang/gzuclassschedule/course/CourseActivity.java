@@ -121,17 +121,14 @@ public class CourseActivity extends BaseActivity implements CourseContract.View,
                 .setMonthTextSize(10)
                 .setDividerSize(0);
 
-
         mCourseView.getCourseTableView()
-                .setShowVerticalDivider(true)
-                .setVerticalDividerColor(Color.GRAY)
                 .setHorizontalDividerMargin(2);
     }
 
     private void updateView() {
         LogUtils.i(this, "updateView");
         initCurrentWeek();
-        fabVisible();
+        updatePreference();
 
         mCurrentMonth = TimeUtils.getNowMonth();
         mCourseView.setMonth(mCurrentMonth);
@@ -142,6 +139,14 @@ public class CourseActivity extends BaseActivity implements CourseContract.View,
         //TODO 为空应该弹出选择框 获取必须在之前设置数据
         LogUtils.d(this, "当前课表:" + mCurrentScheduleName);
         mPresenter.updateCourseViewData(mCurrentScheduleName);
+    }
+
+    private void updatePreference() {
+        fabVisible();
+        boolean showNoon = PreferenceManager.getDefaultSharedPreferences(getBaseContext())
+                .getBoolean(getString(R.string.app_preference_show_noon), false);
+        mCourseView.getCourseTableView()
+                .setShowNoon(showNoon);
     }
 
     private void fabVisible() {

@@ -120,7 +120,7 @@ public class CourseView extends LinearLayout {
 
     private void initDefaultSize() {
         mWeekHeight = dip2px(getContext(), 45);
-        mMonthWidth = dip2px(getContext(), 22);
+        mMonthWidth = dip2px(getContext(), 24);
         mDividerSize = dip2px(getContext(), 1);
         mMonthTextSize = 13;
         mWeekTextSize = 13;
@@ -158,9 +158,12 @@ public class CourseView extends LinearLayout {
         ViewGroup viewGroup = (ViewGroup) mCourseTableView.getParent();
         viewGroup.removeAllViews();
 
-        mCourseTableView.updateView();
         addCourseTableView();
-        invalidate();
+
+        if (!isFirst)
+            mCourseTableView.updateView();
+
+//        invalidate();
     }
 
     private void addCourseTableView() {
@@ -258,7 +261,7 @@ public class CourseView extends LinearLayout {
     }
 
     public CourseView setMonthWidth(int monthWidth) {
-        mMonthWidth = monthWidth;
+        mMonthWidth = dip2px(getContext(), monthWidth);
         return this;
     }
 

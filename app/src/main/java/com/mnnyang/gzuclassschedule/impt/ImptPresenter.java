@@ -47,7 +47,7 @@ public class ImptPresenter implements ImptContract.Presenter {
     @Override
     public void importCustomCourses(final String year, final String term) {
         LogUtils.d(this, "importCustomCourses");
-        LogUtils.d(this,"sy"+mSelectYear+"st"+mSelectterm+"y"+year+"t"+term);
+        LogUtils.d(this, "sy" + mSelectYear + "st" + mSelectterm + "y" + year + "t" + term);
         if (year.equals(mSelectYear) && term.equals(mSelectterm)) {
             importDefaultCourses(year, term);
             return;
@@ -101,8 +101,6 @@ public class ImptPresenter implements ImptContract.Presenter {
 
     private void parseTimeTermHtmlToShow(String html) {
         CourseTime ct = CourseParse.parseTime(html);
-        LogUtils.e(this,ct.toString());
-
 
         if (ct == null || ct.years.size() == 0) {
             mImptView.showErrToast("导入学期失败", true);
@@ -120,9 +118,10 @@ public class ImptPresenter implements ImptContract.Presenter {
                 @Override
                 public void call(Subscriber<? super String> subscriber) {
                     final ArrayList<Course> courses = CourseParse.parse(html);
+
                     for (Course c : courses) {
                         c.setCsName(courseTimeTerm);
-                        CourseDbDao.newInstance().addCourse(c);
+                        Course course = CourseDbDao.newInstance().addCourse(c);
                     }
                     subscriber.onNext("导入成功");
                     subscriber.onCompleted();

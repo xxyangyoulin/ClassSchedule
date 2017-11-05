@@ -34,6 +34,12 @@
     <PreferenceCategory
         android:title="偏好设置">
         <CheckBoxPreference
+            android:key="@string/app_preference_show_noon"
+            android:layout="@layout/preference_item"
+            android:summary="显示中午时间的课程"
+            android:title="显示中午课程"/>
+
+        <CheckBoxPreference
             android:key="@string/app_preference_hide_fab"
             android:layout="@layout/preference_item"
             android:summary="隐藏主界面右下角添加按钮"

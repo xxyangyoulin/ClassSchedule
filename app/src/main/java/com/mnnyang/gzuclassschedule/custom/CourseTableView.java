@@ -187,8 +187,6 @@ public class CourseTableView extends RelativeLayout {
 
     private ArrayList<Course> mCourses = new ArrayList<>();
 
-    private boolean mHideNoCurrentWeek;
-
     public static int colors[];
     private int mCourseItemRadius;
 
@@ -215,7 +213,8 @@ public class CourseTableView extends RelativeLayout {
     private void initDefaultSize() {
         mTopWeekHeight = dip2px(getContext(), 45);
         mItemHeight = dip2px(getContext(), 50);
-        mNodeWidth = dip2px(getContext(), 28);
+        mNodeWidth = dip2px(getContext(), 24);
+        LogUtils.d(this, "--ndoe" + mNodeWidth);
         mDividerSize = dip2px(getContext(), 1);
         mVerticalDividerMargin = dip2px(getContext(), 1);
         mItemPaddingV = mItemPaddingH = dip2px(getContext(), 2);
@@ -276,7 +275,7 @@ public class CourseTableView extends RelativeLayout {
             setShowAble(c, course);
         }
 
-        LogUtils.d(this,course.toString());
+        LogUtils.d(this, course.toString());
 
         if (course.getNodes().size() > 0
                 && course.getWeek() > 0) {
@@ -286,7 +285,7 @@ public class CourseTableView extends RelativeLayout {
 
             if (!mIsFirst) {
                 addCourseItemView(course);
-                updateView();
+//                updateView();
             }
 
         } else {
@@ -326,7 +325,7 @@ public class CourseTableView extends RelativeLayout {
             throw new IllegalArgumentException("CourseTableView too small !");
         }
 
-        mItemWidth = (int) ((mViewWidth - mNodeWidth-mDividerSize-mHorizontalDividerMargin) /
+        mItemWidth = (int) ((mViewWidth - mNodeWidth - mDividerSize - mHorizontalDividerMargin) /
                 (mShowWeekend ? 7 : 5) + 0.5f);
 
         ViewGroup.LayoutParams params = getLayoutParams();
@@ -337,6 +336,7 @@ public class CourseTableView extends RelativeLayout {
     /**********************addView*******************************/
 
     private void addCourseItemView() {
+        LogUtils.d(this, "addCourseItemView");
         for (Course course : mCourses) {
             addCourseItemView(course);
         }
@@ -414,7 +414,7 @@ public class CourseTableView extends RelativeLayout {
         int topMargin = startNode * (mItemHeight + mDividerSize)
                 - mDividerSize + mVerticalDividerMargin;
         int leftMargin = mNodeWidth + mDividerSize / 2 + (course.getWeek() - 1)
-                * (mItemWidth + mDividerSize) + mHorizontalDividerMargin/2;
+                * (mItemWidth + mDividerSize) + mHorizontalDividerMargin / 2;
 
         LayoutParams params = new LayoutParams(
                 itemWidth, itemHeight);
@@ -519,12 +519,12 @@ public class CourseTableView extends RelativeLayout {
     /**********************draw***************************/
     @Override
     protected void dispatchDraw(Canvas canvas) {
-        LogUtils.v(this, "disDraw");
+        LogUtils.d(this, "dispatchDraw");
         normalDraw(canvas);
 
         if (mIsFirst) {
             mIsFirst = false;
-            LogUtils.d(this,"addNodeView 1 ndoeWidth="+mNodeWidth);
+            LogUtils.d(this, "addNodeView 1 ndoeWidth=" + mNodeWidth);
             addNodeView();
             addCourseItemView();
         }
@@ -535,8 +535,8 @@ public class CourseTableView extends RelativeLayout {
 
     public void updateView() {
         removeAllViews();
-        LogUtils.d(this,"addNodeView 2 ndoeWidth="+mNodeWidth);
-//        addNodeView();
+        LogUtils.d(this, "addNodeView 2 ndoeWidth=" + mNodeWidth);
+        addNodeView();
 
         resetShowAble();
 

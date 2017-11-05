@@ -25,4 +25,5 @@
     <string name="string_week_range">第%1$d周到%2$d周</string>
     <string name="app_preference_max_node">max_node</string>
     <string name="default_course_name">课表1</string>
+    <string name="app_preference_show_noon">show_noon</string>
 </resources>
