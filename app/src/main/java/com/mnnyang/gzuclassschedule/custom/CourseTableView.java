@@ -10,12 +10,12 @@ import android.graphics.drawable.StateListDrawable;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.text.TextPaint;
-import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
+import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -37,7 +37,7 @@ import static com.mnnyang.gzuclassschedule.custom.util.Utils.getColors;
  * Created by mnnyang on 17-10-20.
  */
 
-public class CourseTableView extends RelativeLayout {
+public class CourseTableView extends FrameLayout {
     /**
      * 实线
      */
@@ -58,12 +58,12 @@ public class CourseTableView extends RelativeLayout {
     /**
      * 星期高度
      */
-    private int mTopWeekHeight;
+    private int mTopWeekHeight = dip2px(getContext(), 45);
 
     /**
      * 课程模块高度
      */
-    private int mItemHeight;
+    private int mItemHeight = dip2px(getContext(), 50);
 
     /**
      * 课程模块宽度
@@ -72,16 +72,16 @@ public class CourseTableView extends RelativeLayout {
     /**
      * 节模块宽度
      */
-    private int mNodeWidth;
+    private int mNodeWidth = dip2px(getContext(), 24);
 
     /**
      * 分割线尺寸
      */
-    private int mDividerSize;
+    private int mDividerSize = dip2px(getContext(), 1);
     /**
      * 垂直分割线margin值
      */
-    private int mVerticalDividerMargin;
+    private int mVerticalDividerMargin = dip2px(getContext(), 1);
     /**
      * 水平分割线margin值
      */
@@ -90,63 +90,63 @@ public class CourseTableView extends RelativeLayout {
     /**
      * 模块水平padding
      */
-    private int mItemPaddingH;
+    private int mItemPaddingH = dip2px(getContext(), 2);
     /**
      * 模块垂直padding
      */
-    private int mItemPaddingV;
+    private int mItemPaddingV = dip2px(getContext(), 2);
     /**
      * 课程模块字体大小
      */
-    private int mCourseTextSize;
+    private int mCourseTextSize = 12;
 
     /**
      * node字体大小
      */
-    private int mNodeTextSize;
+    private int mNodeTextSize = 12;
 
     /**
      * node背景颜色
      */
-    private int mNodeBgColor;
+    private int mNodeBgColor = Color.TRANSPARENT;
 
     /**
      * 水平分割线颜色
      */
-    private int mHorizontalDividerColor;
+    private int mHorizontalDividerColor = 0x20000000;
 
     /**
      * 垂直分割线颜色
      */
-    private int mVerticalDividerColor;
+    private int mVerticalDividerColor = 0x40000000;
 
     /**
-     * 水平分割线风格 1实线 2虚线
+     * 水平分割线风格
      */
-    private int mHorizontalDividerType;
+    private int mHorizontalDividerType = DIVIDER_TYPE_DASHED;
     /**
-     * 垂直分割线风格 1实线 2虚线
+     * 垂直分割线风格
      */
-    private int mVerticalDividerType;
+    private int mVerticalDividerType = DIVIDER_TYPE_DASHED;
 
     /**
      * 课程颜色
      */
-    private int mCourseTextColor;
+    private int mCourseTextColor = 0xffffffff;
     /**
      * node字体颜色
      */
-    private int mNodeTextColor;
+    private int mNodeTextColor = 0xFF909090;
 
     /**
      * 一天课程最大值
      */
-    private int mNodeCount;
+    private int mNodeCount = 11;
 
     /**
      * 限制课程文本最大行
      */
-    private int mCourseTextMaxLineCount;
+    private int mCourseTextMaxLineCount = 6;
     /**
      * 是否显示周末
      */
@@ -176,19 +176,19 @@ public class CourseTableView extends RelativeLayout {
     /**
      * 当前周数
      */
-    private int mCurrentWeekCount;
+    private int mCurrentWeekCount = 1;
 
     /**
      * 中午节数
      */
-    private int mNoonNode;
+    private int mNoonNode = 4;
 
     private Paint mDividerPaint;
 
     private ArrayList<Course> mCourses = new ArrayList<>();
 
-    public static int colors[];
-    private int mCourseItemRadius;
+    public static int mColors[];
+    private int mCourseItemRadius = 3;
 
     public CourseTableView(Context context) {
         super(context);
@@ -206,39 +206,10 @@ public class CourseTableView extends RelativeLayout {
     }
 
     private void init() {
-        initDefaultSize();
+        mColors = getColors(getContext());
         initPaint();
     }
 
-    private void initDefaultSize() {
-        mTopWeekHeight = dip2px(getContext(), 45);
-        mItemHeight = dip2px(getContext(), 50);
-        mNodeWidth = dip2px(getContext(), 24);
-        LogUtils.d(this, "--ndoe" + mNodeWidth);
-        mDividerSize = dip2px(getContext(), 1);
-        mVerticalDividerMargin = dip2px(getContext(), 1);
-        mItemPaddingV = mItemPaddingH = dip2px(getContext(), 2);
-
-        mCourseTextMaxLineCount = 6;
-        mNoonNode = 4;
-        mNodeCount = 11;
-        mCurrentWeekCount = 1;
-        mCourseItemRadius = 3;
-
-        mCourseTextSize = 12;
-        mNodeTextSize = 12;
-
-        mVerticalDividerColor = 0x40000000;
-        mNodeTextColor = 0xFF909090;
-        mCourseTextColor = 0xffffffff;
-        mHorizontalDividerColor = 0x20000000;
-        mNodeBgColor = Color.TRANSPARENT;
-
-        mVerticalDividerType = DIVIDER_TYPE_SOLID;
-        mHorizontalDividerType = DIVIDER_TYPE_DASHED;
-
-        colors = getColors(getContext());
-    }
 
     private void initPaint() {
         mDividerPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
@@ -301,12 +272,12 @@ public class CourseTableView extends RelativeLayout {
         Integer integer = mNameColorMap.get(course.getName());
         if (integer == null) {
             int size = mNameColorMap.size();
-            if (size >= colors.length - 2) {
-                size = size % (colors.length - 2);
+            if (size >= mColors.length - 2) {
+                size = size % (mColors.length - 2);
             }
 
-            mNameColorMap.put(course.getName(), colors[size]);
-            mNameColorMap.put(course.getName() + "_p", colors[size + 1]);
+            mNameColorMap.put(course.getName(), mColors[size]);
+            mNameColorMap.put(course.getName() + "_p", mColors[size + 1]);
         }
     }
 
@@ -454,7 +425,7 @@ public class CourseTableView extends RelativeLayout {
 
     private void setNoCurBgAndVisible(LinearLayout itemView) {
         StateListDrawable drawable;
-        drawable = getShowBgDrawable(colors[colors.length - 2], colors[colors.length - 1]);
+        drawable = getShowBgDrawable(mColors[mColors.length - 2], mColors[mColors.length - 1]);
         itemView.setBackground(drawable);
 
         TextView tv = (TextView) itemView.getChildAt(0);
