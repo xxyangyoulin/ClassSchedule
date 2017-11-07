@@ -4,6 +4,7 @@ import com.mnnyang.gzuclassschedule.R;
 import com.mnnyang.gzuclassschedule.app.app;
 import com.mnnyang.gzuclassschedule.data.bean.CsItem;
 import com.mnnyang.gzuclassschedule.data.db.CourseDbDao;
+import com.mnnyang.gzuclassschedule.utils.DialogHelper;
 import com.mnnyang.gzuclassschedule.utils.Preferences;
 
 import java.util.ArrayList;
@@ -31,6 +32,11 @@ public class MgPresenter implements MgContract.Presenter {
 
     @Override
     public void start() {
+        loadCsNameList();
+    }
+
+    @Override
+    public void loadCsNameList() {
         Observable.create(new Observable.OnSubscribe<ArrayList<CsItem>>() {
             @Override
             public void call(Subscriber<? super ArrayList<CsItem>> subscriber) {
@@ -61,9 +67,37 @@ public class MgPresenter implements MgContract.Presenter {
                 });
     }
 
+
     @Override
-    public void deleteCsName(int csNameId) {
-        //TODO delete
+    public void deleteCsName(final int csNameId, final DialogHelper dh) {
+        Observable.create(new Observable.OnSubscribe<String>() {
+
+            @Override
+            public void call(Subscriber<? super String> subscriber) {
+                CourseDbDao dao = CourseDbDao.newInstance();
+                dao.removeByCsNameId(csNameId);
+                subscriber.onNext("ok");
+            }
+        }).subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Observer<String>() {
+
+                    @Override
+                    public void onCompleted() {
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        e.printStackTrace();
+                        dh.hideProgressDialog();
+                    }
+
+                    @Override
+                    public void onNext(String s) {
+                        dh.hideProgressDialog();
+                        mView.deleteFinish();
+                    }
+                });
     }
 
     @Override

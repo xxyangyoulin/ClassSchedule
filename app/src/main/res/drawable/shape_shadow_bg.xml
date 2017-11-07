@@ -7,12 +7,12 @@
                 android:width="2dp"
                 android:color="#2000"/>
             <padding
-                android:bottom="3dp"
+                android:bottom="1px"
                 android:left="1px"
-                android:right="2dp"
+                android:right="1px"
                 android:top="1px"/>
 
-            <corners android:radius="3dp"/>
+            <corners android:radius="0dp"/>
         </shape>
     </item>
     <item>

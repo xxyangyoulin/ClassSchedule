@@ -4,9 +4,11 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.text.TextUtils;
 
+import com.google.gson.Gson;
 import com.mnnyang.gzuclassschedule.R;
 import com.mnnyang.gzuclassschedule.app.Url;
 import com.mnnyang.gzuclassschedule.app.app;
+import com.mnnyang.gzuclassschedule.data.bean.Version;
 import com.mnnyang.gzuclassschedule.utils.spec.ParseCourse;
 import com.mnnyang.gzuclassschedule.utils.LogUtils;
 import com.zhy.http.okhttp.OkHttpUtils;
@@ -118,7 +120,7 @@ public class HttpUtils {
      * @param callback
      */
     public void toImpt(String xh, final HttpCallback<String> callback) {
-        LogUtils.d(this, "get normal+"+xh);
+        LogUtils.d(this, "get normal+" + xh);
         OkHttpUtils.get().url(Url.URL_LOAD_COURSE)
                 .addHeader("Referer", Url.URL_LOAD_COURSE + "?xh=" + xh)
                 .addParams(Url.PARAM_XH, xh)
@@ -147,7 +149,7 @@ public class HttpUtils {
      */
     public void toImpt(String xh, String courseTime, String term,
                        final HttpCallback<String> callback) {
-        LogUtils.d("toImpt","xh"+xh+"c"+courseTime+"t"+term);
+        LogUtils.d("toImpt", "xh" + xh + "c" + courseTime + "t" + term);
         OkHttpUtils.post().url(Url.URL_LOAD_COURSE + "?xh=" + xh + "&xm=%D1%EE%D3%D1%C1%D6&gnmkdm=N121603")
                 .addHeader("Referer", Url.URL_LOAD_COURSE + "?xh=" + xh + "&xm=%D1%EE%D3%D1%C1%D6&gnmkdm=N121603")
                 .addHeader("Connection", "keep-alive")
@@ -184,6 +186,7 @@ public class HttpUtils {
                     }
                 });
     }
+
 }
 
 

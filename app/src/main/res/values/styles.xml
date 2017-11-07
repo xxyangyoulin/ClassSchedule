@@ -7,10 +7,14 @@
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
     </style>
+
+
+
     <style name="LoginTextStyle">
         <item name="android:textColor">@color/white_f1</item>
         <item name="android:textSize">16sp</item>
     </style>
+
     <style name="WhiteEditText" parent="Theme.AppCompat.Light.NoActionBar">
         <item name="colorControlNormal">#90ffffff</item>
         <item name="colorControlActivated">#fff</item>
@@ -19,8 +23,13 @@
     </style>
 
     <style name="animDown" parent="@android:style/Animation">
-        <item name="android:windowEnterAnimation">@anim/left_in</item>
-        <item name="android:windowExitAnimation">@anim/left_out</item>
+        <item name="android:windowEnterAnimation">@anim/top_in</item>
+        <item name="android:windowExitAnimation">@anim/top_out</item>
+    </style>
+
+    <style name="animZoomIn" parent="@android:style/Animation">
+        <item name="android:windowEnterAnimation">@anim/zoom_in</item>
+        <item name="android:windowExitAnimation">@anim/alpha</item>
     </style>
 
 </resources>

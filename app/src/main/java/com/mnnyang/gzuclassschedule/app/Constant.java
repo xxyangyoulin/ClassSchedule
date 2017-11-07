@@ -15,5 +15,6 @@ public class Constant {
 
 
     public static final String[] WEEK = {"", "周一", "周二", "周三", "周四", "周五", "周六", "周日"};
+    public static final String[] WEEK_SINGLE = {"一", "二", "三", "四", "五", "六", "日"} ;
     public static String XH = "xh";
 }

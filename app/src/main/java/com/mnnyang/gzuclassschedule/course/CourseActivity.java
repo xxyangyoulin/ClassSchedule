@@ -12,8 +12,10 @@ import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
@@ -25,18 +27,22 @@ import android.widget.TextView;
 import com.mnnyang.gzuclassschedule.BaseActivity;
 import com.mnnyang.gzuclassschedule.R;
 import com.mnnyang.gzuclassschedule.app.Constant;
+import com.mnnyang.gzuclassschedule.custom.CourseTableView;
 import com.mnnyang.gzuclassschedule.custom.CourseView;
 import com.mnnyang.gzuclassschedule.data.bean.Course;
 import com.mnnyang.gzuclassschedule.setting.SettingActivity;
 import com.mnnyang.gzuclassschedule.utils.LogUtils;
 import com.mnnyang.gzuclassschedule.utils.Preferences;
 import com.mnnyang.gzuclassschedule.utils.TimeUtils;
+import com.mnnyang.gzuclassschedule.utils.ToastUtils;
+import com.mnnyang.gzuclassschedule.utils.spec.ShowDetailDialog;
 
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 
-public class CourseActivity extends BaseActivity implements CourseContract.View, View.OnClickListener {
+public class CourseActivity extends BaseActivity implements CourseContract.View,
+        View.OnClickListener, CourseTableView.OnItemClickListener {
 
     CourseContract.Presenter mPresenter;
     private CourseView mCourseView;
@@ -48,6 +54,7 @@ public class CourseActivity extends BaseActivity implements CourseContract.View,
     private String mCurrentScheduleName;
     private FloatingActionButton mFab;
     private UpdateReceiver mUpdateReceiver;
+    private ShowDetailDialog mDialog;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -59,8 +66,9 @@ public class CourseActivity extends BaseActivity implements CourseContract.View,
         initCourseView();
         initFab();
 
-        mPresenter = new CoursePresenter(this);
         registerReceiver();
+        mPresenter = new CoursePresenter(this);
+
         updateView();
     }
 
@@ -98,20 +106,32 @@ public class CourseActivity extends BaseActivity implements CourseContract.View,
 
     private void initCourseView() {
         mCourseView = (CourseView) findViewById(R.id.course_view);
-        mCourseView.setWeekText("一", "二", "三", "四", "五", "六", "日")
+        mCourseView.setWeekText(Constant.WEEK_SINGLE)
                 .setMonthTextSize(10)
-                .setDividerSize(0);
+                .setDividerSize(0)
+                .setOnItemClickListener(this);
 
-        mCourseView.getCtView()
-                .setHorizontalDividerMargin(2);
+        mCourseView.getCtView().setHorizontalDividerMargin(2);
     }
 
+    @Override
+    public void onClick(Course course, LinearLayout itemLayout) {
+        ToastUtils.show(course.getName());
+        mDialog = new ShowDetailDialog();
+        mDialog.show(this, course, new PopupWindow.OnDismissListener() {
+            @Override
+            public void onDismiss() {
+                mDialog = null;
+            }
+        });
+    }
 
     private void registerReceiver() {
         mUpdateReceiver = new UpdateReceiver();
         IntentFilter intentFilter = new IntentFilter(Constant.INTENT_UPDATE);
         registerReceiver(mUpdateReceiver, intentFilter);
     }
+
 
     class UpdateReceiver extends BroadcastReceiver {
         public void onReceive(Context context, Intent intent) {
@@ -148,7 +168,7 @@ public class CourseActivity extends BaseActivity implements CourseContract.View,
         boolean showNoon = PreferenceManager
                 .getDefaultSharedPreferences(getBaseContext())
                 .getBoolean(getString(R.string.app_preference_show_noon), false);
-        int maxNode = Preferences.getInt(getString(R.string.app_preference_max_node),Constant.DEFAULT_MAX_NODE_COUNT);
+        int maxNode = Preferences.getInt(getString(R.string.app_preference_max_node), Constant.DEFAULT_MAX_NODE_COUNT);
 
         mCourseView.getCtView()
                 .setShowNoon(showNoon)
@@ -299,11 +319,25 @@ public class CourseActivity extends BaseActivity implements CourseContract.View,
         startActivity(intent);
     }
 
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        switch (keyCode) {
+            case KeyEvent.KEYCODE_BACK:
+                if (mDialog != null) {
+                    mDialog.dismiss();
+                    return true;
+                }
+        }
+        return super.onKeyDown(keyCode, event);
+    }
 
     @Override
-    public void onBackPressed() {
-        super.onBackPressed();
-//        System.exit(0);
+    public boolean onTouchEvent(MotionEvent event) {
+        if (mDialog != null) {
+            mDialog.dismiss();
+            System.out.println("去关闭");
+        }
+        return super.onTouchEvent(event);
     }
 
     @Override

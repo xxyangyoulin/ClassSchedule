@@ -52,4 +52,5 @@
     <string name="edit_class_schedule">编辑课表</string>
     <string name="warning">警告</string>
     <string name="theme_preference">风格</string>
+    <string name="classroom">教室</string>
 </resources>

@@ -107,6 +107,30 @@ public class CourseDbDao {
         return null;
     }
 
+    public boolean removeByCsNameId(int id) {
+
+        SQLiteDatabase db = new CourseDbHelper(app.mContext).getWritableDatabase();
+        try {
+            db.beginTransaction();
+            db.delete(CoursesPsc.CourseEntry.TABLE_NAME,
+                    CoursesPsc.CourseEntry.COLUMN_NAME_CS_NAME_ID + "=?"
+                    , new String[]{String.valueOf(id)});
+
+            db.delete(CoursesPsc.CsNameEntry.TABLE_NAME,
+                    CoursesPsc.CsNameEntry.COLUMN_NAME_NAME_ID + "=?",
+                    new String[]{String.valueOf(id)});
+
+            db.setTransactionSuccessful();
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            db.endTransaction();
+            db.close();
+        }
+        return false;
+    }
+
     public void removeCourse(int courseId) {
         SQLiteDatabase db = new CourseDbHelper(app.mContext).getWritableDatabase();
         removeCourse(courseId, db);

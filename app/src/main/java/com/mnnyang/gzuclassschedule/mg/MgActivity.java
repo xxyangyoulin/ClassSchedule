@@ -61,22 +61,31 @@ public class MgActivity extends BaseActivity implements MgContract.View {
         });
     }
 
-    private void deleteDialog(final int tag) {
+    private void deleteDialog(final int id) {
         DialogHelper dh = new DialogHelper();
-        dh.showNormalDialog(this, getString(R.string.warning), "确认要删除该课表吗?",
+        dh.showNormalDialog(this, getString(R.string.warning),
+                "确认要删除该课表吗?",
                 new DialogListener() {
                     @Override
                     public void onPositive(DialogInterface dialog, int which) {
                         super.onPositive(dialog, which);
-                        mPresenter.deleteCsName(tag);
-                        notifiUpdateMainPage(Constant.INTENT_UPDATE_TYPE_COURSE);
+                        deletingDialog(id);
                     }
                 });
     }
 
+    private void deletingDialog(int id) {
+        DialogHelper dh = new DialogHelper();
+        dh.showProgressDialog(this, getString(R.string.deleting),
+                getString(R.string.please_wait_a_moment), false);
+
+        mPresenter.deleteCsName(id,dh);
+    }
+
     private void switchDialog(final int tag) {
         DialogHelper dh = new DialogHelper();
-        dh.showNormalDialog(this, getString(R.string.warning),"确认要切换到该课表吗?",
+        dh.showNormalDialog(this, getString(R.string.warning),
+                "确认要切换到该课表吗?",
                 new DialogListener() {
                     @Override
                     public void onPositive(DialogInterface dialog, int which) {
@@ -107,6 +116,12 @@ public class MgActivity extends BaseActivity implements MgContract.View {
     }
 
     @Override
+    public void deleteFinish() {
+        mPresenter.loadCsNameList();
+        notifiUpdateMainPage(Constant.INTENT_UPDATE_TYPE_COURSE);
+    }
+
+    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
@@ -115,5 +130,4 @@ public class MgActivity extends BaseActivity implements MgContract.View {
         }
         return super.onOptionsItemSelected(item);
     }
-
 }

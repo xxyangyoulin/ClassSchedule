@@ -1,9 +1,12 @@
 package com.mnnyang.gzuclassschedule.setting;
 
+import com.google.gson.Gson;
 import com.mnnyang.gzuclassschedule.R;
 import com.mnnyang.gzuclassschedule.app.app;
 import com.mnnyang.gzuclassschedule.data.bean.Course;
+import com.mnnyang.gzuclassschedule.data.bean.Version;
 import com.mnnyang.gzuclassschedule.data.db.CourseDbDao;
+import com.mnnyang.gzuclassschedule.http.HttpCallback;
 import com.mnnyang.gzuclassschedule.http.HttpUtils;
 import com.mnnyang.gzuclassschedule.utils.Preferences;
 
@@ -69,4 +72,8 @@ public class SettingPresenter implements SettingContract.Presenter {
                 });
     }
 
+    @Override
+    public void checkUpdate() {
+
+    }
 }

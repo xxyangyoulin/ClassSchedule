@@ -56,14 +56,19 @@ public class SettingFragment extends PreferenceFragment implements SettingContra
             feedbackByQQ();
             return true;
         } else if (title.equals(getString(R.string.hide_fab))) {
-            ((BaseActivity)getActivity()).notifiUpdateMainPage(Constant.INTENT_UPDATE_TYPE_OTHER);
+            ((BaseActivity) getActivity()).notifiUpdateMainPage(Constant.INTENT_UPDATE_TYPE_OTHER);
             return true;
         } else if (title.equals(getString(R.string.show_noon_course))) {
-            ((BaseActivity)getActivity()).notifiUpdateMainPage(Constant.INTENT_UPDATE_TYPE_COURSE);
+            ((BaseActivity) getActivity()).notifiUpdateMainPage(Constant.INTENT_UPDATE_TYPE_COURSE);
+            return true;
+        } else if (title.equals(getString(R.string.version))) {
+            mPresenter.checkUpdate();
             return true;
         }
         return super.onPreferenceTreeClick(preferenceScreen, preference);
     }
+
+
 
     private void feedbackByQQ() {
         if (!QQIsAvailable(getActivity())) {
@@ -136,7 +141,7 @@ public class SettingFragment extends PreferenceFragment implements SettingContra
         if (mDeleteDialog != null) {
             mDeleteDialog.hideProgressDialog();
         }
-        ((BaseActivity)getActivity()).notifiUpdateMainPage(
+        ((BaseActivity) getActivity()).notifiUpdateMainPage(
                 Constant.INTENT_UPDATE_TYPE_COURSE);
     }
 
