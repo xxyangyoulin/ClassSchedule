@@ -18,6 +18,8 @@ public interface CourseContract {
 
     interface View extends BaseView<Presenter> {
         void setCourseData(ArrayList<Course> courses);
+        void updateCoursePreference();
+        void updateOtherPreference();
     }
 
 

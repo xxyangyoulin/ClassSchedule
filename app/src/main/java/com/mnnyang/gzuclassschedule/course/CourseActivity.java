@@ -2,7 +2,6 @@ package com.mnnyang.gzuclassschedule.course;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.Color;
@@ -29,13 +28,9 @@ import com.mnnyang.gzuclassschedule.app.Constant;
 import com.mnnyang.gzuclassschedule.custom.CourseView;
 import com.mnnyang.gzuclassschedule.data.bean.Course;
 import com.mnnyang.gzuclassschedule.setting.SettingActivity;
-import com.mnnyang.gzuclassschedule.utils.DialogHelper;
-import com.mnnyang.gzuclassschedule.utils.DialogListener;
 import com.mnnyang.gzuclassschedule.utils.LogUtils;
 import com.mnnyang.gzuclassschedule.utils.Preferences;
 import com.mnnyang.gzuclassschedule.utils.TimeUtils;
-import com.wx.wheelview.adapter.ArrayWheelAdapter;
-import com.wx.wheelview.widget.WheelView;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -66,21 +61,7 @@ public class CourseActivity extends BaseActivity implements CourseContract.View,
 
         mPresenter = new CoursePresenter(this);
         registerReceiver();
-
         updateView();
-    }
-
-    private void registerReceiver() {
-        mUpdateReceiver = new UpdateReceiver();
-        IntentFilter intentFilter = new IntentFilter(Constant.INTENT_UPDATE);
-        registerReceiver(mUpdateReceiver, intentFilter);
-    }
-
-    class UpdateReceiver extends BroadcastReceiver {
-        public void onReceive(Context context, Intent intent) {
-            LogUtils.d(this, "soudao");
-            updateView();
-        }
     }
 
     private void initWeekTitle() {
@@ -121,35 +102,69 @@ public class CourseActivity extends BaseActivity implements CourseContract.View,
                 .setMonthTextSize(10)
                 .setDividerSize(0);
 
-        mCourseView.getCourseTableView()
+        mCourseView.getCtView()
                 .setHorizontalDividerMargin(2);
     }
 
-    private void updateView() {
-        LogUtils.i(this, "updateView");
-        initCurrentWeek();
-        updatePreference();
 
+    private void registerReceiver() {
+        mUpdateReceiver = new UpdateReceiver();
+        IntentFilter intentFilter = new IntentFilter(Constant.INTENT_UPDATE);
+        registerReceiver(mUpdateReceiver, intentFilter);
+    }
+
+    class UpdateReceiver extends BroadcastReceiver {
+        public void onReceive(Context context, Intent intent) {
+            int type = intent.getIntExtra(Constant.INTENT_UPDATE_TYPE, 0);
+
+            System.out.println(type);
+
+            switch (type) {
+                case Constant.INTENT_UPDATE_TYPE_COURSE:
+                    updateCoursePreference();
+                    break;
+                case Constant.INTENT_UPDATE_TYPE_OTHER:
+                    updateOtherPreference();
+                    break;
+            }
+        }
+    }
+
+
+    private void updateView() {
+        updateCoursePreference();
+        updateOtherPreference();
+    }
+
+    public void updateCoursePreference() {
+        updateCurrentWeek();
         mCurrentMonth = TimeUtils.getNowMonth();
         mCourseView.setMonth(mCurrentMonth);
 
         mCurrentScheduleName = Preferences.getString(
                 getString(R.string.app_preference_current_sd_name),
                 getString(R.string.default_course_name));
-        //TODO 为空应该弹出选择框 获取必须在之前设置数据
+
+        boolean showNoon = PreferenceManager
+                .getDefaultSharedPreferences(getBaseContext())
+                .getBoolean(getString(R.string.app_preference_show_noon), false);
+        int maxNode = Preferences.getInt(getString(R.string.app_preference_max_node),Constant.DEFAULT_MAX_NODE_COUNT);
+
+        mCourseView.getCtView()
+                .setShowNoon(showNoon)
+                .setNodeCount(maxNode)
+                .setNoonNode(Preferences.getInt(getString(R.string.app_preference_noon_node), Integer.parseInt(getString(R.string.default_noon_node))));
+
         LogUtils.d(this, "当前课表:" + mCurrentScheduleName);
+
         mPresenter.updateCourseViewData(mCurrentScheduleName);
     }
 
-    private void updatePreference() {
-        fabVisible();
-        boolean showNoon = PreferenceManager.getDefaultSharedPreferences(getBaseContext())
-                .getBoolean(getString(R.string.app_preference_show_noon), false);
-        mCourseView.getCourseTableView()
-                .setShowNoon(showNoon);
+    public void updateOtherPreference() {
+        updateFabVisible();
     }
 
-    private void fabVisible() {
+    private void updateFabVisible() {
         if (PreferenceManager.getDefaultSharedPreferences(getBaseContext())
                 .getBoolean(getString(R.string.app_preference_hide_fab), false)) {
             mFab.hide();
@@ -158,7 +173,7 @@ public class CourseActivity extends BaseActivity implements CourseContract.View,
         mFab.show();
     }
 
-    private void initCurrentWeek() {
+    private void updateCurrentWeek() {
         mCurrentWeekCount = 1;
 
         String beginMillis = Preferences.getString(getString(
@@ -177,7 +192,7 @@ public class CourseActivity extends BaseActivity implements CourseContract.View,
             PreferencesCurrentWeek(1);
         }
         mTvWeekCount.setText("第" + mCurrentWeekCount + "周");
-        mCourseView.getCourseTableView().setCurrentWeekCount(mCurrentWeekCount);
+        mCourseView.getCtView().setCurrentWeekCount(mCurrentWeekCount);
     }
 
     @Override
@@ -258,7 +273,7 @@ public class CourseActivity extends BaseActivity implements CourseContract.View,
                     mCurrentWeekCount = (int) v.getTag();
                     mPopupWindow.dismiss();
                     PreferencesCurrentWeek((Integer) v.getTag());
-                    mCourseView.getCourseTableView().setCurrentWeekCount(mCurrentWeekCount);
+                    mCourseView.getCtView().setCurrentWeekCount(mCurrentWeekCount);
                     mCourseView.updateView();
                     mTvWeekCount.setText("第" + mCurrentWeekCount + "周");
                 }

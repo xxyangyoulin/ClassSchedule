@@ -7,7 +7,7 @@ import android.text.TextUtils;
 import com.mnnyang.gzuclassschedule.R;
 import com.mnnyang.gzuclassschedule.app.Url;
 import com.mnnyang.gzuclassschedule.app.app;
-import com.mnnyang.gzuclassschedule.utils.spec.CourseParse;
+import com.mnnyang.gzuclassschedule.utils.spec.ParseCourse;
 import com.mnnyang.gzuclassschedule.utils.LogUtils;
 import com.zhy.http.okhttp.OkHttpUtils;
 import com.zhy.http.okhttp.callback.FileCallBack;
@@ -46,7 +46,7 @@ public class HttpUtils {
 
             @Override
             public void onResponse(String response, int id) {
-                Url.VIEWSTATE_LOGIN_CODE = CourseParse.parseViewStateCode(response);
+                Url.VIEWSTATE_LOGIN_CODE = ParseCourse.parseViewStateCode(response);
                 LogUtils.d(this, "login_code:" + Url.VIEWSTATE_LOGIN_CODE);
                 toLoadCaptcha(dir, callback);
             }
@@ -133,7 +133,7 @@ public class HttpUtils {
                     @Override
                     public void onResponse(String response, int id) {
                         System.out.println(response);
-                        Url.VIEWSTATE_POST_CODE = CourseParse.parseViewStateCode(response);
+                        Url.VIEWSTATE_POST_CODE = ParseCourse.parseViewStateCode(response);
                         callback.onSuccess(response);
                     }
                 });
@@ -179,7 +179,7 @@ public class HttpUtils {
 
                     @Override
                     public void onResponse(String response, int id) {
-                        Url.VIEWSTATE_POST_CODE = CourseParse.parseViewStateCode(response);
+                        Url.VIEWSTATE_POST_CODE = ParseCourse.parseViewStateCode(response);
                         callback.onSuccess(response);
                     }
                 });

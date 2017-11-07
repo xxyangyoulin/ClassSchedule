@@ -40,7 +40,7 @@ public class DialogHelper {
     /**
      * 一般对话框
      */
-    public void showNormalDialog(@NonNull AppCompatActivity activity, @NonNull String title,
+    public void showNormalDialog(@NonNull Activity activity, @NonNull String title,
                                  @NonNull String massage, @NonNull final DialogListener listener) {
         new AlertDialog.Builder(activity)
                 .setTitle(title)

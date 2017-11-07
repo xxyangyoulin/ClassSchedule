@@ -9,13 +9,13 @@ import android.util.Log;
 
 public class LogUtils {
 
-    public static final String STRING = "mnnyang----->";
-    public static final String SUFFIX = ":::::";
-    public static final boolean DEBUG = true;
+    public static final String STRING = "------->";
+    public static final String SUFFIX = "<-------";
+    public static final boolean SHOW = true;
 
     //信息级别
     public static void i(Object tag, String msg) {
-        if (!DEBUG) {
+        if (!SHOW) {
             return;
         }
         String newTag = getNewTag(tag);
@@ -24,7 +24,7 @@ public class LogUtils {
 
     //DEBUG级别
     public static void d(Object tag, String msg) {
-        if (!DEBUG) {
+        if (!SHOW) {
             return;
         }
         String newTag = getNewTag(tag);
@@ -33,7 +33,7 @@ public class LogUtils {
 
     //警告级别
     public static void w(Object tag, String msg) {
-        if (!DEBUG) {
+        if (!SHOW) {
             return;
         }
         String newTag = getNewTag(tag);
@@ -42,7 +42,7 @@ public class LogUtils {
 
     //详细
     public static void v(Object tag, String msg) {
-        if (!DEBUG) {
+        if (!SHOW) {
             return;
         }
         String newTag = getNewTag(tag);
@@ -51,7 +51,7 @@ public class LogUtils {
 
     //错误级别
     public static void e(Object tag, String msg) {
-        if (!DEBUG) {
+        if (!SHOW) {
             return;
         }
         String newTag = getNewTag(tag);

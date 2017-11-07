@@ -17,11 +17,11 @@ import java.util.List;
 public class Course implements Comparable<Course> {
     private int courseId;
     //所有周
-    public static final int ALL_WEEK = 0;
+    public static final int WEEK_ALL = 0;
     //双周
-    public static final int DOUBLE_WEEK = 1;
+    public static final int WEEK_DOUBLE = 1;
     //单周
-    public static final int SINGLE_WEEK = 2;
+    public static final int WEEK_SINGLE = 2;
 
     public static final int NODE_NOON = -1;
 
@@ -56,7 +56,7 @@ public class Course implements Comparable<Course> {
     /**
      * 单双周类型
      */
-    protected int weekType = ALL_WEEK;
+    protected int weekType = WEEK_ALL;
 
     /**
      * 上课教师
@@ -156,7 +156,7 @@ public class Course implements Comparable<Course> {
         return showOverlap;
     }
 
-    public Course setShowOverlap(boolean showOverlap) {
+    public Course setOverlapShow(boolean showOverlap) {
         this.showOverlap = showOverlap;
         return this;
     }

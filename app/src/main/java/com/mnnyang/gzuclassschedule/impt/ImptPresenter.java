@@ -7,7 +7,7 @@ import com.mnnyang.gzuclassschedule.data.bean.CourseTime;
 import com.mnnyang.gzuclassschedule.data.db.CourseDbDao;
 import com.mnnyang.gzuclassschedule.http.HttpCallback;
 import com.mnnyang.gzuclassschedule.http.HttpUtils;
-import com.mnnyang.gzuclassschedule.utils.spec.CourseParse;
+import com.mnnyang.gzuclassschedule.utils.spec.ParseCourse;
 import com.mnnyang.gzuclassschedule.utils.LogUtils;
 import com.mnnyang.gzuclassschedule.utils.Preferences;
 
@@ -100,7 +100,7 @@ public class ImptPresenter implements ImptContract.Presenter {
     }
 
     private void parseTimeTermHtmlToShow(String html) {
-        CourseTime ct = CourseParse.parseTime(html);
+        CourseTime ct = ParseCourse.parseTime(html);
 
         if (ct == null || ct.years.size() == 0) {
             mImptView.showErrToast("导入学期失败", true);
@@ -117,7 +117,7 @@ public class ImptPresenter implements ImptContract.Presenter {
 
                 @Override
                 public void call(Subscriber<? super String> subscriber) {
-                    final ArrayList<Course> courses = CourseParse.parse(html);
+                    final ArrayList<Course> courses = ParseCourse.parse(html);
 
                     for (Course c : courses) {
                         c.setCsName(courseTimeTerm);

@@ -2,6 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
               android:layout_width="match_parent"
               android:layout_height="match_parent"
+              xmlns:app="http://schemas.android.com/apk/res-auto"
               android:gravity="center_vertical"
               android:orientation="vertical">
 
@@ -13,6 +14,7 @@
         android:orientation="horizontal">
 
         <RadioGroup
+            android:id="@+id/rg_week_type"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="horizontal">
@@ -44,29 +46,30 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
         android:gravity="center"
         android:orientation="horizontal">
 
-        <com.wx.wheelview.widget.WheelView
+        <com.mnnyang.gzuclassschedule.custom.WheelView
             android:id="@+id/wv_week_start"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="8dp"
-            android:layout_weight="1"/>
-        <TextView
-            android:textSize="16sp"
-            android:textColor="@color/primary_dark"
-            android:text="至"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
-        <com.wx.wheelview.widget.WheelView
-            android:id="@+id/wv_week_end"
-            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginLeft="8dp"
-            android:layout_weight="1"/>
+            android:layout_marginRight="8dp"/>
+
+        <View
+            android:layout_width="16dp"
+            android:layout_height="2dp"
+            android:background="@color/primary_dark"/>
+
+        <com.mnnyang.gzuclassschedule.custom.WheelView
+            android:id="@+id/wv_week_end"
+            android:layout_width="wrap_content"
+
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="8dp"
+            android:layout_marginRight="8dp"/>
 
     </LinearLayout>
 

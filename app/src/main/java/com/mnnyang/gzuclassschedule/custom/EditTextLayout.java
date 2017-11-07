@@ -3,6 +3,7 @@ package com.mnnyang.gzuclassschedule.custom;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.res.TypedArray;
+import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
@@ -24,6 +25,7 @@ public class EditTextLayout extends LinearLayout {
     private EditText mEtText;
     private ImageView mIvIcon;
     private ImageView mIvClear;
+    private String mHint;
 
     public EditTextLayout(Context context) {
         super(context);
@@ -43,18 +45,30 @@ public class EditTextLayout extends LinearLayout {
 
     private void init(Context context, AttributeSet attrs) {
         TypedArray typedArray = context.obtainStyledAttributes(attrs, R.styleable.EditTextLayout);
-        String hint = typedArray.getString(R.styleable.EditTextLayout_hint);
+        mHint = typedArray.getString(R.styleable.EditTextLayout_hint);
         String text = typedArray.getString(R.styleable.EditTextLayout_text);
         Drawable icon = typedArray.getDrawable(R.styleable.EditTextLayout_icon);
         Boolean inputEnabled = typedArray.getBoolean(R.styleable.EditTextLayout_input_enabled, true);
+        int textColor = typedArray.getColor(R.styleable.EditTextLayout_textColor, Color.BLACK);
+        int hintColor = typedArray.getColor(R.styleable.EditTextLayout_hintColor, Color.GRAY);
 
         typedArray.recycle();
 
         init();
-        setHint(hint);
+        setHint(mHint);
         setText(text);
         setIcon(icon);
+        setTextColor(textColor);
+        setHintColor(hintColor);
         setInputEnabled(inputEnabled);
+    }
+
+    private void setHintColor(int color) {
+        mEtText.setHintTextColor(color);
+    }
+
+    private void setTextColor(int color) {
+        mEtText.setTextColor(color);
     }
 
     private void init() {
@@ -74,9 +88,9 @@ public class EditTextLayout extends LinearLayout {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
                 mIvClear.setVisibility(hasFocus ? VISIBLE : INVISIBLE);
+                mEtText.setHint(hasFocus?"":mHint);
             }
         });
-
     }
 
     public EditTextLayout setInputEnabled(boolean enabled) {
@@ -85,6 +99,7 @@ public class EditTextLayout extends LinearLayout {
     }
 
     public EditTextLayout setHint(String hint) {
+        mHint = hint;
         mEtText.setHint(hint);
         return this;
     }

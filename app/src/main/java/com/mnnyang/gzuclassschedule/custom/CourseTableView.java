@@ -17,7 +17,6 @@ import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 
@@ -139,6 +138,7 @@ public class CourseTableView extends FrameLayout {
     private int mNodeTextColor = 0xFF909090;
 
     /**
+     * 7
      * 一天课程最大值
      */
     private int mNodeCount = 11;
@@ -223,7 +223,7 @@ public class CourseTableView extends FrameLayout {
         mNameColorMap.clear();
 
         //没有插入时候,导致页面没有刷新
-        updateView();
+        resetView();
 
         for (Course course : courseData) {
             addCourse(course);
@@ -238,15 +238,15 @@ public class CourseTableView extends FrameLayout {
      * @return success return null or return conflict object
      */
     public Course addCourse(@NonNull Course course) {
+        LogUtils.i(this, "addCourse-->" + course.toString());
+
         for (Course c : mCourses) {
             if (c.equals(course)) {
                 LogUtils.e(this, c.getName() + " and " + course.getName() + " conflict");
                 return c;
             }
-            setShowAble(c, course);
+            overlapShow(c, course);
         }
-
-        LogUtils.d(this, course.toString());
 
         if (course.getNodes().size() > 0
                 && course.getWeek() > 0) {
@@ -256,7 +256,6 @@ public class CourseTableView extends FrameLayout {
 
             if (!mIsFirst) {
                 addCourseItemView(course);
-//                updateView();
             }
 
         } else {
@@ -307,16 +306,18 @@ public class CourseTableView extends FrameLayout {
     /**********************addView*******************************/
 
     private void addCourseItemView() {
-        LogUtils.d(this, "addCourseItemView");
+        LogUtils.i(this, "addCourseItemView");
         for (Course course : mCourses) {
             addCourseItemView(course);
         }
     }
 
     private void addNodeView() {
-        int margin = 0;
+        LogUtils.i(this, "addNodeView");
 
-        //如果显示正午 +1
+        removeAllViews();
+
+        int margin = 0;
         int nodeMax = mNodeCount + (mShowNoon ? 1 : 0);
         for (int i = 0; i < nodeMax; i++) {
             String text = "";
@@ -342,12 +343,14 @@ public class CourseTableView extends FrameLayout {
             tv.setTextColor(mNodeTextColor);
             addView(tv);
 
+
             margin += (mItemHeight + mDividerSize);
         }
     }
 
 
     public void addCourseItemView(final Course course) {
+        LogUtils.i(this, "addCourseItemView");
         if (course == null) {
             throw new IllegalArgumentException("course is null !");
         }
@@ -399,13 +402,13 @@ public class CourseTableView extends FrameLayout {
 
     private void setBgAndVisible(Course course, LinearLayout itemView) {
         if (course.getStartWeek() <= mCurrentWeekCount && course.getEndWeek() >= mCurrentWeekCount) {
-            if (course.getWeekType() == Course.ALL_WEEK) {
+            if (course.getWeekType() == Course.WEEK_ALL) {
                 setCurBg(course, itemView);
                 return;
             }
             int remainder = mCurrentWeekCount % 2;
-            if (remainder == 1 && course.getWeekType() == Course.SINGLE_WEEK
-                    || remainder == 0 && course.getWeekType() == Course.DOUBLE_WEEK) {
+            if (remainder == 1 && course.getWeekType() == Course.WEEK_SINGLE
+                    || remainder == 0 && course.getWeekType() == Course.WEEK_DOUBLE) {
                 //当前周的
                 setCurBg(course, itemView);
             } else {
@@ -495,7 +498,6 @@ public class CourseTableView extends FrameLayout {
 
         if (mIsFirst) {
             mIsFirst = false;
-            LogUtils.d(this, "addNodeView 1 ndoeWidth=" + mNodeWidth);
             addNodeView();
             addCourseItemView();
         }
@@ -503,23 +505,28 @@ public class CourseTableView extends FrameLayout {
         super.dispatchDraw(canvas);
     }
 
-
-    public void updateView() {
-        removeAllViews();
-        LogUtils.d(this, "addNodeView 2 ndoeWidth=" + mNodeWidth);
-        addNodeView();
-
-        resetShowAble();
-
-        addCourseItemView();
-        invalidate();
+    @Override
+    protected void onSizeChanged(int w, int h, int oldw, int oldh) {
+        super.onSizeChanged(w, h, oldw, oldh);
+        LogUtils.e(this, "onSizeChanged");
     }
 
-    //重置重叠数据的显示
-    private void resetShowAble() {
+    /**
+     * 重置
+     */
+    public void resetView() {
+        addNodeView();
+        resetOverlapShow();
+        addCourseItemView();
+    }
+
+    /**
+     * 重置重叠数据的显示
+     */
+    private void resetOverlapShow() {
         for (int i = 0; i < mCourses.size(); i++) {
             for (int k = i + 1; k < mCourses.size(); k++) {
-                setShowAble(mCourses.get(i), mCourses.get(k));
+                overlapShow(mCourses.get(i), mCourses.get(k));
             }
         }
     }
@@ -527,16 +534,16 @@ public class CourseTableView extends FrameLayout {
     /**
      * 处理重叠显示问题
      */
-    private void setShowAble(@NonNull Course course, Course c) {
+    private void overlapShow(@NonNull Course course, Course c) {
         if (c.compareTo(course) == 0) {
             LogUtils.d(this, c.getName() + "-" + course.getName() + " overlap");
             int remainder = mCurrentWeekCount % 2;
             if (remainder == 0) {
-                c.setShowOverlap(c.getWeekType() == Course.DOUBLE_WEEK);
-                course.setShowOverlap(course.getWeekType() == Course.DOUBLE_WEEK);
+                c.setOverlapShow(c.getWeekType() == Course.WEEK_DOUBLE);
+                course.setOverlapShow(course.getWeekType() == Course.WEEK_DOUBLE);
             } else {
-                c.setShowOverlap(c.getWeekType() == Course.SINGLE_WEEK);
-                course.setShowOverlap(course.getWeekType() == Course.SINGLE_WEEK);
+                c.setOverlapShow(c.getWeekType() == Course.WEEK_SINGLE);
+                course.setOverlapShow(course.getWeekType() == Course.WEEK_SINGLE);
             }
         }
     }
@@ -931,6 +938,15 @@ public class CourseTableView extends FrameLayout {
 
     public CourseTableView setCourseItemRadius(int courseItemRadius) {
         mCourseItemRadius = courseItemRadius;
+        return this;
+    }
+
+    public int getNodeTextColor() {
+        return mNodeTextColor;
+    }
+
+    public CourseTableView setNodeTextColor(int nodeTextColor) {
+        mNodeTextColor = nodeTextColor;
         return this;
     }
 }

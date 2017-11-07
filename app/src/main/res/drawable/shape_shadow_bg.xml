@@ -8,9 +8,9 @@
                 android:color="#2000"/>
             <padding
                 android:bottom="3dp"
-                android:left="0px"
+                android:left="1px"
                 android:right="2dp"
-                android:top="0px"/>
+                android:top="1px"/>
 
             <corners android:radius="3dp"/>
         </shape>

@@ -28,11 +28,7 @@ public class CsName {
 
     @Override
     public boolean equals(Object obj) {
-        if (obj == null) {
-            return false;
-        }
-        return obj.getClass() == CsName.class
-                && csNameId == ((CsName) obj).getCsNameId();
+        return obj != null && obj.getClass() == CsName.class && csNameId == ((CsName) obj).getCsNameId();
     }
 
     @Override

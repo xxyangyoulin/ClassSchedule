@@ -1,36 +1,29 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
               android:layout_width="match_parent"
-              android:layout_height="match_parent"
+              android:layout_height="140dp"
               android:gravity="center_vertical"
               android:orientation="horizontal">
 
-    <com.wx.wheelview.widget.WheelView
+    <com.mnnyang.gzuclassschedule.custom.WheelView
         android:id="@+id/wv_week"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="8dp"
-        android:layout_weight="1"/>
-
-    <com.wx.wheelview.widget.WheelView
-        android:id="@+id/wv_start_node"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="8dp"
-        android:layout_weight="1"/>
-
-    <TextView
-        android:gravity="center"
         android:layout_width="wrap_content"
-        android:textSize="20sp"
-        android:layout_height="match_parent"
-        android:text="-"/>
+        android:layout_height="140dp"/>
 
-    <com.wx.wheelview.widget.WheelView
+    <com.mnnyang.gzuclassschedule.custom.WheelView
+        android:id="@+id/wv_start_node"
+        android:layout_width="wrap_content"
+        android:layout_height="140dp"
+        android:layout_weight="1"/>
+
+    <View
+        android:layout_width="16dp"
+        android:layout_height="2dp"
+        android:background="@color/primary_dark"/>
+
+    <com.mnnyang.gzuclassschedule.custom.WheelView
         android:id="@+id/wv_end_node"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="8dp"
-        android:layout_marginRight="8dp"
+        android:layout_width="wrap_content"
+        android:layout_height="140dp"
         android:layout_weight="1"/>
 </LinearLayout>

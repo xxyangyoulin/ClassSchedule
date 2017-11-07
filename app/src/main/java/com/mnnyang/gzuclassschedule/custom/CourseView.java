@@ -14,13 +14,11 @@ import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
-import com.mnnyang.gzuclassschedule.R;
 import com.mnnyang.gzuclassschedule.data.bean.Course;
 
 import java.util.ArrayList;
 
 import static com.mnnyang.gzuclassschedule.custom.util.Utils.dip2px;
-import static com.mnnyang.gzuclassschedule.custom.util.Utils.getDrawable;
 
 /**
  * Created by mnnyang on 17-10-20.
@@ -79,7 +77,7 @@ public class CourseView extends LinearLayout {
     private boolean mShowWeekend = true;
 
     private CourseTableView.OnItemClickListener mItemClickListener;
-    private CourseTableView mCourseTableView = new CourseTableView(getContext());
+    private CourseTableView ctView = new CourseTableView(getContext());
     private int mMonthTextColor;
     private int mWeekTextColor;
 
@@ -106,7 +104,7 @@ public class CourseView extends LinearLayout {
     }
 
     public CourseView setCourseData(ArrayList<Course> courses) {
-        mCourseTableView.setCourseData(courses);
+        ctView.setCourseData(courses);
         return this;
     }
 
@@ -115,12 +113,12 @@ public class CourseView extends LinearLayout {
      * @return
      */
     public Course addCourse(@NonNull Course course) {
-        return mCourseTableView.addCourse(course);
+        return ctView.addCourse(course);
     }
 
     private void initDefaultSize() {
         mWeekHeight = dip2px(getContext(), 45);
-        mMonthWidth = dip2px(getContext(), 24);
+        mMonthWidth = dip2px(getContext(), 28);
         mDividerSize = dip2px(getContext(), 1);
         mMonthTextSize = 13;
         mWeekTextSize = 13;
@@ -154,16 +152,12 @@ public class CourseView extends LinearLayout {
     public void updateView() {
         removeAllViews();
         addTopWeekView();
-
-        ViewGroup viewGroup = (ViewGroup) mCourseTableView.getParent();
-        viewGroup.removeAllViews();
+        ViewGroup viewGroup = (ViewGroup) ctView.getParent();
+        if (viewGroup != null) viewGroup.removeAllViews();
 
         addCourseTableView();
 
-        if (!isFirst)
-            mCourseTableView.updateView();
-
-//        invalidate();
+        if (!isFirst) ctView.resetView();
     }
 
     private void addCourseTableView() {
@@ -172,13 +166,13 @@ public class CourseView extends LinearLayout {
 //        TODO 记录
         scrollView.setOverScrollMode(OVER_SCROLL_NEVER);
 
-        mCourseTableView.setTopWeekHeight(mWeekHeight)
+        ctView.setTopWeekHeight(mWeekHeight)
                 .setOnItemClickListener(mItemClickListener)
                 .setNodeWidth(mMonthWidth);
 
-        mCourseTableView.setHorizontalFadingEdgeEnabled(false);
+        ctView.setHorizontalFadingEdgeEnabled(false);
 
-        scrollView.addView(mCourseTableView);
+        scrollView.addView(ctView);
         addView(scrollView);
     }
 
@@ -230,8 +224,8 @@ public class CourseView extends LinearLayout {
 
     public CourseView setOnItemClickListener(CourseTableView.OnItemClickListener itemClickListener) {
         mItemClickListener = itemClickListener;
-        if (mCourseTableView != null) {
-            mCourseTableView.setOnItemClickListener(itemClickListener);
+        if (ctView != null) {
+            ctView.setOnItemClickListener(itemClickListener);
         }
         return this;
     }
@@ -316,12 +310,12 @@ public class CourseView extends LinearLayout {
 
     public CourseView setShowWeekend(boolean showWeekend) {
         mShowWeekend = showWeekend;
-        mCourseTableView.setShowWeekend(showWeekend);
+        ctView.setShowWeekend(showWeekend);
         return this;
     }
 
-    public CourseTableView getCourseTableView() {
-        return mCourseTableView;
+    public CourseTableView getCtView() {
+        return ctView;
     }
 
     public int getMonthTextColor() {

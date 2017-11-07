@@ -23,7 +23,7 @@ import java.util.regex.Pattern;
  * Created by mnnyang on 17-10-19.
  */
 
-public class CourseParse {
+public class ParseCourse {
     private static final String pattern = "第.*节";
     private static final String[] other = {"时间", "星期一", "星期二", "星期三", "星期四", "星期五", "星期六",
             "星期日", "早晨", "上午", "下午", "晚上"};
@@ -36,9 +36,9 @@ public class CourseParse {
         Elements inputs = doc.getElementsByAttributeValue("name", Url.__VIEWSTATE);
         if (inputs.size() > 0) {
             code = inputs.get(0).attr("value");
-            LogUtils.d(CoursesPsc.class, "找到code=" + code);
+            LogUtils.d(CoursesPsc.class, "finded __VIEWSTATE code=" + code);
         } else {
-            LogUtils.d(CoursesPsc.class, "没有找到code");
+            LogUtils.d(CoursesPsc.class, "Not find __VIEWSTATE code");
         }
 
         return code;
@@ -57,7 +57,7 @@ public class CourseParse {
 
         Elements selects = doc.getElementsByTag("select");
         if (selects == null || selects.size() < 2) {
-            LogUtils.e(CourseParse.class, "select < 2 ");
+            LogUtils.e(ParseCourse.class, "select < 2 ");
             return null;
         }
 
@@ -121,7 +121,7 @@ public class CourseParse {
                     //other data
                     continue;
                 }
-                courses.addAll(CourseParse.parseTextInfo(courseSource, node));
+                courses.addAll(ParseCourse.parseTextInfo(courseSource, node));
             }
         }
 
@@ -164,7 +164,7 @@ public class CourseParse {
             course.setSource(source);
             course.setName(source);
 
-            Log.e("CourseParse", "parseTextInfo omit:" + source);
+            Log.e("ParseCourse", "parseTextInfo omit:" + source);
         }
 
         return courses;
@@ -184,9 +184,9 @@ public class CourseParse {
 
         //单双周
         if (time.contains("|单周")) {
-            course.setWeekType(Course.SINGLE_WEEK);
+            course.setWeekType(Course.WEEK_SINGLE);
         } else if (time.contains("|双周")) {
-            course.setWeekType(Course.DOUBLE_WEEK);
+            course.setWeekType(Course.WEEK_DOUBLE);
         }
 
         //节数

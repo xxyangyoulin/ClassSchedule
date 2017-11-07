@@ -12,6 +12,7 @@ import android.view.View;
 
 import com.mnnyang.gzuclassschedule.BaseActivity;
 import com.mnnyang.gzuclassschedule.R;
+import com.mnnyang.gzuclassschedule.app.Constant;
 import com.mnnyang.gzuclassschedule.course.CourseActivity;
 import com.mnnyang.gzuclassschedule.data.bean.CsItem;
 import com.mnnyang.gzuclassschedule.utils.DialogHelper;
@@ -32,7 +33,7 @@ public class MgActivity extends BaseActivity implements MgContract.View {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_select);
-        initBackToolbar("课表管理");
+        initBackToolbar(getString(R.string.kb_manage));
         initRecyclerView();
         mPresenter = new MgPresenter(this, csItems);
         mPresenter.start();
@@ -62,33 +63,33 @@ public class MgActivity extends BaseActivity implements MgContract.View {
 
     private void deleteDialog(final int tag) {
         DialogHelper dh = new DialogHelper();
-        dh.showNormalDialog(this, "警告", "确认要删除该课表吗?",
+        dh.showNormalDialog(this, getString(R.string.warning), "确认要删除该课表吗?",
                 new DialogListener() {
                     @Override
                     public void onPositive(DialogInterface dialog, int which) {
                         super.onPositive(dialog, which);
                         mPresenter.deleteCsName(tag);
-                        notifiUpdate();
+                        notifiUpdateMainPage(Constant.INTENT_UPDATE_TYPE_COURSE);
                     }
                 });
     }
 
     private void switchDialog(final int tag) {
         DialogHelper dh = new DialogHelper();
-        dh.showNormalDialog(this, "警告", "确认要切换到该课表吗?",
+        dh.showNormalDialog(this, getString(R.string.warning),"确认要切换到该课表吗?",
                 new DialogListener() {
                     @Override
                     public void onPositive(DialogInterface dialog, int which) {
                         super.onPositive(dialog, which);
                         mPresenter.switchCsName(tag);
-                        notifiUpdate();
+                        notifiUpdateMainPage(Constant.INTENT_UPDATE_TYPE_COURSE);
                     }
                 });
     }
 
     @Override
     public void showList(ArrayList<CsItem> csNames) {
-        String curName = Preferences.getString(getString(R.string.app_preference_current_sd_name), "");
+        String curName = Preferences.getString(getString(R.string.app_preference_current_sd_name), getString(R.string.default_course_name));
         mAdapter.setCurrentName(curName);
         mAdapter.notifyDataSetChanged();
     }
@@ -115,12 +116,4 @@ public class MgActivity extends BaseActivity implements MgContract.View {
         return super.onOptionsItemSelected(item);
     }
 
-    /**
-     * 通知更新
-     */
-    private void notifiUpdate() {
-        Intent intent = new Intent();
-        intent.setAction("com.mnnyang.update");
-        sendBroadcast(intent);
-    }
 }

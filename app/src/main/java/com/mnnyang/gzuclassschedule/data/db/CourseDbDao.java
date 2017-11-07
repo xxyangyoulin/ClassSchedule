@@ -185,9 +185,6 @@ public class CourseDbDao {
 
     /**
      * 根据课程表名获取课程表名id 不存在则插入
-     *
-     * @param csName
-     * @return
      */
     public int getCsNameId(String csName) {
         SQLiteDatabase db = new CourseDbHelper(app.mContext).getWritableDatabase();
@@ -270,8 +267,7 @@ public class CourseDbDao {
             int nameId = cursor.getInt(cursor.getColumnIndex(CoursesPsc.CsNameEntry.COLUMN_NAME_NAME_ID));
             String name = cursor.getString(cursor.getColumnIndex(CoursesPsc.CsNameEntry.COLUMN_NAME_NAME));
 
-            //TODO 额外数据
-//            db.query(CoursesPsc.CourseEntry.TABLE_NAME,);
+            //TODO 额外数据 例如数据的条数
 
             CsItem csItem = new CsItem();
             csItem.setCsName(new CsName().setName(name).setCsNameId(nameId));

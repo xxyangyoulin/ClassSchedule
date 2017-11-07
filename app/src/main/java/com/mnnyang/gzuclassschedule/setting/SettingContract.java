@@ -17,6 +17,7 @@ public interface SettingContract {
 
     interface View extends BaseView<Presenter> {
         void showNotice(String notice);
+        void showDeleteConfirmDialog();
         void showDeleting();
         void hideDeleting();
     }

@@ -25,12 +25,13 @@
             android:id="@+id/et_course_name"
             android:layout_width="match_parent"
             android:layout_height="100dp"
-            android:background="@color/primary"
+            android:background="@null"
             android:hint="@string/course_name"
             android:paddingLeft="18dp"
             android:paddingRight="18dp"
             android:singleLine="true"
-            android:textColor="#90000000"
+            android:textColor="@color/white_f1"
+            android:textColorHint="@color/primary_dark"
             android:textSize="32sp"/>
     </android.support.design.widget.AppBarLayout>
 
@@ -57,8 +58,10 @@
                 <com.mnnyang.gzuclassschedule.custom.EditTextLayout
                     android:id="@+id/etl_classroom"
                     android:layout_width="match_parent"
+                    app:hintColor="@color/color_gary_40"
                     android:layout_height="wrap_content"
                     app:hint="输入上课教室"
+                    app:textColor="@color/secondary_text"
                     app:icon="@drawable/ic_svg_classroom"/>
 
                 <View
@@ -68,9 +71,11 @@
 
                 <com.mnnyang.gzuclassschedule.custom.EditTextLayout
                     android:id="@+id/etl_teacher"
+                    app:hintColor="@color/color_gary_40"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     app:hint="输入上课教师"
+                    app:textColor="@color/secondary_text"
                     app:icon="@drawable/ic_svg_teacher"/>
 
                 <View
@@ -82,11 +87,11 @@
                     android:id="@+id/etl_week_range"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    app:hintColor="@color/color_gary_40"
                     app:hint="选择周数始末"
+                    app:textColor="@color/secondary_text"
                     app:icon="@drawable/ic_svg_node"
                     app:input_enabled="false"/>
-
-
             </LinearLayout>
 
             <include layout="@layout/layout_add_time_item"/>

@@ -3,14 +3,15 @@
                   android:layout_width="match_parent"
                   android:layout_height="match_parent"
                   android:layout="@layout/preference_item"
-                  android:title="设置">
+                  android:title="@string/setting">
 
     <PreferenceCategory
-        android:title="编辑课表">
+        android:title="@string/edit_class_schedule">
         <Preference
             android:layout="@layout/preference_item"
             android:summary="手动添加课程表数据"
             android:title="@string/user_add"/>
+
         <Preference
             android:layout="@layout/preference_item"
             android:summary="登录贵州大学教务系统导入课程表"
@@ -27,43 +28,52 @@
             android:title="@string/del_all"/>
     </PreferenceCategory>
 
-
-    <!--
-
-    -->
     <PreferenceCategory
-        android:title="偏好设置">
+        android:title="@string/text_preference">
+
+        <Preference
+            android:layout="@layout/preference_item_theme"
+            android:summary=""
+            android:title="@string/theme_preference"/>
+
+        <Preference
+            android:layout="@layout/preference_item"
+            android:summary=""
+            android:title="@string/other_preference"/>
+
         <CheckBoxPreference
             android:key="@string/app_preference_show_noon"
             android:layout="@layout/preference_item"
-            android:summary="显示中午时间的课程"
-            android:title="显示中午课程"/>
+            android:summary="@string/show_noon_course_summary"
+            android:title="@string/show_noon_course"/>
 
         <CheckBoxPreference
             android:key="@string/app_preference_hide_fab"
             android:layout="@layout/preference_item"
-            android:summary="隐藏主界面右下角添加按钮"
-            android:title="隐藏添加按钮"/>
+            android:summary="@string/hide_fab_summary"
+            android:title="@string/hide_fab"/>
 
-        <Preference
-            android:layout="@layout/preference_item"
-            android:summary="..."
-            android:title="其他待开发TODO"/>
+
     </PreferenceCategory>
 
     <!--android:layout="@layout/preference_category_widget"-->
     <PreferenceCategory
-        android:title="其他">
+        android:title="@string/other">
+
+        <Preference
+            android:layout="@layout/preference_item"
+            android:summary="QQ反馈问题"
+            android:title="@string/feedback"/>
 
         <Preference
             android:layout="@layout/preference_item"
             android:summary="@string/app_version"
-            android:title="当前版本"/>
+            android:title="@string/version"/>
 
-        <Preference
-            android:layout="@layout/preference_item"
-            android:summary="博客：http"
-            android:title="TomChen"/>
+        <!--<Preference-->
+        <!--android:layout="@layout/preference_item"-->
+        <!--android:summary="博客：http"-->
+        <!--android:title="TomChen"/>-->
     </PreferenceCategory>
 
 </PreferenceScreen>
