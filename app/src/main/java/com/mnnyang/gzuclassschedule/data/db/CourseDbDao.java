@@ -8,7 +8,7 @@ import com.mnnyang.gzuclassschedule.app.app;
 import com.mnnyang.gzuclassschedule.data.bean.Course;
 import com.mnnyang.gzuclassschedule.data.bean.CsItem;
 import com.mnnyang.gzuclassschedule.data.bean.CsName;
-import com.mnnyang.gzuclassschedule.utils.LogUtils;
+import com.mnnyang.gzuclassschedule.utils.LogUtil;
 
 import java.util.ArrayList;
 
@@ -72,15 +72,18 @@ public class CourseDbDao {
      * 更新
      */
     public Course updateCourse(Course course) {
+
+        Course conflictCourse = hasConflictCourse(course);
+        if (null != conflictCourse) {
+            return conflictCourse;
+        }
+
         SQLiteDatabase db = new CourseDbHelper(app.mContext).getWritableDatabase();
         db.beginTransaction();
 
         try {
-            Course conflictCourse = hasConflictCourse(course);
-            if (null != conflictCourse) {
-                return conflictCourse;
-            }
-            course.setCsNameId(getCsNameId(course.getCsName()));
+
+            course.setCsNameId(getCsNameId(course.getCsName(), db));
 
             ContentValues values = new ContentValues();
             putAllNotId(course, values);
@@ -174,7 +177,7 @@ public class CourseDbDao {
     private Course hasConflictCourse(Course course) {
         SQLiteDatabase db = new CourseDbHelper(app.mContext).getWritableDatabase();
 
-        int csNameId = getCsNameId(course.getCsName());
+        int csNameId = getCsNameId(course.getCsName(), db);
         course.setCsNameId(csNameId);
 
         String sql = "select * from " + CoursesPsc.CourseEntry.TABLE_NAME
@@ -196,7 +199,7 @@ public class CourseDbDao {
             nodeCursor.close();
 
             if (course.equals(conflictCourse)) {
-                LogUtils.e(this, course.getName() + " 和 " + conflictCourse.toString() + "冲突!!");
+                LogUtil.e(this, course.getName() + " 和 " + conflictCourse.toString() + "冲突!!");
                 cursor.close();
                 db.close();
                 return conflictCourse;
@@ -212,6 +215,13 @@ public class CourseDbDao {
      */
     public int getCsNameId(String csName) {
         SQLiteDatabase db = new CourseDbHelper(app.mContext).getWritableDatabase();
+        int id = getCsNameId(csName, db);
+
+        db.close();
+        return id;
+    }
+
+    public int getCsNameId(String csName, SQLiteDatabase db) {
         String sql = "select * from " + CoursesPsc.CsNameEntry.TABLE_NAME
                 + " where `" + CoursesPsc.CsNameEntry.COLUMN_NAME_NAME + "`='" + csName + "'";
         System.out.println(sql);
@@ -219,15 +229,11 @@ public class CourseDbDao {
         if (cursor.moveToNext()) {
             int id = cursor.getInt(cursor.getColumnIndex(CoursesPsc.CsNameEntry.COLUMN_NAME_NAME_ID));
             cursor.close();
-            db.close();
             return id;
         } else {
             ContentValues values = new ContentValues();
             values.put(CoursesPsc.CsNameEntry.COLUMN_NAME_NAME, csName);
-
-            int id = (int) db.insert(CoursesPsc.CsNameEntry.TABLE_NAME, null, values);
-            db.close();
-            return id;
+            return (int) db.insert(CoursesPsc.CsNameEntry.TABLE_NAME, null, values);
         }
     }
 
@@ -251,9 +257,11 @@ public class CourseDbDao {
      * 加载课程数据
      */
     public ArrayList<Course> loadCourses(String csName) {
-        int csNameId = getCsNameId(csName);
 
         SQLiteDatabase db = new CourseDbHelper(app.mContext).getWritableDatabase();
+
+        int csNameId = getCsNameId(csName, db);
+
         String sql = "select * from " + CoursesPsc.CourseEntry.TABLE_NAME + " where "
                 + CoursesPsc.CourseEntry.COLUMN_NAME_CS_NAME_ID + "='" + csNameId + "'";
 

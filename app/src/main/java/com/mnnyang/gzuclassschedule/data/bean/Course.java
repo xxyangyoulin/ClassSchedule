@@ -3,8 +3,9 @@ package com.mnnyang.gzuclassschedule.data.bean;
 import android.support.annotation.NonNull;
 
 
-import com.mnnyang.gzuclassschedule.utils.LogUtils;
+import com.mnnyang.gzuclassschedule.utils.LogUtil;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -14,7 +15,7 @@ import java.util.List;
  * Created by mnnyang on 17-10-22.
  */
 
-public class Course implements Comparable<Course> {
+public class Course implements Comparable<Course>,Serializable {
     private int courseId;
     //所有周
     public static final int WEEK_ALL = 0;
@@ -206,7 +207,7 @@ public class Course implements Comparable<Course> {
             }
             setNodes(intNodes);
         } catch (Exception e) {
-            LogUtils.d(this, "setNodes(String[] nodes) Integer.decode(nodes[i]); err");
+            LogUtil.d(this, "setNodes(String[] nodes) Integer.decode(nodes[i]); err");
             e.printStackTrace();
         }
     }
@@ -228,7 +229,7 @@ public class Course implements Comparable<Course> {
             for (int i = 1; i < nodes.length; i++) {
                 tempNode = nodes[i];
                 if (tempNode - lastNode != 1) {
-                    LogUtils.d(this, "setNodes(String[] nodes) { --> incontinuity" + lastNode + "-" + tempNode);
+                    LogUtil.d(this, "setNodes(String[] nodes) { --> incontinuity" + lastNode + "-" + tempNode);
                     return;
                 }
                 addNode(tempNode);

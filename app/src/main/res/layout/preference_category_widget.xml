@@ -11,8 +11,8 @@
         android:layout_height="wrap_content"
         android:paddingLeft="8dp"
         android:paddingTop="16dp"
-        android:textColor="@color/primary"
         android:text="indroduce"
-        android:textSize="14sp" />
+        android:textColor="?android:attr/colorAccent"
+        android:textSize="14sp"/>
 
 </LinearLayout>

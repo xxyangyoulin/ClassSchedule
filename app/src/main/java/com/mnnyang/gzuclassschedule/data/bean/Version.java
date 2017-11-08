@@ -12,31 +12,34 @@ public class Version {
      * msg : update info
      */
 
-    private String version;
+    private int version;
     private String code;
     private String msg;
 
-    public String getVersion() {
+    public int getVersion() {
         return version;
     }
 
-    public void setVersion(String version) {
+    public Version setVersion(int version) {
         this.version = version;
+        return this;
     }
 
     public String getCode() {
         return code;
     }
 
-    public void setCode(String code) {
+    public Version setCode(String code) {
         this.code = code;
+        return this;
     }
 
     public String getMsg() {
         return msg;
     }
 
-    public void setMsg(String msg) {
+    public Version setMsg(String msg) {
         this.msg = msg;
+        return this;
     }
 }

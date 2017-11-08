@@ -7,7 +7,7 @@ import android.util.Log;
  * Created by mnnyang on 17-4-8.
  */
 
-public class LogUtils {
+public class LogUtil {
 
     public static final String STRING = "------->";
     public static final String SUFFIX = "<-------";

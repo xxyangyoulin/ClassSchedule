@@ -8,7 +8,7 @@ import com.mnnyang.gzuclassschedule.data.db.CourseDbDao;
 import com.mnnyang.gzuclassschedule.http.HttpCallback;
 import com.mnnyang.gzuclassschedule.http.HttpUtils;
 import com.mnnyang.gzuclassschedule.utils.spec.ParseCourse;
-import com.mnnyang.gzuclassschedule.utils.LogUtils;
+import com.mnnyang.gzuclassschedule.utils.LogUtil;
 import com.mnnyang.gzuclassschedule.utils.Preferences;
 
 import java.util.ArrayList;
@@ -46,8 +46,8 @@ public class ImptPresenter implements ImptContract.Presenter {
 
     @Override
     public void importCustomCourses(final String year, final String term) {
-        LogUtils.d(this, "importCustomCourses");
-        LogUtils.d(this, "sy" + mSelectYear + "st" + mSelectterm + "y" + year + "t" + term);
+        LogUtil.d(this, "importCustomCourses");
+        LogUtil.d(this, "sy" + mSelectYear + "st" + mSelectterm + "y" + year + "t" + term);
         if (year.equals(mSelectYear) && term.equals(mSelectterm)) {
             importDefaultCourses(year, term);
             return;
@@ -70,7 +70,7 @@ public class ImptPresenter implements ImptContract.Presenter {
 
     @Override
     public void importDefaultCourses(final String year, final String term) {
-        LogUtils.d(this, "importCustomCourses");
+        LogUtil.d(this, "importCustomCourses");
         mImptView.showImpting();
         parseCoursesHtmlToDb(mNormalCourseHtml, year + "-" + term);
     }
@@ -132,7 +132,7 @@ public class ImptPresenter implements ImptContract.Presenter {
 
                         @Override
                         public void onCompleted() {
-                            LogUtils.d(this, "完成");
+                            LogUtil.d(this, "完成");
                         }
 
                         @Override

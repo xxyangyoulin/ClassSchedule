@@ -61,7 +61,7 @@
         <View
             android:layout_width="16dp"
             android:layout_height="2dp"
-            android:background="@color/primary_dark"/>
+            android:background="?android:attr/colorPrimary"/>
 
         <com.mnnyang.gzuclassschedule.custom.WheelView
             android:id="@+id/wv_week_end"

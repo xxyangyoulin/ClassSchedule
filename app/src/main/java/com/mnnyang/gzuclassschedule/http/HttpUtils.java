@@ -4,13 +4,11 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.text.TextUtils;
 
-import com.google.gson.Gson;
 import com.mnnyang.gzuclassschedule.R;
 import com.mnnyang.gzuclassschedule.app.Url;
 import com.mnnyang.gzuclassschedule.app.app;
-import com.mnnyang.gzuclassschedule.data.bean.Version;
 import com.mnnyang.gzuclassschedule.utils.spec.ParseCourse;
-import com.mnnyang.gzuclassschedule.utils.LogUtils;
+import com.mnnyang.gzuclassschedule.utils.LogUtil;
 import com.zhy.http.okhttp.OkHttpUtils;
 import com.zhy.http.okhttp.callback.FileCallBack;
 import com.zhy.http.okhttp.callback.StringCallback;
@@ -49,7 +47,7 @@ public class HttpUtils {
             @Override
             public void onResponse(String response, int id) {
                 Url.VIEWSTATE_LOGIN_CODE = ParseCourse.parseViewStateCode(response);
-                LogUtils.d(this, "login_code:" + Url.VIEWSTATE_LOGIN_CODE);
+                LogUtil.d(this, "login_code:" + Url.VIEWSTATE_LOGIN_CODE);
                 toLoadCaptcha(dir, callback);
             }
         });
@@ -96,7 +94,7 @@ public class HttpUtils {
 
             @Override
             public void onResponse(String response, int id) {
-                LogUtils.e(this, response);
+                LogUtil.e(this, response);
 
                 if (response.contains(app.mContext.getString(R.string.captcha_err))) {
                     callback.onFail(app.mContext.getString(R.string.captcha_err));
@@ -120,7 +118,7 @@ public class HttpUtils {
      * @param callback
      */
     public void toImpt(String xh, final HttpCallback<String> callback) {
-        LogUtils.d(this, "get normal+" + xh);
+        LogUtil.d(this, "get normal+" + xh);
         OkHttpUtils.get().url(Url.URL_LOAD_COURSE)
                 .addHeader("Referer", Url.URL_LOAD_COURSE + "?xh=" + xh)
                 .addParams(Url.PARAM_XH, xh)
@@ -149,7 +147,7 @@ public class HttpUtils {
      */
     public void toImpt(String xh, String courseTime, String term,
                        final HttpCallback<String> callback) {
-        LogUtils.d("toImpt", "xh" + xh + "c" + courseTime + "t" + term);
+        LogUtil.d("toImpt", "xh" + xh + "c" + courseTime + "t" + term);
         OkHttpUtils.post().url(Url.URL_LOAD_COURSE + "?xh=" + xh + "&xm=%D1%EE%D3%D1%C1%D6&gnmkdm=N121603")
                 .addHeader("Referer", Url.URL_LOAD_COURSE + "?xh=" + xh + "&xm=%D1%EE%D3%D1%C1%D6&gnmkdm=N121603")
                 .addHeader("Connection", "keep-alive")

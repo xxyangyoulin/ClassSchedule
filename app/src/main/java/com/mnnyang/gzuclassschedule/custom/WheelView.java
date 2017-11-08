@@ -20,8 +20,7 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.mnnyang.gzuclassschedule.R;
-import com.mnnyang.gzuclassschedule.utils.LogUtils;
-import com.mnnyang.gzuclassschedule.utils.ToastUtils;
+import com.mnnyang.gzuclassschedule.utils.ColorUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -286,7 +285,8 @@ public class WheelView extends ScrollView {
                 return;
             }
             if (position == i) {
-                itemView.setTextColor(getResources().getColor(R.color.primary));
+
+                itemView.setTextColor(ColorUtil.getColor(context, R.attr.colorPrimary));
             } else {
                 itemView.setTextColor(Color.parseColor("#bbbbbb"));
             }
@@ -325,7 +325,7 @@ public class WheelView extends ScrollView {
 
         if (null == paint) {
             paint = new Paint();
-            paint.setColor(getResources().getColor(R.color.accent));
+            paint.setColor(ColorUtil.getColor(context, R.attr.colorPrimary));
             paint.setStrokeWidth(dip2px(1f));
         }
 

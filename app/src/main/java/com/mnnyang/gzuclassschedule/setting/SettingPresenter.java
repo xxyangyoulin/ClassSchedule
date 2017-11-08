@@ -1,5 +1,9 @@
 package com.mnnyang.gzuclassschedule.setting;
 
+import android.app.Activity;
+import android.content.DialogInterface;
+import android.support.v7.app.AlertDialog;
+
 import com.google.gson.Gson;
 import com.mnnyang.gzuclassschedule.R;
 import com.mnnyang.gzuclassschedule.app.app;
@@ -8,7 +12,11 @@ import com.mnnyang.gzuclassschedule.data.bean.Version;
 import com.mnnyang.gzuclassschedule.data.db.CourseDbDao;
 import com.mnnyang.gzuclassschedule.http.HttpCallback;
 import com.mnnyang.gzuclassschedule.http.HttpUtils;
+import com.mnnyang.gzuclassschedule.utils.ActivityUtil;
+import com.mnnyang.gzuclassschedule.utils.DialogHelper;
+import com.mnnyang.gzuclassschedule.utils.LogUtil;
 import com.mnnyang.gzuclassschedule.utils.Preferences;
+import com.mnnyang.gzuclassschedule.utils.VersionUpdate;
 
 import java.util.ArrayList;
 
@@ -70,10 +78,5 @@ public class SettingPresenter implements SettingContract.Presenter {
                         }
                     }
                 });
-    }
-
-    @Override
-    public void checkUpdate() {
-
     }
 }

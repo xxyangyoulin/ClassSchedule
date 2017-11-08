@@ -16,7 +16,7 @@ import com.mnnyang.gzuclassschedule.app.Constant;
 import com.mnnyang.gzuclassschedule.course.CourseActivity;
 import com.mnnyang.gzuclassschedule.data.bean.CourseTime;
 import com.mnnyang.gzuclassschedule.utils.DialogHelper;
-import com.mnnyang.gzuclassschedule.utils.LogUtils;
+import com.mnnyang.gzuclassschedule.utils.LogUtil;
 import com.mnnyang.gzuclassschedule.utils.Preferences;
 import com.mnnyang.gzuclassschedule.utils.ScreenUtils;
 import com.mnnyang.gzuclassschedule.utils.ToastUtils;
@@ -100,7 +100,7 @@ public class ImptActivity extends BaseActivity implements
 
     @Override
     public void hideImpting() {
-        LogUtils.d(this, "hideimp");
+        LogUtil.d(this, "hideimp");
         if (mHelper != null) mHelper.hideProgressDialog();
     }
 

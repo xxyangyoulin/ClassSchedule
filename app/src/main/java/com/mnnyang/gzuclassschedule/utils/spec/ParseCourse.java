@@ -8,7 +8,7 @@ import com.mnnyang.gzuclassschedule.app.Url;
 import com.mnnyang.gzuclassschedule.data.bean.Course;
 import com.mnnyang.gzuclassschedule.data.bean.CourseTime;
 import com.mnnyang.gzuclassschedule.data.db.CoursesPsc;
-import com.mnnyang.gzuclassschedule.utils.LogUtils;
+import com.mnnyang.gzuclassschedule.utils.LogUtil;
 
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -36,9 +36,9 @@ public class ParseCourse {
         Elements inputs = doc.getElementsByAttributeValue("name", Url.__VIEWSTATE);
         if (inputs.size() > 0) {
             code = inputs.get(0).attr("value");
-            LogUtils.d(CoursesPsc.class, "finded __VIEWSTATE code=" + code);
+            LogUtil.d(CoursesPsc.class, "finded __VIEWSTATE code=" + code);
         } else {
-            LogUtils.d(CoursesPsc.class, "Not find __VIEWSTATE code");
+            LogUtil.d(CoursesPsc.class, "Not find __VIEWSTATE code");
         }
 
         return code;
@@ -57,7 +57,7 @@ public class ParseCourse {
 
         Elements selects = doc.getElementsByTag("select");
         if (selects == null || selects.size() < 2) {
-            LogUtils.e(ParseCourse.class, "select < 2 ");
+            LogUtil.e(ParseCourse.class, "select < 2 ");
             return null;
         }
 

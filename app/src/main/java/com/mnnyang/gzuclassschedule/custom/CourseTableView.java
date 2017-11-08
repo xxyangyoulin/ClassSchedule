@@ -23,7 +23,7 @@ import android.widget.TextView;
 import com.mnnyang.gzuclassschedule.R;
 import com.mnnyang.gzuclassschedule.custom.util.Utils;
 import com.mnnyang.gzuclassschedule.data.bean.Course;
-import com.mnnyang.gzuclassschedule.utils.LogUtils;
+import com.mnnyang.gzuclassschedule.utils.LogUtil;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -238,11 +238,11 @@ public class CourseTableView extends FrameLayout {
      * @return success return null or return conflict object
      */
     public Course addCourse(@NonNull Course course) {
-        LogUtils.i(this, "addCourse-->" + course.toString());
+        LogUtil.i(this, "addCourse-->" + course.toString());
 
         for (Course c : mCourses) {
             if (c.equals(course)) {
-                LogUtils.e(this, c.getName() + " and " + course.getName() + " conflict");
+                LogUtil.e(this, c.getName() + " and " + course.getName() + " conflict");
                 return c;
             }
             overlapShow(c, course);
@@ -259,7 +259,7 @@ public class CourseTableView extends FrameLayout {
             }
 
         } else {
-            LogUtils.e(this, "Time is not complete!--->" + course.toString());
+            LogUtil.e(this, "Time is not complete!--->" + course.toString());
         }
 
         return null;
@@ -283,7 +283,7 @@ public class CourseTableView extends FrameLayout {
 
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-        LogUtils.d(this, "onMeasure");
+        LogUtil.d(this, "onMeasure");
         mViewWidth = MeasureSpec.getSize(widthMeasureSpec);
         initSize();
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
@@ -306,14 +306,14 @@ public class CourseTableView extends FrameLayout {
     /**********************addView*******************************/
 
     private void addCourseItemView() {
-        LogUtils.i(this, "addCourseItemView");
+        LogUtil.i(this, "addCourseItemView");
         for (Course course : mCourses) {
             addCourseItemView(course);
         }
     }
 
     private void addNodeView() {
-        LogUtils.i(this, "addNodeView");
+        LogUtil.i(this, "addNodeView");
 
         removeAllViews();
 
@@ -350,18 +350,18 @@ public class CourseTableView extends FrameLayout {
 
 
     public void addCourseItemView(final Course course) {
-        LogUtils.i(this, "addCourseItemView");
+        LogUtil.i(this, "addCourseItemView");
         if (course == null) {
             throw new IllegalArgumentException("course is null !");
         }
 
         if (course.getWeek() <= 0 || course.getWeek() > 7) {
-            LogUtils.e(this, course.getName() + ":week err");
+            LogUtil.e(this, course.getName() + ":week err");
             return;
         }
 
         if (course.getNodes().size() == 0 && course.getWeek() <= 0) {
-            LogUtils.e(this, course.getName() + ":nodes err");
+            LogUtil.e(this, course.getName() + ":nodes err");
             return;
         }
         //itemView
@@ -493,7 +493,7 @@ public class CourseTableView extends FrameLayout {
     /**********************draw***************************/
     @Override
     protected void dispatchDraw(Canvas canvas) {
-        LogUtils.d(this, "dispatchDraw");
+        LogUtil.d(this, "dispatchDraw");
         normalDraw(canvas);
 
         if (mIsFirst) {
@@ -508,7 +508,7 @@ public class CourseTableView extends FrameLayout {
     @Override
     protected void onSizeChanged(int w, int h, int oldw, int oldh) {
         super.onSizeChanged(w, h, oldw, oldh);
-        LogUtils.e(this, "onSizeChanged");
+        LogUtil.e(this, "onSizeChanged");
     }
 
     /**
@@ -536,7 +536,7 @@ public class CourseTableView extends FrameLayout {
      */
     private void overlapShow(@NonNull Course course, Course c) {
         if (c.compareTo(course) == 0) {
-            LogUtils.d(this, c.getName() + "-" + course.getName() + " overlap");
+            LogUtil.d(this, c.getName() + "-" + course.getName() + " overlap");
             int remainder = mCurrentWeekCount % 2;
             if (remainder == 0) {
                 c.setOverlapShow(c.getWeekType() == Course.WEEK_DOUBLE);

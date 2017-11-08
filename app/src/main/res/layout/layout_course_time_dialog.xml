@@ -17,7 +17,7 @@
             android:paddingLeft="8dp"
             android:paddingTop="16dp"
             android:text="选择课表时间"
-            android:textColor="@color/primary"
+            android:textColor="?android:attr/colorAccent"
             android:textSize="14sp"/>
 
         <RadioGroup
@@ -32,7 +32,7 @@
             android:paddingLeft="8dp"
             android:paddingTop="8dp"
             android:text="选择学期"
-            android:textColor="@color/primary"
+            android:textColor="?android:attr/colorAccent"
             android:textSize="14sp"/>
 
         <RadioGroup
@@ -46,7 +46,7 @@
                 android:layout_height="wrap_content"
                 android:tag="1"
                 android:text="第1学期"
-                android:textColor="@color/primary_dark"/>
+                android:textColor="?android:attr/colorPrimaryDark"/>
 
             <android.support.v7.widget.AppCompatRadioButton
                 android:id="@+id/crb_2_term"
@@ -54,7 +54,7 @@
                 android:layout_height="wrap_content"
                 android:tag="2"
                 android:text="第2学期"
-                android:textColor="@color/primary_dark"/>
+                android:textColor="?android:attr/colorPrimaryDark"/>
 
             <android.support.v7.widget.AppCompatRadioButton
                 android:id="@+id/crb_3_term"
@@ -62,7 +62,7 @@
                 android:layout_height="wrap_content"
                 android:tag="3"
                 android:text="第3学期"
-                android:textColor="@color/primary_dark"/>
+                android:textColor="?android:attr/colorPrimaryDark"/>
         </RadioGroup>
     </LinearLayout>
 </ScrollView>

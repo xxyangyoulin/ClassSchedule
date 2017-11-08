@@ -51,6 +51,19 @@
     <string name="text_preference">偏好设置</string>
     <string name="edit_class_schedule">编辑课表</string>
     <string name="warning">警告</string>
-    <string name="theme_preference">风格</string>
+    <string name="theme_preference">颜色风格</string>
     <string name="classroom">教室</string>
+    <string name="now_version">有新版本</string>
+    <string name="about">关于</string>
+
+    <string name="github_lib">org.jsoup:jsoup:1.10.3\nio.reactivex:rxjava:1.1.3\n
+        io.reactivex:rxandroid:1.0.1\n
+        com.google.code.gson:gson:2.8.2\n
+        com.zhy:okhttputils:2.6.2\n
+        wangjie/wheelview</string>
+    <string name="github_gzuclassschedule">https://github.com/mnnyang/GzuClassSchedule</string>
+    <string name="author_mnnyang">作者:mnnyang</string>
+    <string name="check_update">检查更新</string>
+    <string name="update_succeed">更新成功</string>
+    <string name="app_preference_theme">theme</string>
 </resources>

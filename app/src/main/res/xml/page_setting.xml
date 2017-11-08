@@ -36,11 +36,6 @@
             android:summary=""
             android:title="@string/theme_preference"/>
 
-        <Preference
-            android:layout="@layout/preference_item"
-            android:summary=""
-            android:title="@string/other_preference"/>
-
         <CheckBoxPreference
             android:key="@string/app_preference_show_noon"
             android:layout="@layout/preference_item"
@@ -52,11 +47,12 @@
             android:layout="@layout/preference_item"
             android:summary="@string/hide_fab_summary"
             android:title="@string/hide_fab"/>
-
-
+        <Preference
+            android:layout="@layout/preference_item"
+            android:summary=""
+            android:title="@string/other_preference"/>
     </PreferenceCategory>
 
-    <!--android:layout="@layout/preference_category_widget"-->
     <PreferenceCategory
         android:title="@string/other">
 
@@ -68,12 +64,8 @@
         <Preference
             android:layout="@layout/preference_item"
             android:summary="@string/app_version"
-            android:title="@string/version"/>
+            android:title="@string/about"/>
 
-        <!--<Preference-->
-        <!--android:layout="@layout/preference_item"-->
-        <!--android:summary="博客：http"-->
-        <!--android:title="TomChen"/>-->
     </PreferenceCategory>
 
 </PreferenceScreen>

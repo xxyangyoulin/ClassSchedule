@@ -2,7 +2,6 @@ package com.mnnyang.gzuclassschedule.course;
 
 import com.mnnyang.gzuclassschedule.data.bean.Course;
 import com.mnnyang.gzuclassschedule.data.db.CourseDbDao;
-import com.mnnyang.gzuclassschedule.utils.LogUtils;
 
 import java.util.ArrayList;
 

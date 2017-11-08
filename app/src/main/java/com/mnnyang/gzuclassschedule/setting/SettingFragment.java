@@ -10,18 +10,30 @@ import android.os.Bundle;
 import android.preference.Preference;
 import android.preference.PreferenceFragment;
 import android.preference.PreferenceScreen;
+import android.support.v7.widget.AppCompatRadioButton;
+import android.view.ViewGroup;
+import android.widget.RadioGroup;
+import android.widget.ScrollView;
 
 import com.mnnyang.gzuclassschedule.BaseActivity;
 import com.mnnyang.gzuclassschedule.R;
 import com.mnnyang.gzuclassschedule.add.AddActivity;
 import com.mnnyang.gzuclassschedule.app.Constant;
+import com.mnnyang.gzuclassschedule.app.app;
+import com.mnnyang.gzuclassschedule.course.CourseActivity;
 import com.mnnyang.gzuclassschedule.mg.MgActivity;
 import com.mnnyang.gzuclassschedule.impt.ImptActivity;
+import com.mnnyang.gzuclassschedule.utils.ActivityUtil;
 import com.mnnyang.gzuclassschedule.utils.DialogHelper;
 import com.mnnyang.gzuclassschedule.utils.DialogListener;
+import com.mnnyang.gzuclassschedule.utils.Preferences;
+import com.mnnyang.gzuclassschedule.utils.ScreenUtils;
 import com.mnnyang.gzuclassschedule.utils.ToastUtils;
 
 import java.util.List;
+
+import static com.mnnyang.gzuclassschedule.app.Constant.themeColorArray;
+import static com.mnnyang.gzuclassschedule.app.Constant.themeNameArray;
 
 public class SettingFragment extends PreferenceFragment implements SettingContract.View {
 
@@ -35,6 +47,7 @@ public class SettingFragment extends PreferenceFragment implements SettingContra
 
         mPresenter = new SettingPresenter(this);
     }
+
 
     @Override
     public boolean onPreferenceTreeClick(PreferenceScreen preferenceScreen, Preference preference) {
@@ -53,7 +66,7 @@ public class SettingFragment extends PreferenceFragment implements SettingContra
             showDeleteConfirmDialog();
             return true;
         } else if (title.equals(getString(R.string.feedback))) {
-            feedbackByQQ();
+            feedback();
             return true;
         } else if (title.equals(getString(R.string.hide_fab))) {
             ((BaseActivity) getActivity()).notifiUpdateMainPage(Constant.INTENT_UPDATE_TYPE_OTHER);
@@ -61,16 +74,66 @@ public class SettingFragment extends PreferenceFragment implements SettingContra
         } else if (title.equals(getString(R.string.show_noon_course))) {
             ((BaseActivity) getActivity()).notifiUpdateMainPage(Constant.INTENT_UPDATE_TYPE_COURSE);
             return true;
-        } else if (title.equals(getString(R.string.version))) {
-            mPresenter.checkUpdate();
+        } else if (title.equals(getString(R.string.about))) {
+            ((SettingActivity) getActivity()).addAboutFragment();
+            return true;
+        } else if (title.equals(getString(R.string.theme_preference))) {
+            showThemeDialog();
+            return true;
+        } else if (title.equals(getString(R.string.other_preference))) {
+            ToastUtils.show("正在努力开发中...");
             return true;
         }
         return super.onPreferenceTreeClick(preferenceScreen, preference);
     }
 
+    int theme;
 
+    private void showThemeDialog() {
+        ScrollView scrollView = new ScrollView(getActivity());
+        RadioGroup radioGroup = new RadioGroup(getActivity());
+        scrollView.addView(radioGroup);
+        int margin = ScreenUtils.dp2px(16);
+        radioGroup.setPadding(margin / 2, margin, margin, margin);
 
-    private void feedbackByQQ() {
+        for (int i = 0; i < themeColorArray.length; i++) {
+            AppCompatRadioButton arb = new AppCompatRadioButton(getActivity());
+
+            RadioGroup.LayoutParams params = new RadioGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+            arb.setLayoutParams(params);
+            arb.setId(i);
+            arb.setTextColor(getResources().getColor(themeColorArray[i]));
+            arb.setText(themeNameArray[i]);
+            arb.setTextSize(16);
+            arb.setPadding(0, margin/2, 0, margin/2);
+            radioGroup.addView(arb);
+        }
+
+        radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(RadioGroup group, int checkedId) {
+                theme = checkedId;
+            }
+        });
+
+        DialogHelper dialogHelper = new DialogHelper();
+        dialogHelper.showCustomDialog(getActivity(), scrollView, getString(R.string.theme_preference), new DialogListener() {
+            @Override
+            public void onPositive(DialogInterface dialog, int which) {
+                super.onPositive(dialog, which);
+                String key = getString(R.string.app_preference_theme);
+                int oldTheme = Preferences.getInt(key, 0);
+
+                if (theme != oldTheme) {
+                    Preferences.putInt(key, theme);
+                    ActivityUtil.finishAll();
+                    startActivity(new Intent(app.mContext, CourseActivity.class));
+                }
+            }
+        });
+    }
+
+    private void feedback() {
         if (!QQIsAvailable(getActivity())) {
             ToastUtils.show(getString(R.string.qq_not_installed));
             return;

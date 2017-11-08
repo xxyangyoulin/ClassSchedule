@@ -13,7 +13,6 @@ import com.mnnyang.gzuclassschedule.http.HttpCallback;
 public interface SettingContract {
     interface Presenter extends BasePresenter {
         void deleteAllCourse();
-        void checkUpdate();
     }
 
     interface View extends BaseView<Presenter> {

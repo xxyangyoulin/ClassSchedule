@@ -1,6 +1,5 @@
 package com.mnnyang.gzuclassschedule;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -9,8 +8,9 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 
 import com.mnnyang.gzuclassschedule.app.Constant;
-import com.mnnyang.gzuclassschedule.mg.MgActivity;
-import com.mnnyang.gzuclassschedule.utils.LogUtils;
+import com.mnnyang.gzuclassschedule.utils.ActivityUtil;
+import com.mnnyang.gzuclassschedule.utils.LogUtil;
+import com.mnnyang.gzuclassschedule.utils.Preferences;
 import com.mnnyang.gzuclassschedule.utils.ToastUtils;
 
 
@@ -24,7 +24,10 @@ public abstract class BaseActivity extends AppCompatActivity {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        LogUtils.d(TAG, "onCreate");
+        LogUtil.d(TAG, "onCreate");
+
+        initTheme();
+        ActivityUtil.addActivity(this);
     }
 
     protected void initBackToolbar(String title) {
@@ -41,6 +44,11 @@ public abstract class BaseActivity extends AppCompatActivity {
     public void gotoActivity(Class clzz) {
         Intent intent = new Intent(this, clzz);
         startActivity(intent);
+    }
+
+    protected void initTheme() {
+        int anInt = Preferences.getInt(getString(R.string.app_preference_theme), 0);
+        setTheme(Constant.themeArray[anInt]);
     }
 
     /**
@@ -60,6 +68,7 @@ public abstract class BaseActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        LogUtils.d(TAG, "onDestroy");
+        LogUtil.d(TAG, "onDestroy");
+        ActivityUtil.removeActivity(this);
     }
 }

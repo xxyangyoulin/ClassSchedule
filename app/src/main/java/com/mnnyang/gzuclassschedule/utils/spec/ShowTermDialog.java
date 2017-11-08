@@ -9,6 +9,8 @@ import android.widget.LinearLayout;
 import android.widget.RadioGroup;
 
 import com.mnnyang.gzuclassschedule.R;
+import com.mnnyang.gzuclassschedule.app.app;
+import com.mnnyang.gzuclassschedule.utils.ColorUtil;
 import com.mnnyang.gzuclassschedule.utils.DialogHelper;
 import com.mnnyang.gzuclassschedule.utils.DialogListener;
 import com.mnnyang.gzuclassschedule.utils.ToastUtils;
@@ -39,7 +41,7 @@ public class ShowTermDialog {
         int i = 1;
         for (String time : times) {
             AppCompatRadioButton tempButton = new AppCompatRadioButton(context);
-            tempButton.setTextColor(context.getResources().getColor(R.color.primary_dark));
+            tempButton.setTextColor(ColorUtil.getColor(context, R.attr.colorPrimary));
             tempButton.setText(time);
             tempButton.setId(i);
             rg.addView(tempButton, LinearLayout.LayoutParams.FILL_PARENT,

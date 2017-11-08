@@ -1,6 +1,7 @@
 package com.mnnyang.gzuclassschedule.utils.spec;
 
 import android.app.Activity;
+import android.content.DialogInterface;
 import android.graphics.drawable.ColorDrawable;
 import android.support.annotation.NonNull;
 import android.view.Gravity;
@@ -10,105 +11,208 @@ import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.EditText;
 import android.widget.PopupWindow;
+import android.widget.RadioGroup;
 import android.widget.TextView;
 
 import com.mnnyang.gzuclassschedule.R;
+import com.mnnyang.gzuclassschedule.app.Constant;
+import com.mnnyang.gzuclassschedule.app.app;
+import com.mnnyang.gzuclassschedule.custom.WheelView;
 import com.mnnyang.gzuclassschedule.data.bean.Course;
+import com.mnnyang.gzuclassschedule.utils.DialogHelper;
+import com.mnnyang.gzuclassschedule.utils.DialogListener;
 import com.mnnyang.gzuclassschedule.utils.LogUtil;
+import com.mnnyang.gzuclassschedule.utils.Preferences;
+import com.mnnyang.gzuclassschedule.utils.ToastUtils;
+
+import java.util.ArrayList;
 
 /**
  * 显示详细信息
  * Created by mnnyang on 17-11-7.
  */
 
-public class ShowDetailDialog {
+public class PopupWindowDialog {
+    private int mWeek;
+    private int mNodeStart;
+    private int mNodeEnd;
 
-    private PopupWindow mPopupWindow;
-    private boolean isEditMode = false;
+    private int mEndWeek;
+    private int mStartWeek;
+    private int mWeekType;
 
-    /**
-     * @param activity
-     * @param course          时间信息必须完整
-     * @param dismissListener
-     */
-    public void show(final Activity activity, Course course,
-                     final PopupWindow.OnDismissListener dismissListener) {
-        if (null == course) {
-            LogUtil.e(this, "show()--> course is null");
-            return;
+    public interface WeekRangeCallback {
+        void onSelected(int start, int end, int type);
+    }
+
+    public interface SelectTimeCallback {
+        void onSelected(int week, int nodeStart, int endStart);
+    }
+
+    public void showSelectTimeDialog(Activity activity, final int week, int nodeStart,
+                                     int nodeEnd, final SelectTimeCallback callback) {
+        mWeek = week;
+        mNodeStart = nodeStart;
+        mNodeEnd = nodeEnd;
+
+        DialogHelper helper = new DialogHelper();
+        View view = LayoutInflater.from(activity).inflate(R.layout.dialog_select_week_and_node, null);
+        final ArrayList<String> weeks = new ArrayList<>();
+        final ArrayList<String> nodes = new ArrayList<>();
+
+        WheelView wvWeek = (WheelView) view.findViewById(R.id.wv_week);
+        WheelView wvStart = (WheelView) view.findViewById(R.id.wv_start_node);
+        final WheelView wvEnd = (WheelView) view.findViewById(R.id.wv_end_node);
+
+        final int noonNode = Preferences.getInt(activity.getString(R.string.app_preference_noon_node),
+                Integer.parseInt(activity.getString(R.string.default_noon_node)));
+
+        for (int i = 1; i <= 7; i++) {
+            weeks.add(Constant.WEEK[i]);
         }
 
-        WindowManager.LayoutParams lp = activity.getWindow().getAttributes();
-        lp.alpha = 0.5f;
-        activity.getWindow().setAttributes(lp);
+        int maxNode = Preferences.getInt(
+                activity.getString(R.string.app_preference_max_node), Constant.DEFAULT_MAX_NODE_COUNT);
+        for (int i = 1; i <= maxNode; i++) {
+            nodes.add("第" + i + "节");
+        }
 
-        mPopupWindow = new PopupWindow(
-                ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        wvWeek.setItems(weeks);
+        wvStart.setItems(nodes);
+        wvEnd.setItems(nodes);
 
-        final View popupView = LayoutInflater.from(activity).inflate(R.layout.dialog_detail_course,
-                null);
-
-        EditText tvTitle = popupView.findViewById(R.id.et_title);
-        EditText tvClassroom = popupView.findViewById(R.id.et_calssroom);
-        EditText tvTeacher = popupView.findViewById(R.id.et_teacher);
-        EditText tvNode = popupView.findViewById(R.id.et_node);
-        EditText tvWeekRange = popupView.findViewById(R.id.et_week_range);
-
-        StringBuilder nodeInfo = getNodeInfo(course);
-        tvNode.setText(nodeInfo);
-
-        tvTitle.setText(course.getName());
-        tvClassroom.setText(course.getClassRoom());
-        tvTeacher.setText(course.getTeacher());
-
-        tvWeekRange.setText(course.getStartWeek() + "-" + course.getEndWeek() + "周");
-
-        View close = popupView.findViewById(R.id.iv_close);
-        close.setOnClickListener(new View.OnClickListener() {
+        wvWeek.setSeletion(mWeek - 1);
+        wvStart.setSeletion(mNodeStart - 1);
+        wvEnd.setSeletion(mNodeEnd - 1);
+        wvWeek.setOnWheelViewListener(new WheelView.OnWheelViewListener() {
             @Override
-            public void onClick(View v) {
-                mPopupWindow.dismiss();
+            public void onSelected(int selectedIndex, String item) {
+                mStartWeek = selectedIndex;
             }
         });
 
-        mPopupWindow.setContentView(popupView);
-        mPopupWindow.setBackgroundDrawable(new ColorDrawable(0));
-        mPopupWindow.setFocusable(true);
-        mPopupWindow.setTouchable(true);
-        mPopupWindow.setOutsideTouchable(true);
-        mPopupWindow.setClippingEnabled(true);
-        mPopupWindow.setAnimationStyle(R.style.animZoomIn);
-
-        mPopupWindow.getContentView().measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED);
-        mPopupWindow.showAtLocation(activity.getWindow().getDecorView(), Gravity.CENTER, 0, 0);
-
-        mPopupWindow.setOnDismissListener(new PopupWindow.OnDismissListener() {
+        wvWeek.setOnWheelViewListener(new WheelView.OnWheelViewListener() {
             @Override
-            public void onDismiss() {
-                WindowManager.LayoutParams lp = activity.getWindow().getAttributes();
-                lp.alpha = 1.0f;
-                activity.getWindow().setAttributes(lp);
-                dismissListener.onDismiss();
+            public void onSelected(int selectedIndex, String item) {
+                mWeek = selectedIndex;
             }
         });
+
+        wvStart.setOnWheelViewListener(new WheelView.OnWheelViewListener() {
+            @Override
+            public void onSelected(int selectedIndex, String item) {
+                mNodeStart = selectedIndex;
+
+                if (mNodeStart > mNodeEnd) {
+                    wvEnd.setSeletion(mNodeStart - 1);
+                    return;
+                }
+
+                if (mNodeEnd > noonNode && mNodeStart <= noonNode) {
+                    wvEnd.setSeletion(noonNode - 1);
+                }
+            }
+        });
+
+        wvEnd.setOnWheelViewListener(new WheelView.OnWheelViewListener() {
+            @Override
+            public void onSelected(int selectedIndex, String item) {
+                mNodeEnd = selectedIndex;
+
+                if (mNodeEnd > noonNode && mNodeStart <= noonNode) {
+                    ToastUtils.show("早上课程的最大为 " + noonNode + " 节");
+                    wvEnd.setSeletion(noonNode - 1);
+                    return;
+                }
+
+                if (mNodeStart > mNodeEnd) {
+                    wvEnd.setSeletion(mNodeStart - 1);
+                }
+            }
+        });
+
+        helper.showCustomDialog(activity, view,
+                activity.getString(R.string.select_course_time), new DialogListener() {
+                    @Override
+                    public void onPositive(DialogInterface dialog, int which) {
+                        super.onPositive(dialog, which);
+                        callback.onSelected(mWeek, mNodeStart, mNodeEnd);
+                    }
+                });
     }
 
-    @NonNull
-    private StringBuilder getNodeInfo(Course course) {
-        StringBuilder nodeInfo = new StringBuilder();
-        if (course.getNodes().size() != 0) {
-            nodeInfo = new StringBuilder(String.valueOf(course.getNodes().get(0)));
-        }
-        for (int i = 1; i < course.getNodes().size(); i++) {
-            nodeInfo.append("-").append(course.getNodes().get(i));
-        }
-        nodeInfo.append("节");
-        return nodeInfo;
-    }
+    public void showWeekRangeDialog(
+            Activity activity, int defStart, int defEnd,
+            int defType, final WeekRangeCallback callback) {
 
-    public void dismiss() {
-        if (mPopupWindow != null) {
-            mPopupWindow.dismiss();
+        mStartWeek = defStart;
+        mEndWeek = defEnd;
+        mWeekType = defType;
+
+        DialogHelper helper = new DialogHelper();
+        View view = LayoutInflater.from(activity)
+                .inflate(R.layout.dialog_select_week_range, null);
+
+        WheelView wvStart = (WheelView) view.findViewById(R.id.wv_week_start);
+        final WheelView wvEnd = (WheelView) view.findViewById(R.id.wv_week_end);
+        RadioGroup rgWeekType = (RadioGroup) view.findViewById(R.id.rg_week_type);
+
+        ArrayList<String> weeks = new ArrayList<String>();
+        for (int i = 1; i <= 25; i++) {
+            weeks.add("第" + i + "周");
         }
+
+        wvStart.setItems(weeks);
+        wvEnd.setItems(weeks);
+        wvStart.setSeletion(defStart - 1);
+        wvEnd.setSeletion(defEnd - 1);
+
+        wvStart.setOnWheelViewListener(new WheelView.OnWheelViewListener() {
+            @Override
+            public void onSelected(int selectedIndex, String item) {
+                LogUtil.e(this, selectedIndex + "");
+                mStartWeek = selectedIndex;
+                if (mStartWeek > mEndWeek) {
+                    wvEnd.setSeletion(mStartWeek - 1);
+                }
+            }
+        });
+        wvEnd.setOnWheelViewListener(new WheelView.OnWheelViewListener() {
+            @Override
+            public void onSelected(int selectedIndex, String item) {
+                mEndWeek = selectedIndex;
+                if (mStartWeek > mEndWeek) {
+                    wvEnd.setSeletion(mStartWeek - 1);
+                }
+            }
+        });
+
+        rgWeekType.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(RadioGroup group, int checkedId) {
+                switch (checkedId) {
+                    case R.id.arb_all:
+                        mWeekType = Course.WEEK_ALL;
+                        break;
+
+                    case R.id.arb_single:
+                        mWeekType = Course.WEEK_SINGLE;
+                        break;
+
+                    case R.id.arb_double:
+                        mWeekType = Course.WEEK_DOUBLE;
+                        break;
+                }
+            }
+        });
+
+        helper.showCustomDialog(activity, view, app.mContext.
+                getString(R.string.select_week_count), new DialogListener() {
+            @Override
+            public void onPositive(DialogInterface dialog, int which) {
+                super.onPositive(dialog, which);
+                callback.onSelected(mStartWeek, mEndWeek, mWeekType);
+            }
+        });
     }
 }

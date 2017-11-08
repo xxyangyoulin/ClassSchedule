@@ -31,10 +31,10 @@ import com.mnnyang.gzuclassschedule.custom.CourseTableView;
 import com.mnnyang.gzuclassschedule.custom.CourseView;
 import com.mnnyang.gzuclassschedule.data.bean.Course;
 import com.mnnyang.gzuclassschedule.setting.SettingActivity;
-import com.mnnyang.gzuclassschedule.utils.LogUtils;
+import com.mnnyang.gzuclassschedule.utils.LogUtil;
 import com.mnnyang.gzuclassschedule.utils.Preferences;
 import com.mnnyang.gzuclassschedule.utils.TimeUtils;
-import com.mnnyang.gzuclassschedule.utils.ToastUtils;
+import com.mnnyang.gzuclassschedule.utils.spec.PopupWindowDialog;
 import com.mnnyang.gzuclassschedule.utils.spec.ShowDetailDialog;
 
 import java.util.ArrayList;
@@ -116,7 +116,6 @@ public class CourseActivity extends BaseActivity implements CourseContract.View,
 
     @Override
     public void onClick(Course course, LinearLayout itemLayout) {
-        ToastUtils.show(course.getName());
         mDialog = new ShowDetailDialog();
         mDialog.show(this, course, new PopupWindow.OnDismissListener() {
             @Override
@@ -175,7 +174,7 @@ public class CourseActivity extends BaseActivity implements CourseContract.View,
                 .setNodeCount(maxNode)
                 .setNoonNode(Preferences.getInt(getString(R.string.app_preference_noon_node), Integer.parseInt(getString(R.string.default_noon_node))));
 
-        LogUtils.d(this, "当前课表:" + mCurrentScheduleName);
+        LogUtil.d(this, "当前课表:" + mCurrentScheduleName);
 
         mPresenter.updateCourseViewData(mCurrentScheduleName);
     }
