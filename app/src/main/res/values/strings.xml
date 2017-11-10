@@ -1,6 +1,6 @@
 <resources>
     <string name="app_name">星星课表</string>
-    <string name="app_version">V 1.0</string>
+    <string name="app_version">V 1.1</string>
     <string name="qq_number">776310072</string>
 
     <string name="login">登录</string>
@@ -56,11 +56,7 @@
     <string name="now_version">有新版本</string>
     <string name="about">关于</string>
 
-    <string name="github_lib">org.jsoup:jsoup:1.10.3\nio.reactivex:rxjava:1.1.3\n
-        io.reactivex:rxandroid:1.0.1\n
-        com.google.code.gson:gson:2.8.2\n
-        com.zhy:okhttputils:2.6.2\n
-        wangjie/wheelview</string>
+    <string name="github_lib">org.jsoup:jsoup:1.10.3\nio.reactivex:rxjava:1.1.3\nio.reactivex:rxandroid:1.0.1\ncom.google.code.gson:gson:2.8.2\ncom.zhy:okhttputils:2.6.2\nwangjie/wheelview</string>
     <string name="github_gzuclassschedule">https://github.com/mnnyang/GzuClassSchedule</string>
     <string name="author_mnnyang">作者:mnnyang</string>
     <string name="check_update">检查更新</string>
