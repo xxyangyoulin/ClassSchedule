@@ -138,10 +138,9 @@ public class CourseTableView extends FrameLayout {
     private int mNodeTextColor = 0xFF909090;
 
     /**
-     * 7
      * 一天课程最大值
      */
-    private int mNodeCount = 11;
+    private int mNodeCount = 12;
 
     /**
      * 限制课程文本最大行

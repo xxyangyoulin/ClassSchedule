@@ -6,7 +6,9 @@ package com.mnnyang.gzuclassschedule.app;
 
 public class Url {
     public static final String URL_HOST = "http://210.40.2.253:8888/";
+
     public static final String URL_CHECK_UPDATE_APP = "https://raw.githubusercontent.com/mnnyang/GzuClassSchedule/master/check.json";
+
     public static final String URL_CHECK_CODE = URL_HOST + "CheckCode.aspx";
     public static final String URL_LOAD_COURSE = URL_HOST + "xskbcx.aspx";
     public static final String URL_LOGIN_PAGE = URL_HOST + "default2.aspx";

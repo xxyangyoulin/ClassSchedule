@@ -13,9 +13,7 @@ import android.widget.ImageView;
 import com.mnnyang.gzuclassschedule.R;
 
 /**
- * 账单类型的图标使用的是这个自定义的ColorImageView
- * 说明： 我们的风格是图标有一个圆形的背景，并且背景可以动态的修改颜色
- * 所以自定义了这个-----有圆形背景，并且可以轻松改变背景颜色的imageView
+ * ColorImageView
  * Created by mnnyang on 17-6-1.
  */
 

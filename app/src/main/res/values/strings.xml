@@ -1,6 +1,6 @@
 <resources>
     <string name="app_name">星星课表</string>
-    <string name="app_version">V 1.1</string>
+    <string name="app_version">V 1.1.0</string>
     <string name="qq_number">776310072</string>
 
     <string name="login">登录</string>
