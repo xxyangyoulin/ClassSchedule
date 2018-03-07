@@ -1,10 +1,9 @@
-package com.mnnyang.gzuclassschedule.mg;
+package com.mnnyang.gzuclassschedule.mg.adapter;
 
 import android.support.annotation.NonNull;
 import android.view.View;
 
 import com.mnnyang.gzuclassschedule.R;
-import com.mnnyang.gzuclassschedule.app.app;
 import com.mnnyang.gzuclassschedule.data.bean.CsItem;
 import com.mnnyang.gzuclassschedule.utils.spec.RecyclerBaseAdapter;
 

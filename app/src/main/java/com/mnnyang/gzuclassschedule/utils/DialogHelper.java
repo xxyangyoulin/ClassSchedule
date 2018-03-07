@@ -6,11 +6,9 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AlertDialog;
-import android.support.v7.app.AppCompatActivity;
-import android.view.LayoutInflater;
 import android.view.View;
 
-import com.mnnyang.gzuclassschedule.R;
+import java.lang.reflect.Field;
 
 /**
  * 对话框工具
@@ -84,7 +82,7 @@ public class DialogHelper {
      */
     public void showCustomDialog(@NonNull Context context, View dialogView, String title,
                                  @NonNull final DialogListener listener) {
-        new AlertDialog.Builder(context)
+        AlertDialog dialog = new AlertDialog.Builder(context)
                 .setTitle(title)
                 .setPositiveButton("确定", new DialogInterface.OnClickListener() {
                     @Override
@@ -96,9 +94,27 @@ public class DialogHelper {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         listener.onNegative(dialog, which);
+                        dialog.dismiss();
                     }
                 })
                 .setView(dialogView)
-                .show();
+                .create();
+
+        try {
+            Field field = field = dialog.getClass().getDeclaredField("mAlert");
+            field.setAccessible(true);
+
+            //   获得mAlert变量的值
+            Object obj = field.get(dialog);
+            field = obj.getClass().getDeclaredField("mHandler");
+            field.setAccessible(true);
+
+            //   修改mHandler变量的值，使用新的ButtonHandler类
+            field.set(obj, new ButtonHandler(dialog));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        dialog.show();
     }
 }

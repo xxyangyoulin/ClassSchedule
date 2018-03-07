@@ -3,6 +3,7 @@ package com.mnnyang.gzuclassschedule.impt;
 import android.graphics.Bitmap;
 import android.widget.ImageView;
 
+import com.mnnyang.gzuclassschedule.R;
 import com.mnnyang.gzuclassschedule.app.app;
 import com.mnnyang.gzuclassschedule.http.HttpCallback;
 import com.mnnyang.gzuclassschedule.http.HttpUtils;
@@ -26,6 +27,7 @@ public class ImptModel implements ImptContract.Model {
                     @Override
                     public void onFail(String errMsg) {
                         ToastUtils.show(errMsg);
+                        iv.setImageResource(R.drawable.ic_svg_refresh);
                     }
                 });
     }

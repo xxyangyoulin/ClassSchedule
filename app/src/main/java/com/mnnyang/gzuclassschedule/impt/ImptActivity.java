@@ -24,7 +24,7 @@ import com.mnnyang.gzuclassschedule.utils.ToastUtils;
 import com.mnnyang.gzuclassschedule.utils.spec.ShowTermDialog;
 
 public class ImptActivity extends BaseActivity implements
-        ImptContract.View, View.OnClickListener, View.OnFocusChangeListener {
+        ImptContract.View, View.OnClickListener {
 
     ImptContract.Presenter mPresenter;
     private ImageView mIvCaptcha;
@@ -57,7 +57,7 @@ public class ImptActivity extends BaseActivity implements
         LinearLayout layoutCaptcha = (LinearLayout) findViewById(R.id.layout_refresh_captcha);
 
         mEtlXh.setText(Preferences.getString(Constant.XH, ""));
-        mEtlPwd.setInputType(InputType.TYPE_CLASS_TEXT |InputType.TYPE_TEXT_VARIATION_PASSWORD);
+        mEtlPwd.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
 
         btnSkip.setOnClickListener(this);
         btnConfirm.setOnClickListener(this);
@@ -67,6 +67,10 @@ public class ImptActivity extends BaseActivity implements
     @Override
     protected void onResume() {
         super.onResume();
+        startAction();
+    }
+
+    private void startAction() {
         mPresenter.start();
     }
 
@@ -140,7 +144,7 @@ public class ImptActivity extends BaseActivity implements
                 confirm();
                 break;
             case R.id.layout_refresh_captcha:
-                mPresenter.start();
+                startAction();
                 break;
         }
     }
@@ -169,25 +173,4 @@ public class ImptActivity extends BaseActivity implements
         }
         return super.onOptionsItemSelected(item);
     }
-
-    @Override
-    public void onFocusChange(View v, boolean hasFocus) {
-        switch (v.getId()) {
-//            case R.id.et_xh:
-//                mIvClearXh.setVisibility(hasFocus ? View.VISIBLE : View.INVISIBLE);
-//                mEtXh.setHint(hasFocus ? "" : getString(R.string.xh));
-//                break;
-//            case R.id.et_pwd:
-//                mIvClearPwd.setVisibility(hasFocus ? View.VISIBLE : View.INVISIBLE);
-//                mEtPwd.setHint(hasFocus ? "" : getString(R.string.pwd));
-//                break;
-//            case R.id.et_captcha:
-//                mIvClearCaptcha.setVisibility(hasFocus ? View.VISIBLE : View.INVISIBLE);
-//                mEtCaptcha.setHint(hasFocus ? "" : getString(R.string.chptcha));
-//                break;
-            default:
-                break;
-        }
-    }
-
 }

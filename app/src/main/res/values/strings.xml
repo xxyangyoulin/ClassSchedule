@@ -64,4 +64,9 @@
     <string name="app_preference_theme">theme</string>
     <string name="password">密码</string>
     <string name="captcha">验证码</string>
+    <string name="refresh_captcha">点击刷新</string>
+    <string name="no_more">没有更多了…</string>
+    <string name="bottom_end">到底了…</string>
+    <string name="please_input_course_table_name">请输入课程表名称</string>
+    <string name="course_name_can_not_be_empty">课表名不能为空</string>
 </resources>

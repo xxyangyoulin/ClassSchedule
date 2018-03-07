@@ -55,95 +55,25 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
-            <!--<LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="48dp"
-                android:gravity="center_vertical"
-                android:orientation="horizontal"
-                android:paddingLeft="8dp"
-                android:paddingRight="8dp">
-
-                <ImageView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:src="@drawable/ic_svg_user"/>
-
-                <EditText
-                    android:id="@+id/et_xh"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="8dp"
-                    android:layout_weight="1"
-                    android:background="@null"
-                    android:hint="学号"
-                    android:textColor="@color/primary_text"
-                    android:textSize="16sp"/>
-
-                <ImageView
-                    android:id="@+id/iv_clear_xh"
-                    android:layout_width="40dp"
-                    android:layout_height="40dp"
-                    android:clickable="true"
-                    android:focusable="true"
-                    android:scaleType="center"
-                    android:src="@drawable/iv_svg_clear"
-                    android:visibility="invisible"/>
-            </LinearLayout>-->
-
             <com.mnnyang.gzuclassschedule.custom.EditTextLayout
                 android:id="@+id/etl_xh"
-                app:icon="@drawable/ic_svg_user"
-                app:hint="学号"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"/>
+                android:layout_height="wrap_content"
+                app:hint="学号"
+                app:icon="@drawable/ic_svg_user"/>
 
             <View
                 android:layout_width="match_parent"
                 android:layout_height="1px"
                 android:background="#20000000"/>
 
-            <!--<LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="48dp"
-                android:gravity="center_vertical"
-                android:orientation="horizontal"
-                android:paddingLeft="8dp"
-                android:paddingRight="8dp">
-
-                <ImageView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:src="@drawable/ic_svg_pwd"/>
-
-                <EditText
-                    android:id="@+id/et_pwd"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="8dp"
-                    android:layout_weight="1"
-                    android:background="@null"
-                    android:hint="密码"
-                    android:inputType="textPassword"
-                    android:textColor="@color/primary_text"
-                    android:textSize="16sp"/>
-
-                <ImageView
-                    android:id="@+id/iv_clear_pwd"
-                    android:layout_width="40dp"
-                    android:layout_height="40dp"
-                    android:clickable="true"
-                    android:focusable="true"
-                    android:scaleType="center"
-                    android:src="@drawable/iv_svg_clear"
-                    android:visibility="invisible"/>
-            </LinearLayout>-->
-
             <com.mnnyang.gzuclassschedule.custom.EditTextLayout
                 android:id="@+id/etl_pwd"
-                app:icon="@drawable/ic_svg_pwd"
-                app:hint="@string/password"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"/>
+                android:layout_height="wrap_content"
+                app:hint="@string/password"
+                app:icon="@drawable/ic_svg_pwd"/>
+
             <View
                 android:layout_width="match_parent"
                 android:layout_height="1px"
@@ -155,48 +85,14 @@
                 android:gravity="center_vertical"
                 android:orientation="horizontal">
 
-                <!--<ImageView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:src="@drawable/ic_svg_captcha"/>
-
-                <LinearLayout
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:gravity="center_vertical"
-                    android:orientation="horizontal">
-
-                    <EditText
-                        android:id="@+id/et_captcha"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="8dp"
-                        android:layout_weight="1"
-                        android:background="@null"
-                        android:hint="验证码"
-                        android:paddingRight="8dp"
-                        android:textColor="@color/primary_text"
-                        android:textSize="16sp"/>
-
-                    <ImageView
-                        android:id="@+id/iv_clear_captcha"
-                        android:layout_width="40dp"
-                        android:layout_height="40dp"
-                        android:clickable="true"
-                        android:focusable="true"
-                        android:scaleType="center"
-                        android:src="@drawable/iv_svg_clear"
-                        android:visibility="invisible"/>
-                </LinearLayout>-->
 
                 <com.mnnyang.gzuclassschedule.custom.EditTextLayout
                     android:id="@+id/etl_captcha"
-                    app:icon="@drawable/ic_svg_captcha"
-                    app:hint="@string/captcha"
                     android:layout_width="0dp"
+                    android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:layout_height="wrap_content"/>
+                    app:hint="@string/captcha"
+                    app:icon="@drawable/ic_svg_captcha"/>
 
                 <LinearLayout
                     android:id="@+id/layout_refresh_captcha"
@@ -204,13 +100,22 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:gravity="start"
-                    android:orientation="horizontal">
+                    android:orientation="horizontal"
+                    android:paddingRight="8dp">
 
                     <ImageView
                         android:id="@+id/iv_captcha"
                         android:layout_width="72dp"
                         android:layout_height="27dp"
                         android:layout_marginLeft="16dp"
+                        android:textSize="16sp"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="27dp"
+                        android:layout_marginLeft="8dp"
+                        android:gravity="center"
+                        android:text="@string/refresh_captcha"
                         android:textSize="16sp"/>
                 </LinearLayout>
 
