@@ -1,6 +1,5 @@
 package com.mnnyang.gzuclassschedule.custom;
 
-import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Color;
@@ -8,7 +7,6 @@ import android.graphics.drawable.Drawable;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -91,6 +89,15 @@ public class EditTextLayout extends LinearLayout {
                 mEtText.setHint(hasFocus?"":mHint);
             }
         });
+    }
+
+    /**
+     *
+     * @param inputType definition of EditorInfo class
+     */
+    public EditTextLayout setInputType(int inputType){
+        mEtText.setInputType(inputType);
+        return this;
     }
 
     public EditTextLayout setInputEnabled(boolean enabled) {

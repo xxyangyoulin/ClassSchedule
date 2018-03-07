@@ -9,9 +9,9 @@ import android.util.Log;
 
 public class LogUtil {
 
-    public static final String STRING = "------->";
-    public static final String SUFFIX = "<-------";
-    public static final boolean SHOW = true;
+    private static final String STRING = "------->";
+    private static final String SUFFIX = "<-------";
+    private static final boolean SHOW = true;
 
     //信息级别
     public static void i(Object tag, String msg) {

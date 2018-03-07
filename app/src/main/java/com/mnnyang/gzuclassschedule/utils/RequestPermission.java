@@ -33,11 +33,11 @@ public class RequestPermission {
         void onDenied();
     }
 
-    public RequestPermission(@NonNull Activity activity) {
+    private RequestPermission(@NonNull Activity activity) {
         this.target = activity;
     }
 
-    public RequestPermission(@NonNull Fragment fragment) {
+    private RequestPermission(@NonNull Fragment fragment) {
         this.target = fragment;
     }
 

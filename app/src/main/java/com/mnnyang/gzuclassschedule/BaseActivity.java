@@ -30,6 +30,10 @@ public abstract class BaseActivity extends AppCompatActivity {
         ActivityUtil.addActivity(this);
     }
 
+    /**
+     * 初始化toolbar功能为返回
+     * @param title
+     */
     protected void initBackToolbar(String title) {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -52,8 +56,9 @@ public abstract class BaseActivity extends AppCompatActivity {
     }
 
     /**
-     * 通知更新
+     * 通知更新主页
      */
+
     public void notifiUpdateMainPage(int type) {
         Intent intent = new Intent();
         intent.setAction(Constant.INTENT_UPDATE);

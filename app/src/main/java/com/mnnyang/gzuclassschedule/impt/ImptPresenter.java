@@ -26,12 +26,12 @@ import rx.schedulers.Schedulers;
 public class ImptPresenter implements ImptContract.Presenter {
 
     private ImptContract.View mImptView;
-    private ImptModel mModel;
+    private ImptContract.Model mModel;
 
     private String xh;
     private String mNormalCourseHtml;
     private String mSelectYear;
-    private String mSelectterm;
+    private String mSelectTerm;
 
     public ImptPresenter(ImptContract.View imptView) {
         mImptView = imptView;
@@ -47,8 +47,8 @@ public class ImptPresenter implements ImptContract.Presenter {
     @Override
     public void importCustomCourses(final String year, final String term) {
         LogUtil.d(this, "importCustomCourses");
-        LogUtil.d(this, "sy" + mSelectYear + "st" + mSelectterm + "y" + year + "t" + term);
-        if (year.equals(mSelectYear) && term.equals(mSelectterm)) {
+        LogUtil.d(this, "sy" + mSelectYear + "st" + mSelectTerm + "y" + year + "t" + term);
+        if (year.equals(mSelectYear) && term.equals(mSelectTerm)) {
             importDefaultCourses(year, term);
             return;
         }
@@ -107,7 +107,7 @@ public class ImptPresenter implements ImptContract.Presenter {
             return;
         }
         mSelectYear = ct.selectYear;
-        mSelectterm = ct.selectTerm;
+        mSelectTerm = ct.selectTerm;
         mImptView.showCourseTimeDialog(ct);
     }
 

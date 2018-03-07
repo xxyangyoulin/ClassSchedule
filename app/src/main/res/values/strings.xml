@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">星星课表</string>
+    <string name="app_name">课表</string>
     <string name="app_version">V 1.1.0</string>
     <string name="qq_number">776310072</string>
 
@@ -62,4 +62,6 @@
     <string name="check_update">检查更新</string>
     <string name="update_succeed">更新成功</string>
     <string name="app_preference_theme">theme</string>
+    <string name="password">密码</string>
+    <string name="captcha">验证码</string>
 </resources>

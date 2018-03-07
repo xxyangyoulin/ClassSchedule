@@ -55,7 +55,7 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
-            <LinearLayout
+            <!--<LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="48dp"
                 android:gravity="center_vertical"
@@ -88,14 +88,21 @@
                     android:scaleType="center"
                     android:src="@drawable/iv_svg_clear"
                     android:visibility="invisible"/>
-            </LinearLayout>
+            </LinearLayout>-->
+
+            <com.mnnyang.gzuclassschedule.custom.EditTextLayout
+                android:id="@+id/etl_xh"
+                app:icon="@drawable/ic_svg_user"
+                app:hint="学号"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
 
             <View
                 android:layout_width="match_parent"
                 android:layout_height="1px"
                 android:background="#20000000"/>
 
-            <LinearLayout
+            <!--<LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="48dp"
                 android:gravity="center_vertical"
@@ -129,8 +136,14 @@
                     android:scaleType="center"
                     android:src="@drawable/iv_svg_clear"
                     android:visibility="invisible"/>
-            </LinearLayout>
+            </LinearLayout>-->
 
+            <com.mnnyang.gzuclassschedule.custom.EditTextLayout
+                android:id="@+id/etl_pwd"
+                app:icon="@drawable/ic_svg_pwd"
+                app:hint="@string/password"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
             <View
                 android:layout_width="match_parent"
                 android:layout_height="1px"
@@ -140,11 +153,9 @@
                 android:layout_width="match_parent"
                 android:layout_height="48dp"
                 android:gravity="center_vertical"
-                android:orientation="horizontal"
-                android:paddingLeft="8dp"
-                android:paddingRight="8dp">
+                android:orientation="horizontal">
 
-                <ImageView
+                <!--<ImageView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:src="@drawable/ic_svg_captcha"/>
@@ -177,7 +188,15 @@
                         android:scaleType="center"
                         android:src="@drawable/iv_svg_clear"
                         android:visibility="invisible"/>
-                </LinearLayout>
+                </LinearLayout>-->
+
+                <com.mnnyang.gzuclassschedule.custom.EditTextLayout
+                    android:id="@+id/etl_captcha"
+                    app:icon="@drawable/ic_svg_captcha"
+                    app:hint="@string/captcha"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="wrap_content"/>
 
                 <LinearLayout
                     android:id="@+id/layout_refresh_captcha"
