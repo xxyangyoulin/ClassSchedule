@@ -18,6 +18,8 @@ import java.lang.reflect.Field;
 public class DialogHelper {
 
     private ProgressDialog progressDialog;
+    //方便在回调函数外拿到DialogHelper对象关闭mCustomDialog
+    private AlertDialog mCustomDialog;
 
     /**
      * 不确定不可关闭等待对话框<br>
@@ -82,7 +84,7 @@ public class DialogHelper {
      */
     public void showCustomDialog(@NonNull Context context, View dialogView, String title,
                                  @NonNull final DialogListener listener) {
-        AlertDialog dialog = new AlertDialog.Builder(context)
+        mCustomDialog = new AlertDialog.Builder(context)
                 .setTitle(title)
                 .setPositiveButton("确定", new DialogInterface.OnClickListener() {
                     @Override
@@ -101,20 +103,27 @@ public class DialogHelper {
                 .create();
 
         try {
-            Field field = field = dialog.getClass().getDeclaredField("mAlert");
+            Field field = field = mCustomDialog.getClass().getDeclaredField("mAlert");
             field.setAccessible(true);
 
             //   获得mAlert变量的值
-            Object obj = field.get(dialog);
+            Object obj = field.get(mCustomDialog);
             field = obj.getClass().getDeclaredField("mHandler");
             field.setAccessible(true);
 
             //   修改mHandler变量的值，使用新的ButtonHandler类
-            field.set(obj, new ButtonHandler(dialog));
+            field.set(obj, new ButtonHandler(mCustomDialog));
         } catch (Exception e) {
             e.printStackTrace();
         }
 
-        dialog.show();
+        mCustomDialog.show();
+    }
+
+    public void hideCoustomDialog() {
+        if (mCustomDialog != null && mCustomDialog.isShowing()) {
+            mCustomDialog.dismiss();
+            mCustomDialog = null;
+        }
     }
 }

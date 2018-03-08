@@ -26,6 +26,7 @@ import android.widget.TextView;
 
 import com.mnnyang.gzuclassschedule.BaseActivity;
 import com.mnnyang.gzuclassschedule.R;
+import com.mnnyang.gzuclassschedule.add.AddActivity;
 import com.mnnyang.gzuclassschedule.app.Constant;
 import com.mnnyang.gzuclassschedule.custom.CourseTableView;
 import com.mnnyang.gzuclassschedule.custom.CourseView;
@@ -34,7 +35,6 @@ import com.mnnyang.gzuclassschedule.setting.SettingActivity;
 import com.mnnyang.gzuclassschedule.utils.LogUtil;
 import com.mnnyang.gzuclassschedule.utils.Preferences;
 import com.mnnyang.gzuclassschedule.utils.TimeUtils;
-import com.mnnyang.gzuclassschedule.utils.spec.PopupWindowDialog;
 import com.mnnyang.gzuclassschedule.utils.spec.ShowDetailDialog;
 
 import java.util.ArrayList;
@@ -314,7 +314,7 @@ public class CourseActivity extends BaseActivity implements CourseContract.View,
     }
 
     private void fab(View v) {
-        Intent intent = new Intent(CourseActivity.this, SettingActivity.class);
+        Intent intent = new Intent(CourseActivity.this, AddActivity.class);
         startActivity(intent);
     }
 

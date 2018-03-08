@@ -1,11 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="?attr/selectableItemBackground"
     android:orientation="horizontal"
-    android:paddingLeft="16dp">
+    android:paddingEnd="16dp"
+    android:paddingStart="16dp">
 
     <TextView
         android:id="@+id/tv_title"
@@ -14,19 +16,32 @@
         android:layout_weight="1"
         android:gravity="center_vertical"
         android:singleLine="true"
-        android:text="课表:  2017-2018-1"
         android:textColor="@color/secondary_text"
-        android:textSize="24sp"/>
+        android:textSize="24sp"
+        tools:text="课表:  2017-2018-1"/>
 
     <ImageView
-        android:id="@+id/iv_done"
-        android:layout_width="48dp"
-        android:layout_height="48dp"
+        android:id="@+id/iv_edit"
+        android:layout_width="40dp"
+        android:layout_height="56dp"
         android:layout_gravity="center_vertical"
         android:background="?attr/selectableItemBackgroundBorderless"
         android:clickable="true"
         android:focusable="true"
         android:scaleType="center"
-        android:src="@drawable/ic_svg_done"
+        android:src="@drawable/ic_svg_edit_gary"
         android:visibility="visible"/>
+
+    <ImageView
+        android:id="@+id/iv_del"
+        android:layout_width="40dp"
+        android:layout_height="56dp"
+        android:layout_gravity="center_vertical"
+        android:background="?attr/selectableItemBackgroundBorderless"
+        android:clickable="true"
+        android:focusable="true"
+        android:scaleType="center"
+        android:src="@drawable/ic_svg_delete_gary"
+        android:visibility="visible"/>
+
 </LinearLayout>

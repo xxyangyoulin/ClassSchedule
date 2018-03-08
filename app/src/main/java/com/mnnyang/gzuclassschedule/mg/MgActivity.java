@@ -8,7 +8,6 @@ import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -19,6 +18,7 @@ import com.mnnyang.gzuclassschedule.R;
 import com.mnnyang.gzuclassschedule.app.Constant;
 import com.mnnyang.gzuclassschedule.course.CourseActivity;
 import com.mnnyang.gzuclassschedule.data.bean.CsItem;
+import com.mnnyang.gzuclassschedule.data.db.CourseDbDao;
 import com.mnnyang.gzuclassschedule.mg.adapter.MgAdapter;
 import com.mnnyang.gzuclassschedule.utils.DialogHelper;
 import com.mnnyang.gzuclassschedule.utils.DialogListener;
@@ -33,6 +33,7 @@ public class MgActivity extends BaseActivity implements MgContract.View, View.On
     private MgPresenter mPresenter;
     private MgAdapter mAdapter;
     ArrayList<CsItem> csItems = new ArrayList<>();
+    private DialogHelper mAddCsNameDialogHelper;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -65,7 +66,21 @@ public class MgActivity extends BaseActivity implements MgContract.View, View.On
                 getBaseContext(), DividerItemDecoration.HORIZONTAL));
         recyclerView.setItemAnimator(new DefaultItemAnimator());
 
-        mAdapter.setItemClickListener(new RecyclerBaseAdapter.ItemClickListener() {
+        mAdapter.setItemClickListener(new MgAdapter.MgListener() {
+
+
+            @Override
+            public void onEditClick(View view, int csNameId,
+                                    RecyclerBaseAdapter.ViewHolder holder) {
+                toast(csNameId+"");
+            }
+
+            @Override
+            public void onDelClick(View view, int csNameId,
+                                   RecyclerBaseAdapter.ViewHolder holder) {
+                deleteDialog(csNameId);
+            }
+
             @Override
             public void onItemClick(View view, RecyclerBaseAdapter.ViewHolder holder) {
                 switchDialog((Integer) view.getTag());
@@ -79,6 +94,15 @@ public class MgActivity extends BaseActivity implements MgContract.View, View.On
     }
 
     private void deleteDialog(final int id) {
+        String currentScheduleName = Preferences.getString(
+                getString(R.string.app_preference_current_sd_name),
+                getString(R.string.default_course_name));
+        int csNameId = CourseDbDao.newInstance().getCsNameId(currentScheduleName);
+        if (id == csNameId){
+            toast(getString(R.string.you_can_not_delete_the_current_class_schedule));
+            return;
+        }
+
         DialogHelper dh = new DialogHelper();
         dh.showNormalDialog(this, getString(R.string.warning),
                 "确认要删除该课表吗?",
@@ -134,8 +158,21 @@ public class MgActivity extends BaseActivity implements MgContract.View, View.On
 
     @Override
     public void deleteFinish() {
-        mPresenter.loadCsNameList();
+        mPresenter.reloadCsNameList();
         notifiUpdateMainPage(Constant.INTENT_UPDATE_TYPE_COURSE);
+    }
+
+    @Override
+    public void addCsNameSucceed() {
+        showNotice(getString(R.string.add_succeed));
+
+        //刷新界面
+        mPresenter.reloadCsNameList();
+
+        //添加成功 关闭弹窗
+        if (mAddCsNameDialogHelper != null) {
+            mAddCsNameDialogHelper.hideCoustomDialog();
+        }
     }
 
     @Override
@@ -160,24 +197,19 @@ public class MgActivity extends BaseActivity implements MgContract.View, View.On
     }
 
     private void add() {
-        DialogHelper helper = new DialogHelper();
+        mAddCsNameDialogHelper = new DialogHelper();
         View view = LayoutInflater.from(this).inflate(
                 R.layout.layout_input_course_table_name, null);
         final EditText editText = view.findViewById(R.id.et_course_table_name);
 
-        helper.showCustomDialog(this, view,
+        mAddCsNameDialogHelper.showCustomDialog(this, view,
                 getString(R.string.please_input_course_table_name), new DialogListener() {
-            @Override
-            public void onPositive(DialogInterface dialog, int which) {
-                super.onPositive(dialog, which);
-                String courseTableName = editText.getText().toString().trim();
-                if (TextUtils.isEmpty(courseTableName)){
-                    toast(getString(R.string.course_name_can_not_be_empty));
-                }else{
-                    //TODO 检查
-
-                }
-            }
-        });
+                    @Override
+                    public void onPositive(DialogInterface dialog, int which) {
+                        super.onPositive(dialog, which);
+                        String courseTableName = editText.getText().toString().trim();
+                        mPresenter.addCsName(courseTableName);
+                    }
+                });
     }
 }

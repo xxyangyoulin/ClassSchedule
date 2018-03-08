@@ -113,7 +113,7 @@ public abstract class RecyclerBaseAdapter<T> extends RecyclerView.Adapter<Recycl
         return TYPE_NORMAL;
     }
 
-    private ItemClickListener itemClickListener;
+    protected ItemClickListener itemClickListener;
 
     public RecyclerBaseAdapter setItemClickListener(ItemClickListener itemClickListener) {
         this.itemClickListener = itemClickListener;

@@ -11,7 +11,7 @@
 
     <string name="default_noon_node">4</string>
     <string name="default_max_node_count">11</string>
-    <string name="default_course_name">课表1</string>
+    <string name="default_course_name">default</string>
 
     <string name="app_preference_hide_fab">hide_fab</string>
     <string name="app_preference_current_week_flag">current_week_flag</string>
@@ -69,4 +69,6 @@
     <string name="bottom_end">到底了…</string>
     <string name="please_input_course_table_name">请输入课程表名称</string>
     <string name="course_name_can_not_be_empty">课表名不能为空</string>
+    <string name="course_name_is_conflicting">课程表名称已存在</string>
+    <string name="you_can_not_delete_the_current_class_schedule">不能删除当前课表</string>
 </resources>

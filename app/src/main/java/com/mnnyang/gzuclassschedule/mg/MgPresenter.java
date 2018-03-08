@@ -1,5 +1,7 @@
 package com.mnnyang.gzuclassschedule.mg;
 
+import android.text.TextUtils;
+
 import com.mnnyang.gzuclassschedule.R;
 import com.mnnyang.gzuclassschedule.app.app;
 import com.mnnyang.gzuclassschedule.data.bean.CsItem;
@@ -32,11 +34,11 @@ public class MgPresenter implements MgContract.Presenter {
 
     @Override
     public void start() {
-        loadCsNameList();
+        reloadCsNameList();
     }
 
     @Override
-    public void loadCsNameList() {
+    public void reloadCsNameList() {
         Observable.create(new Observable.OnSubscribe<ArrayList<CsItem>>() {
             @Override
             public void call(Subscriber<? super ArrayList<CsItem>> subscriber) {
@@ -67,6 +69,23 @@ public class MgPresenter implements MgContract.Presenter {
                 });
     }
 
+    @Override
+    public void addCsName(String csName) {
+        if (TextUtils.isEmpty(csName)) {
+            mView.showNotice(app.mContext.getString(R.string.course_name_can_not_be_empty));
+        } else {
+            //TODO 检查
+            boolean isConflict = CourseDbDao.newInstance().hasConflictCourseTableName(csName);
+            if (isConflict){
+                //notice conflict
+                mView.showNotice(app.mContext.getString(R.string.course_name_is_conflicting));
+            }else{
+                //add cs_name
+                CourseDbDao.newInstance().getCsNameId(csName);
+                mView.addCsNameSucceed();
+            }
+        }
+    }
 
     @Override
     public void deleteCsName(final int csNameId, final DialogHelper dh) {

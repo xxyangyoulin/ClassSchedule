@@ -14,6 +14,12 @@ import java.util.List;
  */
 
 public class MgAdapter extends RecyclerBaseAdapter<CsItem> {
+
+    public interface MgListener extends RecyclerBaseAdapter.ItemClickListener{
+        void onEditClick(View view,int csNameId, RecyclerBaseAdapter.ViewHolder holder);
+        void onDelClick(View view, int csNameId,RecyclerBaseAdapter.ViewHolder holder);
+    }
+
     public String currentName;
 
     public MgAdapter setCurrentName(String currentName) {
@@ -33,11 +39,32 @@ public class MgAdapter extends RecyclerBaseAdapter<CsItem> {
         holder.itemView.setTag(nameId);
 
         if (currentName.equals(name)) {
-            holder.getView(R.id.iv_done).setVisibility(View.VISIBLE);
+//            holder.getView(R.id.iv_done).setVisibility(View.VISIBLE);
             holder.itemView.setBackgroundColor(0x10000000);
         } else {
-            holder.getView(R.id.iv_done).setVisibility(View.INVISIBLE);
+//            holder.getView(R.id.iv_done).setVisibility(View.INVISIBLE);
             holder.itemView.setBackgroundColor(0xffffff);
         }
+    }
+
+    @Override
+    protected void setItemEvent(final ViewHolder holder) {
+        super.setItemEvent(holder);
+        holder.getView(R.id.iv_edit).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ((MgListener)itemClickListener).onEditClick(v,
+                        (Integer) holder.itemView.getTag(),holder);
+            }
+        });
+
+        holder.getView(R.id.iv_del).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ((MgListener)itemClickListener).onDelClick(v,
+                        (Integer) holder.itemView.getTag(),holder);
+            }
+        });
+
     }
 }

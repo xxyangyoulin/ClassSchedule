@@ -15,7 +15,8 @@ public interface MgContract {
     interface Presenter extends BasePresenter {
         void deleteCsName(int csNameId, DialogHelper dh);
         void switchCsName(int csNameId);
-        void loadCsNameList();
+        void reloadCsNameList();
+        void addCsName(String csName);
     }
 
     interface View extends BaseView<Presenter> {
@@ -23,6 +24,7 @@ public interface MgContract {
         void showNotice(String notice);
         void gotoCourseActivity();
         void deleteFinish();
+        void addCsNameSucceed();
     }
 
     interface Model{

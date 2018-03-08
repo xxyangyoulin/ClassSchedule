@@ -172,7 +172,7 @@ public class CourseDbDao {
     }
 
     /**
-     * 冲突判断
+     * 课程冲突判断
      */
     private Course hasConflictCourse(Course course) {
         SQLiteDatabase db = new CourseDbHelper(app.mContext).getWritableDatabase();
@@ -208,6 +208,22 @@ public class CourseDbDao {
         cursor.close();
         db.close();
         return null;
+    }
+
+    /**
+     * 课程表名称冲突
+     *
+     * @param csName
+     * @return
+     */
+    public boolean hasConflictCourseTableName(String csName) {
+        SQLiteDatabase db = new CourseDbHelper(app.mContext).getWritableDatabase();
+        String sql = "select * from " + CoursesPsc.CsNameEntry.TABLE_NAME
+                + " where `" + CoursesPsc.CsNameEntry.COLUMN_NAME_NAME + "`='" + csName + "'";
+        System.out.println(sql);
+        Cursor cursor = db.rawQuery(sql, null);
+
+        return cursor.moveToNext();
     }
 
     /**
