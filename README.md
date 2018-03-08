@@ -7,7 +7,10 @@
 
 3. 使用MVP模式。第一次使用MVP练手，还有较多需要改进的地方；
 
-   ​
+
+#### 已知Bug: 
+- 导入贵大课程, 教务系统数据变更,导致有的同学课程导入遗漏
+
 
 #### **酷安上架 [前往下载](https://www.coolapk.com/apk/com.mnnyang.gzuclassschedule)**
 

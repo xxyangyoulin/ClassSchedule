@@ -172,7 +172,9 @@ public class ParseCourse {
 
     /**
      * 周一第1,2节{第2-16周|双周}
-     * 周一第1,2节{第2-16周|双周}
+     *  {第1-15周|2节/单周}
+     *
+     * 周一第1,2节{第1-15周|2节/周}
      */
     private static void parseTime(Course course, String time, int htmlNode) {
         //week
@@ -198,9 +200,16 @@ public class ParseCourse {
           /*  for (String node : nodes) {
                 System.out.print(node);
             }*/
+            LogUtil.e(ParseCourse.class, "匹配上");
+
+            LogUtil.e(ParseCourse.class, "time"+time+"---解析"+nodes);
             course.setNodes(nodes);
         } else if (htmlNode != 0) {
             course.addNode(htmlNode);
+        }else{
+            //周一第1,2节{第1-15周|2节/周}
+            LogUtil.e(ParseCourse.class, "没有匹配上"+time);
+
         }
 
         //周数

@@ -121,6 +121,7 @@ public class SettingFragment extends PreferenceFragment implements SettingContra
             @Override
             public void onPositive(DialogInterface dialog, int which) {
                 super.onPositive(dialog, which);
+                dialog.dismiss();
                 String key = getString(R.string.app_preference_theme);
                 int oldTheme = Preferences.getInt(key, 0);
 

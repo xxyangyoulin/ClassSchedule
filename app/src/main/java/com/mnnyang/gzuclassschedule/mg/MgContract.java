@@ -17,6 +17,7 @@ public interface MgContract {
         void switchCsName(int csNameId);
         void reloadCsNameList();
         void addCsName(String csName);
+        void editCsName(int id, String newCsName);
     }
 
     interface View extends BaseView<Presenter> {
@@ -25,6 +26,7 @@ public interface MgContract {
         void gotoCourseActivity();
         void deleteFinish();
         void addCsNameSucceed();
+        void editCsNameSucceed();
     }
 
     interface Model{

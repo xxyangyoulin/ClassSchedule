@@ -28,12 +28,12 @@ public class CoursePresenter implements CourseContract.Presenter {
     }
 
     @Override
-    public void updateCourseViewData(final String courseTime) {
+    public void updateCourseViewData(final String csName) {
         Observable.create(new Observable.OnSubscribe<ArrayList<Course>>() {
             @Override
             public void call(Subscriber<? super ArrayList<Course>> subscriber) {
                 CourseDbDao dao = CourseDbDao.newInstance();
-                final ArrayList<Course> courses = dao.loadCourses(courseTime);
+                final ArrayList<Course> courses = dao.loadCourses(csName);
                 subscriber.onNext(courses);
                 subscriber.onCompleted();
             }

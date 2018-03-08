@@ -153,6 +153,7 @@ public class ImptActivity extends BaseActivity implements
         //TODO 数据验证
         mXh = mEtlXh.getText().trim();
         String pwd = mEtlPwd.getText().trim();
+        LogUtil.e(this,"passwd="+pwd);
         String captcha = mEtlCaptcha.getText().trim();
 
         mPresenter.loadCourseTimeAndTerm(mXh, pwd, captcha);

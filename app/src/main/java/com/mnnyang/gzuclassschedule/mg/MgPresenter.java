@@ -76,14 +76,25 @@ public class MgPresenter implements MgContract.Presenter {
         } else {
             //TODO 检查
             boolean isConflict = CourseDbDao.newInstance().hasConflictCourseTableName(csName);
-            if (isConflict){
+            if (isConflict) {
                 //notice conflict
                 mView.showNotice(app.mContext.getString(R.string.course_name_is_conflicting));
-            }else{
+            } else {
                 //add cs_name
                 CourseDbDao.newInstance().getCsNameId(csName);
                 mView.addCsNameSucceed();
             }
+        }
+    }
+
+    @Override
+    public void editCsName(int id, String newCsName) {
+
+        int update = CourseDbDao.newInstance().updateCsName(id, newCsName);
+        if (update == 0) {
+            mView.showNotice(app.mContext.getString(R.string.course_name_already_exists));
+        } else {
+            mView.editCsNameSucceed();
         }
     }
 
@@ -124,6 +135,9 @@ public class MgPresenter implements MgContract.Presenter {
         String name = CourseDbDao.newInstance().getCsName(csNameId);
         Preferences.putString(app.mContext.getString(
                 R.string.app_preference_current_sd_name), name);
+        Preferences.putInt(app.mContext.getString(
+                R.string.app_preference_current_sd_name_id), csNameId);
+
         mView.showNotice("切换成功");
         mView.gotoCourseActivity();
     }

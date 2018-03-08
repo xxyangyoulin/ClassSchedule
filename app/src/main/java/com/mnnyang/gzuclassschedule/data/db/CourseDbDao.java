@@ -238,6 +238,8 @@ public class CourseDbDao {
     }
 
     public int getCsNameId(String csName, SQLiteDatabase db) {
+        System.out.println("被调用");
+
         String sql = "select * from " + CoursesPsc.CsNameEntry.TABLE_NAME
                 + " where `" + CoursesPsc.CsNameEntry.COLUMN_NAME_NAME + "`='" + csName + "'";
         System.out.println(sql);
@@ -251,6 +253,36 @@ public class CourseDbDao {
             values.put(CoursesPsc.CsNameEntry.COLUMN_NAME_NAME, csName);
             return (int) db.insert(CoursesPsc.CsNameEntry.TABLE_NAME, null, values);
         }
+    }
+
+    /**
+     *
+     * @param csNameId
+     * @param newCsName
+     * @return conflict return 0
+     */
+    public int updateCsName(int csNameId, String newCsName) {
+        SQLiteDatabase db = new CourseDbHelper(app.mContext).getWritableDatabase();
+
+        String sql = "select * from "+CoursesPsc.CsNameEntry.TABLE_NAME
+                +" where `"+ CoursesPsc.CsNameEntry.COLUMN_NAME_NAME_ID+"`!="+csNameId
+                +" and `"+ CoursesPsc.CsNameEntry.COLUMN_NAME_NAME+"`='"+newCsName+"'";
+        Cursor cursor = db.rawQuery(sql, null);
+        if (cursor.moveToNext()) {
+            cursor.close();
+            db.close();
+            return 0;
+        }
+        cursor.close();
+
+        ContentValues values = new ContentValues();
+        values.put(CoursesPsc.CsNameEntry.COLUMN_NAME_NAME, newCsName);
+        int update = db.update(CoursesPsc.CsNameEntry.TABLE_NAME, values,
+                CoursesPsc.CsNameEntry.COLUMN_NAME_NAME_ID + "=?",
+                new String[]{String.valueOf(csNameId)});
+
+        db.close();
+        return update;
     }
 
     public String getCsName(int csNameId) {
@@ -268,6 +300,8 @@ public class CourseDbDao {
         }
         return "";
     }
+
+
 
     /**
      * 加载课程数据

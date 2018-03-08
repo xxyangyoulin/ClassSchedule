@@ -120,7 +120,7 @@ public class DialogHelper {
         mCustomDialog.show();
     }
 
-    public void hideCoustomDialog() {
+    public void hideCustomDialog() {
         if (mCustomDialog != null && mCustomDialog.isShowing()) {
             mCustomDialog.dismiss();
             mCustomDialog = null;

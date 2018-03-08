@@ -13,7 +13,7 @@ import java.util.ArrayList;
 
 public interface CourseContract {
     interface Presenter extends BasePresenter {
-        void updateCourseViewData(String courseTime);
+        void updateCourseViewData(String csName);
     }
 
     interface View extends BaseView<Presenter> {

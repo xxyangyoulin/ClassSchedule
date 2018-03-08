@@ -2,17 +2,9 @@ package com.mnnyang.gzuclassschedule.utils.spec;
 
 import android.app.Activity;
 import android.content.DialogInterface;
-import android.graphics.drawable.ColorDrawable;
-import android.support.annotation.NonNull;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
-import android.view.WindowManager;
-import android.widget.EditText;
-import android.widget.PopupWindow;
 import android.widget.RadioGroup;
-import android.widget.TextView;
 
 import com.mnnyang.gzuclassschedule.R;
 import com.mnnyang.gzuclassschedule.app.Constant;
@@ -136,13 +128,14 @@ public class PopupWindowDialog {
                     @Override
                     public void onPositive(DialogInterface dialog, int which) {
                         super.onPositive(dialog, which);
+                        dialog.dismiss();
                         callback.onSelected(mWeek, mNodeStart, mNodeEnd);
                     }
                 });
     }
 
     public void showWeekRangeDialog(
-            Activity activity, int defStart, int defEnd,
+            Activity activity, int defStart, final int defEnd,
             int defType, final WeekRangeCallback callback) {
 
         mStartWeek = defStart;
@@ -211,6 +204,7 @@ public class PopupWindowDialog {
             @Override
             public void onPositive(DialogInterface dialog, int which) {
                 super.onPositive(dialog, which);
+                dialog.dismiss();
                 callback.onSelected(mStartWeek, mEndWeek, mWeekType);
             }
         });

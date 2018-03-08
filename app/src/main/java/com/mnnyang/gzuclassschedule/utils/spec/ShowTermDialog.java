@@ -9,11 +9,9 @@ import android.widget.LinearLayout;
 import android.widget.RadioGroup;
 
 import com.mnnyang.gzuclassschedule.R;
-import com.mnnyang.gzuclassschedule.app.app;
 import com.mnnyang.gzuclassschedule.utils.ColorUtil;
 import com.mnnyang.gzuclassschedule.utils.DialogHelper;
 import com.mnnyang.gzuclassschedule.utils.DialogListener;
-import com.mnnyang.gzuclassschedule.utils.ToastUtils;
 
 /**
  * Created by mnnyang on 17-11-4.
@@ -81,6 +79,7 @@ public class ShowTermDialog {
                     @Override
                     public void onPositive(DialogInterface dialog, int which) {
                         super.onPositive(dialog, which);
+                        dialog.dismiss();
                         callback.onPositive(dialog, which);
                     }
                 });

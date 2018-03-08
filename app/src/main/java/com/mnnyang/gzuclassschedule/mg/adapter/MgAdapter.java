@@ -15,17 +15,23 @@ import java.util.List;
 
 public class MgAdapter extends RecyclerBaseAdapter<CsItem> {
 
-    public interface MgListener extends RecyclerBaseAdapter.ItemClickListener{
-        void onEditClick(View view,int csNameId, RecyclerBaseAdapter.ViewHolder holder);
-        void onDelClick(View view, int csNameId,RecyclerBaseAdapter.ViewHolder holder);
+    public interface MgListener extends RecyclerBaseAdapter.ItemClickListener {
+        void onEditClick(View view, int csNameId, RecyclerBaseAdapter.ViewHolder holder);
+
+        void onDelClick(View view, int csNameId, RecyclerBaseAdapter.ViewHolder holder);
     }
 
-    public String currentName;
+    private int currentCsNameIdTag;
 
-    public MgAdapter setCurrentName(String currentName) {
-        this.currentName = currentName;
-        return this;
+    public void setCurrentCsNameIdTag(int csNameId) {
+        this.currentCsNameIdTag = csNameId;
+
+        //只存在一个课表的时候, 默认就为该课表
+        if (getData().size() == 1) {
+            currentCsNameIdTag = -1;
+        }
     }
+
 
     public MgAdapter(int itemLayoutId, @NonNull List<CsItem> data) {
         super(itemLayoutId, data);
@@ -38,11 +44,15 @@ public class MgAdapter extends RecyclerBaseAdapter<CsItem> {
         int nameId = getData().get(position).getCsName().getCsNameId();
         holder.itemView.setTag(nameId);
 
-        if (currentName.equals(name)) {
-//            holder.getView(R.id.iv_done).setVisibility(View.VISIBLE);
+        //只存在一个课表的时候, 默认就为该课表
+        if (currentCsNameIdTag == -1) {
+            holder.itemView.setBackgroundColor(0x10000000);
+            return;
+        }
+
+        if (currentCsNameIdTag == nameId) {
             holder.itemView.setBackgroundColor(0x10000000);
         } else {
-//            holder.getView(R.id.iv_done).setVisibility(View.INVISIBLE);
             holder.itemView.setBackgroundColor(0xffffff);
         }
     }
@@ -53,16 +63,16 @@ public class MgAdapter extends RecyclerBaseAdapter<CsItem> {
         holder.getView(R.id.iv_edit).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ((MgListener)itemClickListener).onEditClick(v,
-                        (Integer) holder.itemView.getTag(),holder);
+                ((MgListener) itemClickListener).onEditClick(v,
+                        (Integer) holder.itemView.getTag(), holder);
             }
         });
 
         holder.getView(R.id.iv_del).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ((MgListener)itemClickListener).onDelClick(v,
-                        (Integer) holder.itemView.getTag(),holder);
+                ((MgListener) itemClickListener).onDelClick(v,
+                        (Integer) holder.itemView.getTag(), holder);
             }
         });
 

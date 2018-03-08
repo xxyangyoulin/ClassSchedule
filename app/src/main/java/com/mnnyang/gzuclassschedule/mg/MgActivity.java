@@ -8,6 +8,7 @@ import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -33,7 +34,7 @@ public class MgActivity extends BaseActivity implements MgContract.View, View.On
     private MgPresenter mPresenter;
     private MgAdapter mAdapter;
     ArrayList<CsItem> csItems = new ArrayList<>();
-    private DialogHelper mAddCsNameDialogHelper;
+    private DialogHelper mCsNameDialogHelper;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -72,7 +73,8 @@ public class MgActivity extends BaseActivity implements MgContract.View, View.On
             @Override
             public void onEditClick(View view, int csNameId,
                                     RecyclerBaseAdapter.ViewHolder holder) {
-                toast(csNameId+"");
+                toast(csNameId + "");
+                editDialog(csNameId);
             }
 
             @Override
@@ -93,12 +95,43 @@ public class MgActivity extends BaseActivity implements MgContract.View, View.On
         });
     }
 
+    private void editDialog(final int id) {
+        mCsNameDialogHelper = new DialogHelper();
+        View view = LayoutInflater.from(this).inflate(
+                R.layout.layout_input_course_table_name, null);
+
+        final EditText editText = view.findViewById(R.id.et_course_table_name);
+        //default value
+        editText.setHint(CourseDbDao.newInstance().getCsName(id));
+
+        mCsNameDialogHelper.showCustomDialog(this, view,
+                getString(R.string.please_input_course_table_name), new DialogListener() {
+                    @Override
+                    public void onNegative(DialogInterface dialog, int which) {
+                        super.onNegative(dialog, which);
+                        mCsNameDialogHelper = null;
+                    }
+
+                    @Override
+                    public void onPositive(DialogInterface dialog, int which) {
+                        super.onPositive(dialog, which);
+                        String courseTableName = editText.getText().toString().trim();
+                        if (TextUtils.isEmpty(courseTableName)){
+                            toast(getString(R.string.course_name_can_not_be_empty));
+                            return;
+                        }
+
+                        mPresenter.editCsName(id,courseTableName);
+                    }
+                });
+    }
+
     private void deleteDialog(final int id) {
         String currentScheduleName = Preferences.getString(
                 getString(R.string.app_preference_current_sd_name),
                 getString(R.string.default_course_name));
         int csNameId = CourseDbDao.newInstance().getCsNameId(currentScheduleName);
-        if (id == csNameId){
+        if (id == csNameId) {
             toast(getString(R.string.you_can_not_delete_the_current_class_schedule));
             return;
         }
@@ -139,8 +172,8 @@ public class MgActivity extends BaseActivity implements MgContract.View, View.On
 
     @Override
     public void showList(ArrayList<CsItem> csNames) {
-        String curName = Preferences.getString(getString(R.string.app_preference_current_sd_name), getString(R.string.default_course_name));
-        mAdapter.setCurrentName(curName);
+        int curNameId = Preferences.getInt(getString(R.string.app_preference_current_sd_name_id), 0);
+        mAdapter.setCurrentCsNameIdTag(curNameId);
         mAdapter.notifyDataSetChanged();
     }
 
@@ -170,8 +203,21 @@ public class MgActivity extends BaseActivity implements MgContract.View, View.On
         mPresenter.reloadCsNameList();
 
         //添加成功 关闭弹窗
-        if (mAddCsNameDialogHelper != null) {
-            mAddCsNameDialogHelper.hideCoustomDialog();
+        if (mCsNameDialogHelper != null) {
+            mCsNameDialogHelper.hideCustomDialog();
+        }
+    }
+
+    @Override
+    public void editCsNameSucceed() {
+        showNotice(getString(R.string.edit_succeed));
+
+        //刷新界面
+        mPresenter.reloadCsNameList();
+
+        //关闭弹窗
+        if (mCsNameDialogHelper != null) {
+            mCsNameDialogHelper.hideCustomDialog();
         }
     }
 
@@ -197,13 +243,19 @@ public class MgActivity extends BaseActivity implements MgContract.View, View.On
     }
 
     private void add() {
-        mAddCsNameDialogHelper = new DialogHelper();
+        mCsNameDialogHelper = new DialogHelper();
         View view = LayoutInflater.from(this).inflate(
                 R.layout.layout_input_course_table_name, null);
         final EditText editText = view.findViewById(R.id.et_course_table_name);
 
-        mAddCsNameDialogHelper.showCustomDialog(this, view,
+        mCsNameDialogHelper.showCustomDialog(this, view,
                 getString(R.string.please_input_course_table_name), new DialogListener() {
+                    @Override
+                    public void onNegative(DialogInterface dialog, int which) {
+                        super.onNegative(dialog, which);
+                        mCsNameDialogHelper = null;
+                    }
+
                     @Override
                     public void onPositive(DialogInterface dialog, int which) {
                         super.onPositive(dialog, which);

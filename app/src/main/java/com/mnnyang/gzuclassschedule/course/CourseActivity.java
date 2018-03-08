@@ -31,6 +31,7 @@ import com.mnnyang.gzuclassschedule.app.Constant;
 import com.mnnyang.gzuclassschedule.custom.CourseTableView;
 import com.mnnyang.gzuclassschedule.custom.CourseView;
 import com.mnnyang.gzuclassschedule.data.bean.Course;
+import com.mnnyang.gzuclassschedule.data.db.CourseDbDao;
 import com.mnnyang.gzuclassschedule.setting.SettingActivity;
 import com.mnnyang.gzuclassschedule.utils.LogUtil;
 import com.mnnyang.gzuclassschedule.utils.Preferences;
@@ -55,6 +56,7 @@ public class CourseActivity extends BaseActivity implements CourseContract.View,
     private FloatingActionButton mFab;
     private UpdateReceiver mUpdateReceiver;
     private ShowDetailDialog mDialog;
+    private int mCurrentCsNameId;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -164,6 +166,12 @@ public class CourseActivity extends BaseActivity implements CourseContract.View,
                 getString(R.string.app_preference_current_sd_name),
                 getString(R.string.default_course_name));
 
+        //get id
+        mCurrentCsNameId = Preferences.getInt(
+                getString(R.string.app_preference_current_sd_name_id), 0);
+        //set name
+        mCurrentScheduleName = CourseDbDao.newInstance().getCsName(mCurrentCsNameId);
+
         boolean showNoon = PreferenceManager
                 .getDefaultSharedPreferences(getBaseContext())
                 .getBoolean(getString(R.string.app_preference_show_noon), false);
@@ -175,6 +183,9 @@ public class CourseActivity extends BaseActivity implements CourseContract.View,
                 .setNoonNode(Preferences.getInt(getString(R.string.app_preference_noon_node), Integer.parseInt(getString(R.string.default_noon_node))));
 
         LogUtil.d(this, "当前课表:" + mCurrentScheduleName);
+        if (TextUtils.isEmpty(mCurrentScheduleName)){
+            mCurrentScheduleName = getString(R.string.default_course_name);
+        }
 
         mPresenter.updateCourseViewData(mCurrentScheduleName);
     }
