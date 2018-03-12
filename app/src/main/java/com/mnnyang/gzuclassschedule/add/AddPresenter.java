@@ -53,6 +53,12 @@ public class AddPresenter implements AddContract.Presenter {
     }
 
     @Override
+    public void removeCourse(int courseId) {
+        CourseDbDao.newInstance().removeCourse(courseId);
+        mView.onDelSucceed();
+    }
+
+    @Override
     public void updateCourse(Course course) {
         LogUtil.d(this, course.toString());
 

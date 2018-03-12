@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 
 import com.mnnyang.gzuclassschedule.BaseActivity;
@@ -12,6 +13,7 @@ import com.mnnyang.gzuclassschedule.R;
 import com.mnnyang.gzuclassschedule.app.Constant;
 import com.mnnyang.gzuclassschedule.custom.EditTextLayout;
 import com.mnnyang.gzuclassschedule.data.bean.Course;
+import com.mnnyang.gzuclassschedule.utils.LogUtil;
 import com.mnnyang.gzuclassschedule.utils.Preferences;
 import com.mnnyang.gzuclassschedule.utils.spec.PopupWindowDialog;
 
@@ -33,15 +35,20 @@ public class AddActivity extends BaseActivity implements AddContract.View, View.
 
     private int mWeekType = Course.WEEK_ALL;
 
-    private boolean isEditModel;
+    /**
+     * 编辑模式
+     */
+    private boolean isEditMode;
     private int mCourseId;
+    private Button mBtnRemove;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add);
         initBackToolbar(getString(R.string.add_course));
-        initInputView();
+
+        initView();
 
         initDefaultValues();
 
@@ -52,8 +59,13 @@ public class AddActivity extends BaseActivity implements AddContract.View, View.
         Intent intent = getIntent();
         Course course = (Course) intent.getSerializableExtra(Constant.INTENT_COURSE);
         if (course != null) {
+            //set toolbar title
+            if (getSupportActionBar() != null) {
+                getSupportActionBar().setTitle(getString(R.string.edit_course));
+            }
+
             mCourseId = course.getCourseId();
-            System.out.println("id====" + mCourseId);
+            LogUtil.i(TAG, "id====" + mCourseId);
 
             mEtName.setText(course.getName());
             mEtlClassroom.setText(course.getClassRoom());
@@ -66,22 +78,28 @@ public class AddActivity extends BaseActivity implements AddContract.View, View.
             mSelectedNodeEnd = course.getNodes().get(course.getNodes().size() - 1);
             mWeekType = course.getWeekType();
 
-            isEditModel = true;
+
+            mBtnRemove.setVisibility(View.VISIBLE);
+            isEditMode = true;
         }
 
         updateWeekNode();
         updateWeekRange();
     }
 
-    private void initInputView() {
+    private void initView() {
         mEtName = findViewById(R.id.et_course_name);
         mEtlClassroom = findViewById(R.id.etl_classroom);
         mEtlTeacher = findViewById(R.id.etl_teacher);
         mEtlTime = findViewById(R.id.etl_time);
         mEtlWeekRange = findViewById(R.id.etl_week_range);
 
+        mBtnRemove = findViewById(R.id.btn_remove);
+
         mEtlTime.setOnClickListener(this);
         mEtlWeekRange.setOnClickListener(this);
+
+        mBtnRemove.setOnClickListener(this);
     }
 
     @Override
@@ -102,6 +120,7 @@ public class AddActivity extends BaseActivity implements AddContract.View, View.
         }
         return super.onOptionsItemSelected(item);
     }
+
 
     private void add() {
         Course course = new Course();
@@ -124,7 +143,7 @@ public class AddActivity extends BaseActivity implements AddContract.View, View.
             course.addNode(i);
         }
 
-        if (isEditModel) {
+        if (isEditMode) {
             course.setCourseId(mCourseId);
             mPresenter.updateCourse(course);
             return;
@@ -137,32 +156,50 @@ public class AddActivity extends BaseActivity implements AddContract.View, View.
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.etl_time:
-                new PopupWindowDialog().showSelectTimeDialog(this,
-                        mSelectedWeek, mSelectedNodeStart, mSelectedNodeEnd,
-                        new PopupWindowDialog.SelectTimeCallback() {
-                            @Override
-                            public void onSelected(int week, int nodeStart, int endStart) {
-                                mSelectedWeek = week;
-                                mSelectedNodeStart = nodeStart;
-                                mSelectedNodeEnd = endStart;
-                                updateWeekNode();
-                            }
-                        });
+                timeAction();
                 break;
             case R.id.etl_week_range:
-                new PopupWindowDialog().showWeekRangeDialog(this,
-                        mSelectedStartWeek, mSelectedEndWeek, mWeekType,
-                        new PopupWindowDialog.WeekRangeCallback() {
-                            @Override
-                            public void onSelected(int start, int end, int type) {
-                                mSelectedStartWeek = start;
-                                mSelectedEndWeek = end;
-                                mWeekType = type;
-                                updateWeekRange();
-                            }
-                        });
+                rangeAction();
+                break;
+            case R.id.btn_remove:
+                remove();
                 break;
         }
+    }
+
+    private void remove() {
+        if (!isEditMode) {
+            return;
+        }
+        mPresenter.removeCourse(mCourseId);
+    }
+
+    private void rangeAction() {
+        new PopupWindowDialog().showWeekRangeDialog(this,
+                mSelectedStartWeek, mSelectedEndWeek, mWeekType,
+                new PopupWindowDialog.WeekRangeCallback() {
+                    @Override
+                    public void onSelected(int start, int end, int type) {
+                        mSelectedStartWeek = start;
+                        mSelectedEndWeek = end;
+                        mWeekType = type;
+                        updateWeekRange();
+                    }
+                });
+    }
+
+    private void timeAction() {
+        new PopupWindowDialog().showSelectTimeDialog(this,
+                mSelectedWeek, mSelectedNodeStart, mSelectedNodeEnd,
+                new PopupWindowDialog.SelectTimeCallback() {
+                    @Override
+                    public void onSelected(int week, int nodeStart, int endStart) {
+                        mSelectedWeek = week;
+                        mSelectedNodeStart = nodeStart;
+                        mSelectedNodeEnd = endStart;
+                        updateWeekNode();
+                    }
+                });
     }
 
     private void updateWeekNode() {
@@ -191,6 +228,13 @@ public class AddActivity extends BaseActivity implements AddContract.View, View.
     @Override
     public void onAddSucceed(Course course) {
         toast("【" + course.getName() + "】" + getString(R.string.add_succeed));
+        notifiUpdateMainPage(Constant.INTENT_UPDATE_TYPE_COURSE);
+        finish();
+    }
+
+    @Override
+    public void onDelSucceed() {
+        toast(getString(R.string.delete_succeed));
         notifiUpdateMainPage(Constant.INTENT_UPDATE_TYPE_COURSE);
         finish();
     }

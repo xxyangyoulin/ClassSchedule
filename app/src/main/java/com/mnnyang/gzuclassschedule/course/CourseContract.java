@@ -14,6 +14,7 @@ import java.util.ArrayList;
 public interface CourseContract {
     interface Presenter extends BasePresenter {
         void updateCourseViewData(String csName);
+        void deleteCourse(int courseId);
     }
 
     interface View extends BaseView<Presenter> {

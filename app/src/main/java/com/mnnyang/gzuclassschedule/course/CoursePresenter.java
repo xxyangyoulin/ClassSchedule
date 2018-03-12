@@ -57,4 +57,10 @@ public class CoursePresenter implements CourseContract.Presenter {
                     }
                 });
     }
+
+    @Override
+    public void deleteCourse(int courseId) {
+        CourseDbDao.newInstance().removeCourse(courseId);
+        mCourseView.updateCoursePreference(); //must be main thread
+    }
 }

@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -20,7 +19,7 @@
             android:background="?android:attr/colorPrimary"
             android:gravity="center"
             app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
-            tools:targetApi="lollipop"/>
+            tools:targetApi="lollipop" />
 
         <EditText
             android:id="@+id/et_course_name"
@@ -34,7 +33,7 @@
             android:textColor="@color/white_f1"
             android:textColorHint="?android:attr/colorPrimaryDark"
             android:textSize="32sp"
-            tools:targetApi="lollipop"/>
+            tools:targetApi="lollipop" />
     </android.support.design.widget.AppBarLayout>
 
 
@@ -60,43 +59,57 @@
                 <com.mnnyang.gzuclassschedule.custom.EditTextLayout
                     android:id="@+id/etl_classroom"
                     android:layout_width="match_parent"
-                    app:hintColor="@color/color_gary_40"
                     android:layout_height="wrap_content"
                     app:hint="输入上课教室"
-                    app:textColor="@color/secondary_text"
-                    app:icon="@drawable/ic_svg_classroom"/>
+                    app:hintColor="@color/color_gary_40"
+                    app:icon="@drawable/ic_svg_classroom"
+                    app:textColor="@color/secondary_text" />
 
                 <View
                     android:layout_width="match_parent"
                     android:layout_height="1px"
-                    android:background="#20000000"/>
+                    android:background="#20000000" />
 
                 <com.mnnyang.gzuclassschedule.custom.EditTextLayout
                     android:id="@+id/etl_teacher"
-                    app:hintColor="@color/color_gary_40"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     app:hint="输入上课教师"
-                    app:textColor="@color/secondary_text"
-                    app:icon="@drawable/ic_svg_teacher"/>
+                    app:hintColor="@color/color_gary_40"
+                    app:icon="@drawable/ic_svg_teacher"
+                    app:textColor="@color/secondary_text" />
 
                 <View
                     android:layout_width="match_parent"
                     android:layout_height="1px"
-                    android:background="#20000000"/>
+                    android:background="#20000000" />
 
                 <com.mnnyang.gzuclassschedule.custom.EditTextLayout
                     android:id="@+id/etl_week_range"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    app:hintColor="@color/color_gary_40"
                     app:hint="选择周数始末"
-                    app:textColor="@color/secondary_text"
+                    app:hintColor="@color/color_gary_40"
                     app:icon="@drawable/ic_svg_node"
-                    app:input_enabled="false"/>
+                    app:input_enabled="false"
+                    app:textColor="@color/secondary_text" />
             </LinearLayout>
 
-            <include layout="@layout/layout_add_time_item"/>
+            <include layout="@layout/layout_add_time_item" />
+
+            <Button
+                android:id="@+id/btn_remove"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_marginLeft="8dp"
+                android:layout_marginRight="8dp"
+                android:layout_marginTop="16dp"
+                android:background="@drawable/selector_btn_cancel"
+                android:text="@string/delete"
+                android:textColor="@color/white_f1"
+                android:textSize="16sp"
+                android:visibility="gone"
+                tools:visibility="visible" />
 
         </LinearLayout>
     </ScrollView>

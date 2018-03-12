@@ -650,6 +650,17 @@ public class CourseTableView extends FrameLayout {
             }
         });
 
+        bgLayout.setOnLongClickListener(new OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                if (mItemClickListener!=null){
+                    mItemClickListener.onLongClick(course,bgLayout);
+                    return true;
+                }
+                return false;
+            }
+        });
+
         return bgLayout;
     }
 
@@ -682,7 +693,7 @@ public class CourseTableView extends FrameLayout {
 
     public interface OnItemClickListener {
         void onClick(Course course, LinearLayout itemLayout);
-
+        void onLongClick(Course course, LinearLayout itemLayout);
     }
 
     public CourseTableView setOnItemClickListener(OnItemClickListener itemClickListener) {

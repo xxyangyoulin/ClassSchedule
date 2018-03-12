@@ -144,6 +144,7 @@ public class CourseDbDao {
         db.close();
     }
 
+    //TODO ~~~~~~
     private void removeCourse(int courseId, SQLiteDatabase db) {
         db.delete(CoursesPsc.CourseEntry.TABLE_NAME,
                 CoursesPsc.CourseEntry.COLUMN_NAME_COURSE_ID + "=?",

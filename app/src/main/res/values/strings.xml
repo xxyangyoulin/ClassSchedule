@@ -1,7 +1,10 @@
 <resources>
     <string name="app_name">MD课表</string>
     <string name="app_version">V 1.1.2</string>
+
     <string name="qq_number">776310072</string>
+    <string name="author_mnnyang">xxyangyoulin</string>
+    <string name="author_blog">http://xxyangyoulin.cn</string>
 
     <string name="login">登录</string>
     <string name="user_add">手动添加</string>
@@ -58,7 +61,8 @@
 
     <string name="github_lib">org.jsoup:jsoup:1.10.3\nio.reactivex:rxjava:1.1.3\nio.reactivex:rxandroid:1.0.1\ncom.google.code.gson:gson:2.8.2\ncom.zhy:okhttputils:2.6.2\nwangjie/wheelview</string>
     <string name="github_gzuclassschedule">https://github.com/mnnyang/GzuClassSchedule</string>
-    <string name="author_mnnyang">作者:mnnyang</string>
+
+
     <string name="check_update">检查更新</string>
     <string name="update_succeed">更新成功</string>
     <string name="app_preference_theme">theme</string>
@@ -80,7 +84,11 @@
     <string name="more_pref">更多选择</string>
     <string name="more_pref_summary">自定义其他参数</string>
     <string name="feedback_summary">通过QQ反馈意见</string>
-    <string name="checking_for_updates">检查更新中...</string>
+    <string name="checking_for_updates">检查更新中…</string>
     <string name="already_the_latest_version">已是最新版本</string>
     <string name="access_err">抱歉，访问出错</string>
+    <string name="confirm_to_delete">确定删除?</string>
+    <string name="edit_course">编辑课程</string>
+    <string name="delete">删 除</string>
+    <string name="delete_succeed">删除成功</string>
 </resources>

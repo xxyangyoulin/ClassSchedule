@@ -2,6 +2,7 @@ package com.mnnyang.gzuclassschedule.course;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.Color;
@@ -33,9 +34,12 @@ import com.mnnyang.gzuclassschedule.custom.course.CourseView;
 import com.mnnyang.gzuclassschedule.data.bean.Course;
 import com.mnnyang.gzuclassschedule.data.db.CourseDbDao;
 import com.mnnyang.gzuclassschedule.setting.SettingActivity;
+import com.mnnyang.gzuclassschedule.utils.DialogHelper;
+import com.mnnyang.gzuclassschedule.utils.DialogListener;
 import com.mnnyang.gzuclassschedule.utils.LogUtil;
 import com.mnnyang.gzuclassschedule.utils.Preferences;
 import com.mnnyang.gzuclassschedule.utils.TimeUtils;
+import com.mnnyang.gzuclassschedule.utils.ToastUtils;
 import com.mnnyang.gzuclassschedule.utils.spec.ShowDetailDialog;
 
 import java.util.ArrayList;
@@ -127,6 +131,22 @@ public class CourseActivity extends BaseActivity implements CourseContract.View,
         });
     }
 
+    @Override
+    public void onLongClick(final Course course, LinearLayout itemLayout) {
+        DialogHelper dialogHelper = new DialogHelper();
+        dialogHelper.showNormalDialog(this, getString(R.string.confirm_to_delete),
+                "课程 【" + course.getName() + "】" + Constant.WEEK[course.getWeek()]
+                        + "第" + course.getNodes().get(0) + "节 " + "",
+                new DialogListener() {
+                    @Override
+                    public void onPositive(DialogInterface dialog, int which) {
+                        super.onPositive(dialog, which);
+                        //delete
+                        mPresenter.deleteCourse(course.getCourseId());
+                    }
+                });
+    }
+
     private void registerReceiver() {
         mUpdateReceiver = new UpdateReceiver();
         IntentFilter intentFilter = new IntentFilter(Constant.INTENT_UPDATE);
@@ -183,7 +203,7 @@ public class CourseActivity extends BaseActivity implements CourseContract.View,
                 .setNoonNode(Preferences.getInt(getString(R.string.app_preference_noon_node), Integer.parseInt(getString(R.string.default_noon_node))));
 
         LogUtil.d(this, "当前课表:" + mCurrentScheduleName);
-        if (TextUtils.isEmpty(mCurrentScheduleName)){
+        if (TextUtils.isEmpty(mCurrentScheduleName)) {
             mCurrentScheduleName = getString(R.string.default_course_name);
         }
 
@@ -261,7 +281,9 @@ public class CourseActivity extends BaseActivity implements CourseContract.View,
         //是否允许popup超出屏幕范围
         mPopupWindow.setClippingEnabled(true);
 
-        mPopupWindow.getContentView().measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED);
+        mPopupWindow.getContentView().measure(View.MeasureSpec.UNSPECIFIED,
+                View.MeasureSpec.UNSPECIFIED);
+
         int xoff = mLayoutWeekTitle.getWidth() - mPopupWindow.getContentView().getMeasuredWidth();
         int yoff = -mTvWeekCount.getHeight();
         mPopupWindow.showAsDropDown(v, xoff / 2, yoff);
@@ -270,7 +292,8 @@ public class CourseActivity extends BaseActivity implements CourseContract.View,
             return;
         }
 
-        popupView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+        popupView.getViewTreeObserver().addOnGlobalLayoutListener(
+                new ViewTreeObserver.OnGlobalLayoutListener() {
             @Override
             public void onGlobalLayout() {
                 popupView.getViewTreeObserver()
