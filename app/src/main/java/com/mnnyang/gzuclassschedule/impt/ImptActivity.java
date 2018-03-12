@@ -37,7 +37,7 @@ public class ImptActivity extends BaseActivity implements
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        ScreenUtils.setSystemBarTransparent(this);
+//        ScreenUtils.setSystemBarTransparent(this);
         setContentView(R.layout.activity_impt);
 
         initBackToolbar("导入课程表");

@@ -1,15 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <declare-styleable name="EditTextLayout">
-        <attr name="icon" format="reference"/>
-        <attr name="hint" format="string|reference"/>
-        <attr name="text" format="string|reference"/>
-        <attr name="textColor" format="color|reference"/>
-        <attr name="hintColor" format="color|reference"/>
-        <attr name="input_enabled" format="boolean"/>
+        <attr name="icon" format="reference" />
+        <attr name="hint" format="string|reference" />
+        <attr name="text" format="string|reference" />
+        <attr name="textColor" format="color|reference" />
+        <attr name="hintColor" format="color|reference" />
+        <attr name="input_enabled" format="boolean" />
     </declare-styleable>
 
+
     <declare-styleable name="ColorImageView">
-        <attr name="bgcolor" format="color|reference"/>
+        <attr name="bgcolor" format="color|reference" />
+    </declare-styleable>
+
+
+    <declare-styleable name="SettingItemNormal">
+        <attr name="item_title" format="string|reference" />
+        <attr name="summary" format="string|reference" />
+        <attr name="showSwitch" format="boolean"/>
+        <attr name="checked" format="boolean" />
     </declare-styleable>
 </resources>

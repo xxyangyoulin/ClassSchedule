@@ -4,7 +4,6 @@
     <color name="colorPrimaryDark">@color/primary_dark_green</color>
     <color name="colorAccent">@color/accent_green</color>
 
-
     <color name="primary_dark_red">#D32F2F</color>
     <color name="primary_red">#F44336</color>
     <color name="accent_red">#FF5252</color>
@@ -50,7 +49,7 @@
     <color name="primary_text">#212121</color>
     <color name="secondary_text">#757575</color>
     <color name="icons">#FFFFFF</color>
-    <color name="divider">#BDBDBD</color>
+    <color name="divider">#50BDBDBD</color>
 
     <color name="dark_purple">#7e57c0</color>
     <color name="white_f1">#f9f9f9</color>

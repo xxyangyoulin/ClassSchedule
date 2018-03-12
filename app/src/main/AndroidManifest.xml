@@ -12,7 +12,7 @@
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:supportsRtl="true"
-        android:theme="@style/pinkTheme">
+        android:theme="@style/greenTheme">
         <activity
             android:name=".course.CourseActivity"
             android:launchMode="singleTask">
@@ -22,13 +22,15 @@
             </intent-filter>
         </activity>
         <activity android:name=".setting.SettingActivity">
+
         </activity>
         <activity android:name=".impt.ImptActivity">
         </activity>
         <activity android:name=".add.AddActivity">
-
         </activity>
         <activity android:name=".mg.MgActivity">
+        </activity>
+        <activity android:name=".about.AboutActivity">
         </activity>
     </application>
 

@@ -74,4 +74,13 @@
     <string name="edit_succeed">修改成功</string>
     <string name="course_name_already_exists">课表名称已经存在</string>
     <string name="app_preference_current_sd_name_id">current_sd_name_id</string>
+    <string name="user_add_summary">手动添加课程表数据</string>
+    <string name="import_gzu_description">登录正方教务系统导入课程表</string>
+    <string name="kb_manage_description">增加或删除课表数据</string>
+    <string name="more_pref">更多选择</string>
+    <string name="more_pref_summary">自定义其他参数</string>
+    <string name="feedback_summary">通过QQ反馈意见</string>
+    <string name="checking_for_updates">检查更新中...</string>
+    <string name="already_the_latest_version">已是最新版本</string>
+    <string name="access_err">抱歉，访问出错</string>
 </resources>

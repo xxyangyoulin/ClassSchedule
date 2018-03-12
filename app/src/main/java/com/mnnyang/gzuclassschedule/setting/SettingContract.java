@@ -12,13 +12,10 @@ import com.mnnyang.gzuclassschedule.http.HttpCallback;
 
 public interface SettingContract {
     interface Presenter extends BasePresenter {
-        void deleteAllCourse();
+        void feedback();
     }
 
     interface View extends BaseView<Presenter> {
         void showNotice(String notice);
-        void showDeleteConfirmDialog();
-        void showDeleting();
-        void hideDeleting();
     }
 }

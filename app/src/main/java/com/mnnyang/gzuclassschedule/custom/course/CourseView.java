@@ -1,4 +1,4 @@
-package com.mnnyang.gzuclassschedule.custom;
+package com.mnnyang.gzuclassschedule.custom.course;
 
 import android.content.Context;
 import android.graphics.Canvas;

@@ -1,7 +1,12 @@
 package com.mnnyang.gzuclassschedule.setting;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
+import android.net.Uri;
 import android.support.v7.app.AlertDialog;
 
 import com.google.gson.Gson;
@@ -16,9 +21,11 @@ import com.mnnyang.gzuclassschedule.utils.ActivityUtil;
 import com.mnnyang.gzuclassschedule.utils.DialogHelper;
 import com.mnnyang.gzuclassschedule.utils.LogUtil;
 import com.mnnyang.gzuclassschedule.utils.Preferences;
+import com.mnnyang.gzuclassschedule.utils.ToastUtils;
 import com.mnnyang.gzuclassschedule.utils.VersionUpdate;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import rx.Observable;
 import rx.Observer;
@@ -44,39 +51,34 @@ public class SettingPresenter implements SettingContract.Presenter {
     }
 
     @Override
-    public void deleteAllCourse() {
-        mView.showDeleting();
-        Observable.create(new Observable.OnSubscribe<Boolean>() {
-            @Override
-            public void call(Subscriber<? super Boolean> subscriber) {
-                boolean b = CourseDbDao.newInstance().removeAllData();
-                subscriber.onNext(b);
-                subscriber.onCompleted();
+    public void feedback() {
+        if (!QQIsAvailable()) {
+            mView.showNotice(app.mContext.getString(R.string.qq_not_installed));
+            return;
+        }
+
+        String url1 = "mqqwpa://im/chat?chat_type=wpa&uin=" +
+                app.mContext.getString(R.string.qq_number);
+        Intent i1 = new Intent(Intent.ACTION_VIEW, Uri.parse(url1));
+
+        i1.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+
+        i1.setAction(Intent.ACTION_VIEW);
+
+        app.mContext.startActivity(i1);
+    }
+
+    private boolean QQIsAvailable() {
+        final PackageManager mPackageManager = app.mContext.getPackageManager();
+        List<PackageInfo> pinfo = mPackageManager.getInstalledPackages(0);
+        if (pinfo != null) {
+            for (int i = 0; i < pinfo.size(); i++) {
+                String pn = pinfo.get(i).packageName;
+                if (pn.equals("com.tencent.mobileqq")) {
+                    return true;
+                }
             }
-        }).subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Observer<Boolean>() {
-                    @Override
-                    public void onCompleted() {
-
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-                        e.printStackTrace();
-                    }
-
-                    @Override
-                    public void onNext(Boolean aBoolean) {
-                        mView.hideDeleting();
-                        if (aBoolean) {
-                            Preferences.clear(app.mContext.getString(
-                                    R.string.app_preference_current_sd_name));
-                            mView.showNotice("清除成功");
-                        } else {
-                            mView.showNotice("清除失败,请重试");
-                        }
-                    }
-                });
+        }
+        return false;
     }
 }

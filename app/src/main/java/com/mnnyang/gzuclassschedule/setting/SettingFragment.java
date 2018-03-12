@@ -63,7 +63,6 @@ public class SettingFragment extends PreferenceFragment implements SettingContra
             gotoMgActivity();
             return true;
         } else if (title.equals(getString(R.string.del_all))) {
-            showDeleteConfirmDialog();
             return true;
         } else if (title.equals(getString(R.string.feedback))) {
             feedback();
@@ -75,7 +74,7 @@ public class SettingFragment extends PreferenceFragment implements SettingContra
             ((BaseActivity) getActivity()).notifiUpdateMainPage(Constant.INTENT_UPDATE_TYPE_COURSE);
             return true;
         } else if (title.equals(getString(R.string.about))) {
-            ((SettingActivity) getActivity()).addAboutFragment();
+//            ((SettingActivity) getActivity()).addAboutFragment();
             return true;
         } else if (title.equals(getString(R.string.theme_preference))) {
             showThemeDialog();
@@ -99,7 +98,8 @@ public class SettingFragment extends PreferenceFragment implements SettingContra
         for (int i = 0; i < themeColorArray.length; i++) {
             AppCompatRadioButton arb = new AppCompatRadioButton(getActivity());
 
-            RadioGroup.LayoutParams params = new RadioGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+            RadioGroup.LayoutParams params = new RadioGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
+                    ViewGroup.LayoutParams.WRAP_CONTENT);
             arb.setLayoutParams(params);
             arb.setId(i);
             arb.setTextColor(getResources().getColor(themeColorArray[i]));
@@ -168,18 +168,6 @@ public class SettingFragment extends PreferenceFragment implements SettingContra
         ToastUtils.show(notice);
     }
 
-    @Override
-    public void showDeleteConfirmDialog() {
-        DialogHelper dialogHelper = new DialogHelper();
-        dialogHelper.showNormalDialog(getActivity(), getString(R.string.please_note), getString(R.string.dialog_confirm_delete),
-                new DialogListener() {
-                    @Override
-                    public void onPositive(DialogInterface dialog, int which) {
-                        super.onPositive(dialog, which);
-                        mPresenter.deleteAllCourse();
-                    }
-                });
-    }
 
     public void gotoImptActivity() {
         ((BaseActivity) getActivity()).gotoActivity(ImptActivity.class);
@@ -192,21 +180,6 @@ public class SettingFragment extends PreferenceFragment implements SettingContra
 
     public void gotoAddActivity() {
         ((BaseActivity) getActivity()).gotoActivity(AddActivity.class);
-    }
-
-    @Override
-    public void showDeleting() {
-        mDeleteDialog = new DialogHelper();
-        mDeleteDialog.showProgressDialog(getActivity(), getString(R.string.deleting), getString(R.string.please_wait_a_moment), false);
-    }
-
-    @Override
-    public void hideDeleting() {
-        if (mDeleteDialog != null) {
-            mDeleteDialog.hideProgressDialog();
-        }
-        ((BaseActivity) getActivity()).notifiUpdateMainPage(
-                Constant.INTENT_UPDATE_TYPE_COURSE);
     }
 
 }

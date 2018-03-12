@@ -58,8 +58,8 @@ public class MgActivity extends BaseActivity implements MgContract.View, View.On
         recyclerView.setLayoutManager(new LinearLayoutManager(getBaseContext()));
         mAdapter = new MgAdapter(R.layout.layout_item_cs, csItems);
 
-        mAdapter.setFooter(LayoutInflater.from(this).inflate(
-                R.layout.layout_no_more, recyclerView, false));
+//        mAdapter.setFooter(LayoutInflater.from(this).inflate(
+//                R.layout.layout_no_more, recyclerView, false));
 
         recyclerView.setAdapter(mAdapter);
 
@@ -68,7 +68,6 @@ public class MgActivity extends BaseActivity implements MgContract.View, View.On
         recyclerView.setItemAnimator(new DefaultItemAnimator());
 
         mAdapter.setItemClickListener(new MgAdapter.MgListener() {
-
 
             @Override
             public void onEditClick(View view, int csNameId,
