@@ -21,6 +21,10 @@ public class CourseDbDao {
     private CourseDbDao() {
     }
 
+    public boolean removeByCsName(String csName) {
+        return removeByCsNameId(getCsNameId(csName));
+    }
+
     private static final class Holder {
         private static final CourseDbDao DAO = new CourseDbDao();
     }

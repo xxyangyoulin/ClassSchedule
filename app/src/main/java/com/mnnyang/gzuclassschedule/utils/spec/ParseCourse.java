@@ -200,16 +200,13 @@ public class ParseCourse {
           /*  for (String node : nodes) {
                 System.out.print(node);
             }*/
-            LogUtil.e(ParseCourse.class, "匹配上");
 
-            LogUtil.e(ParseCourse.class, "time"+time+"---解析"+nodes);
             course.setNodes(nodes);
         } else if (htmlNode != 0) {
             course.addNode(htmlNode);
         }else{
             //周一第1,2节{第1-15周|2节/周}
-            LogUtil.e(ParseCourse.class, "没有匹配上"+time);
-
+            //TODO 上传无法解析的数据
         }
 
         //周数

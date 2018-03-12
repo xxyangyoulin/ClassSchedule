@@ -119,10 +119,15 @@ public class ImptPresenter implements ImptContract.Presenter {
                 public void call(Subscriber<? super String> subscriber) {
                     final ArrayList<Course> courses = ParseCourse.parse(html);
 
+                    //删除旧数据
+                    CourseDbDao.newInstance().removeByCsName(courseTimeTerm);
+
+                    //添加新数据
                     for (Course c : courses) {
                         c.setCsName(courseTimeTerm);
-                        Course course = CourseDbDao.newInstance().addCourse(c);
+                        CourseDbDao.newInstance().addCourse(c);
                     }
+
                     subscriber.onNext("导入成功");
                     subscriber.onCompleted();
                 }
