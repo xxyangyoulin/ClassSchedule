@@ -58,7 +58,7 @@ public class LogUtil {
         Log.e(newTag, msg);
     }
 
-    private static String getNewTag(Object tag) {
+    public static String getNewTag(Object tag) {
         String newTag = "";
         if (tag == null) {
             tag = "";

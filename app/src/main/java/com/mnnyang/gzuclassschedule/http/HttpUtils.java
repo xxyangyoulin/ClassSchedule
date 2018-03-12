@@ -7,6 +7,7 @@ import android.text.TextUtils;
 import com.mnnyang.gzuclassschedule.R;
 import com.mnnyang.gzuclassschedule.app.Url;
 import com.mnnyang.gzuclassschedule.app.app;
+import com.mnnyang.gzuclassschedule.utils.ToastUtils;
 import com.mnnyang.gzuclassschedule.utils.spec.ParseCourse;
 import com.mnnyang.gzuclassschedule.utils.LogUtil;
 import com.zhy.http.okhttp.OkHttpUtils;
@@ -183,6 +184,16 @@ public class HttpUtils {
                         callback.onSuccess(response);
                     }
                 });
+    }
+
+    /**
+     * 上传解析失败的课表html
+     * @param tag
+     * @param html
+     */
+    public void uploadParsingFailedTable(Object tag , String html){
+        String newTag = LogUtil.getNewTag(tag);
+
     }
 
 }

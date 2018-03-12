@@ -5,6 +5,10 @@ package com.mnnyang.gzuclassschedule.app;
  */
 
 public class Url {
+
+    /**
+     * 贵州大学正方教务管理系统
+     */
     public static final String URL_HOST = "http://210.40.2.253:8888/";
 
     public static final String URL_CHECK_UPDATE_APP = "https://raw.githubusercontent.com/mnnyang/GzuClassSchedule/master/check.json";

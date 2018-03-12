@@ -174,7 +174,7 @@ public class ParseCourse {
      * 周一第1,2节{第2-16周|双周}
      *  {第1-15周|2节/单周}
      *
-     * 周一第1,2节{第1-15周|2节/周}
+     * TODO 周一第1,2节{第1-15周|2节/周} //次格式未解决 数据不足
      */
     private static void parseTime(Course course, String time, int htmlNode) {
         //week
