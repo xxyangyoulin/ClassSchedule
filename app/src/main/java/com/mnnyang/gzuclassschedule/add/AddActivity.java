@@ -1,5 +1,6 @@
 package com.mnnyang.gzuclassschedule.add;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
@@ -13,6 +14,8 @@ import com.mnnyang.gzuclassschedule.R;
 import com.mnnyang.gzuclassschedule.app.Constant;
 import com.mnnyang.gzuclassschedule.custom.EditTextLayout;
 import com.mnnyang.gzuclassschedule.data.bean.Course;
+import com.mnnyang.gzuclassschedule.utils.DialogHelper;
+import com.mnnyang.gzuclassschedule.utils.DialogListener;
 import com.mnnyang.gzuclassschedule.utils.LogUtil;
 import com.mnnyang.gzuclassschedule.utils.Preferences;
 import com.mnnyang.gzuclassschedule.utils.spec.PopupWindowDialog;
@@ -39,6 +42,8 @@ public class AddActivity extends BaseActivity implements AddContract.View, View.
      * 编辑模式
      */
     private boolean isEditMode;
+    private Course mCourse;
+
     private int mCourseId;
     private Button mBtnRemove;
 
@@ -64,6 +69,7 @@ public class AddActivity extends BaseActivity implements AddContract.View, View.
                 getSupportActionBar().setTitle(getString(R.string.edit_course));
             }
 
+            mCourse = course;
             mCourseId = course.getCourseId();
             LogUtil.i(TAG, "id====" + mCourseId);
 
@@ -171,7 +177,17 @@ public class AddActivity extends BaseActivity implements AddContract.View, View.
         if (!isEditMode) {
             return;
         }
-        mPresenter.removeCourse(mCourseId);
+
+        new DialogHelper().showNormalDialog(this, getString(R.string.confirm_to_delete),
+                "课程 【" + mCourse.getName() + "】" + Constant.WEEK[mCourse.getWeek()]
+                        + "第" + mCourse.getNodes().get(0) + "节 " + "",
+                new DialogListener() {
+                    @Override
+                    public void onPositive(DialogInterface dialog, int which) {
+                        super.onPositive(dialog, which);
+                        mPresenter.removeCourse(mCourseId);
+                    }
+                });
     }
 
     private void rangeAction() {

@@ -11,6 +11,7 @@ import android.widget.TextView;
 
 import com.mnnyang.gzuclassschedule.BaseActivity;
 import com.mnnyang.gzuclassschedule.R;
+import com.mnnyang.gzuclassschedule.app.app;
 import com.mnnyang.gzuclassschedule.data.bean.Version;
 import com.mnnyang.gzuclassschedule.utils.DialogHelper;
 import com.mnnyang.gzuclassschedule.utils.DialogListener;
@@ -32,9 +33,18 @@ public class AboutActivity extends BaseActivity  implements AboutContract.View{
 
         initBackToolbar(getString(R.string.about));
         initGithubTextView();
+        initVersionName();
         initCheckUpdate();
 
         mPresenter = new AboutPresenter(this);
+    }
+
+    private void initVersionName() {
+        TextView tvVersionName = findViewById(R.id.tv_version);
+
+        VersionUpdate vu = new VersionUpdate();
+        String versionName = vu.getLocalVersionName(app.mContext);
+        tvVersionName.setText(versionName);
     }
 
     private void initCheckUpdate() {

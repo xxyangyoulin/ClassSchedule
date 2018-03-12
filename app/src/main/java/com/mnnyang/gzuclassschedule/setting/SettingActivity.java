@@ -29,6 +29,7 @@ import com.mnnyang.gzuclassschedule.utils.DialogListener;
 import com.mnnyang.gzuclassschedule.utils.Preferences;
 import com.mnnyang.gzuclassschedule.utils.ScreenUtils;
 import com.mnnyang.gzuclassschedule.utils.ToastUtils;
+import com.mnnyang.gzuclassschedule.utils.VersionUpdate;
 
 import static com.mnnyang.gzuclassschedule.app.Constant.themeColorArray;
 import static com.mnnyang.gzuclassschedule.app.Constant.themeNameArray;
@@ -72,7 +73,6 @@ public class SettingActivity extends BaseActivity implements SettingContract.Vie
         sinFeedback = findViewById(R.id.sin_feedback);
         sinAbout = findViewById(R.id.sin_about);
 
-
         sinUserAdd.setSettingOnClickListener(this);
         sinImportGzu.setSettingOnClickListener(this);
         sinKbManage.setSettingOnClickListener(this);
@@ -100,6 +100,10 @@ public class SettingActivity extends BaseActivity implements SettingContract.Vie
                 .getDefaultSharedPreferences(getBaseContext())
                 .getBoolean(getString(R.string.app_preference_hide_fab),
                         true));
+
+        VersionUpdate vu = new VersionUpdate();
+        String versionName = vu.getLocalVersionName(app.mContext);
+        sinAbout.setSummary(versionName);
     }
 
     @Override
