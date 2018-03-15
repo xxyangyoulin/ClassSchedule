@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <include layout="@layout/title_toolbar"/>
+
+    <TextView
+        style="@style/CategoryStyle"
+        android:text="@string/conf_interface" />
+
+    <com.mnnyang.gzuclassschedule.custom.settting.SettingItemNormal
+        android:id="@+id/sin_background_iamge"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:item_title="@string/background_image"
+        app:showSwitch="false" />
+
+</LinearLayout>

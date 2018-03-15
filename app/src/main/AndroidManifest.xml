@@ -33,6 +33,8 @@
         </activity>
         <activity android:name=".about.AboutActivity">
         </activity>
+        <activity android:name=".conf.ConfActivity">
+        </activity>
     </application>
 
 </manifest>

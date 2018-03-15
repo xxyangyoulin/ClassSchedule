@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.res.TypedArray;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.SwitchCompat;
+import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -62,12 +63,13 @@ public class SettingItemNormal extends LinearLayout {
 
         init();
 
-        tvTitle.setText(title);
-        tvSummary.setText(summary);
+
+        setItemTitle(title);
+        setSummary(summary);
+
+
         switchCompat.setChecked(checked);
         switchCompat.setVisibility(showSwitch ? VISIBLE : GONE);
-
-
     }
 
     private void init() {
@@ -91,11 +93,26 @@ public class SettingItemNormal extends LinearLayout {
     }
 
     public void setItemTitle(String title){
-        tvTitle.setText(title);
+        if (TextUtils.isEmpty(title)) {
+            tvTitle.setVisibility(GONE);
+        }else{
+            if (tvTitle.getVisibility() == GONE){
+                tvTitle.setVisibility(VISIBLE);
+            }
+            tvTitle.setText(title);
+        }
     }
 
     public void setSummary(String summary){
-        tvSummary.setText(summary);
+        if (TextUtils.isEmpty(summary)) {
+            tvSummary.setVisibility(GONE);
+        }else{
+            if (tvSummary.getVisibility() == GONE){
+                tvSummary.setVisibility(VISIBLE);
+            }
+            tvSummary.setText(summary);
+        }
+
     }
 
     public void showSwitch(boolean show){

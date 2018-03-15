@@ -19,6 +19,7 @@ import com.mnnyang.gzuclassschedule.about.AboutActivity;
 import com.mnnyang.gzuclassschedule.add.AddActivity;
 import com.mnnyang.gzuclassschedule.app.Constant;
 import com.mnnyang.gzuclassschedule.app.app;
+import com.mnnyang.gzuclassschedule.conf.ConfActivity;
 import com.mnnyang.gzuclassschedule.course.CourseActivity;
 import com.mnnyang.gzuclassschedule.custom.settting.SettingItemNormal;
 import com.mnnyang.gzuclassschedule.impt.ImptActivity;
@@ -130,8 +131,7 @@ public class SettingActivity extends BaseActivity implements SettingContract.Vie
                 break;
 
             case R.id.sin_more_pref:
-                //TODO more opr
-                ToastUtils.show("更多");
+                gotoConfActivity();
                 break;
             case R.id.sin_feedback:
                 mPresenter.feedback();
@@ -147,7 +147,9 @@ public class SettingActivity extends BaseActivity implements SettingContract.Vie
         }
     }
 
+
     int theme;
+
     private void showThemeDialog() {
         ScrollView scrollView = new ScrollView(this);
         RadioGroup radioGroup = new RadioGroup(this);
@@ -160,14 +162,14 @@ public class SettingActivity extends BaseActivity implements SettingContract.Vie
 
             RadioGroup.LayoutParams params =
                     new RadioGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
-                    ViewGroup.LayoutParams.WRAP_CONTENT);
+                            ViewGroup.LayoutParams.WRAP_CONTENT);
 
             arb.setLayoutParams(params);
             arb.setId(i);
             arb.setTextColor(getResources().getColor(themeColorArray[i]));
             arb.setText(themeNameArray[i]);
             arb.setTextSize(16);
-            arb.setPadding(0, margin/2, 0, margin/2);
+            arb.setPadding(0, margin / 2, 0, margin / 2);
             radioGroup.addView(arb);
         }
 
@@ -181,20 +183,20 @@ public class SettingActivity extends BaseActivity implements SettingContract.Vie
         DialogHelper dialogHelper = new DialogHelper();
         dialogHelper.showCustomDialog(this, scrollView,
                 getString(R.string.theme_preference), new DialogListener() {
-            @Override
-            public void onPositive(DialogInterface dialog, int which) {
-                super.onPositive(dialog, which);
-                dialog.dismiss();
-                String key = getString(R.string.app_preference_theme);
-                int oldTheme = Preferences.getInt(key, 0);
+                    @Override
+                    public void onPositive(DialogInterface dialog, int which) {
+                        super.onPositive(dialog, which);
+                        dialog.dismiss();
+                        String key = getString(R.string.app_preference_theme);
+                        int oldTheme = Preferences.getInt(key, 0);
 
-                if (theme != oldTheme) {
-                    Preferences.putInt(key, theme);
-                    ActivityUtil.finishAll();
-                    startActivity(new Intent(app.mContext, CourseActivity.class));
-                }
-            }
-        });
+                        if (theme != oldTheme) {
+                            Preferences.putInt(key, theme);
+                            ActivityUtil.finishAll();
+                            startActivity(new Intent(app.mContext, CourseActivity.class));
+                        }
+                    }
+                });
     }
 
     private void hideFabPref(boolean checked) {
@@ -226,6 +228,10 @@ public class SettingActivity extends BaseActivity implements SettingContract.Vie
                 break;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    private void gotoConfActivity() {
+        gotoActivity(ConfActivity.class);
     }
 
     private void gotoAboutActivity() {

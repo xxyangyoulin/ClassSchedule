@@ -91,4 +91,8 @@
     <string name="edit_course">编辑课程</string>
     <string name="delete">删 除</string>
     <string name="delete_succeed">删除成功</string>
+    <string name="conf">配置</string>
+    <string name="background_image">背景图片</string>
+    <string name="conf_interface">界面</string>
+    <string name="storage_explanation">需要读取存储空间权限才能继续操作!</string>
 </resources>

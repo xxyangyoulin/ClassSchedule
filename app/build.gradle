@@ -5,12 +5,12 @@ android {
     defaultConfig {
         applicationId "com.mnnyang.gzuclassschedule"
         minSdkVersion 21
-        targetSdkVersion 27
+        targetSdkVersion 25
         versionCode 4
         versionName "1.2.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
-
+    
     buildTypes {
         release {
             minifyEnabled true
@@ -18,7 +18,7 @@ android {
         }
     }
 }
-
+//
 dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
     androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
@@ -35,5 +35,14 @@ dependencies {
     compile 'io.reactivex:rxandroid:1.0.1'
     compile 'com.google.code.gson:gson:2.8.2'
     compile 'com.zhy:okhttputils:2.6.2'
+
+
+
+
+    //版本不够 弃用
+    //compile 'com.zhihu.android:matisse:0.4.3'  //https://github.com/zhihu/Matisse
+
+    //implementation 'com.github.bumptech.glide:glide:4.6.1'
+    //annotationProcessor 'com.github.bumptech.glide:compiler:4.6.1'
 
 }

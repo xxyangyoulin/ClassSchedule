@@ -1,0 +1,95 @@
+package com.mnnyang.gzuclassschedule.conf;
+
+import android.Manifest;
+import android.content.Intent;
+import android.os.Bundle;
+import android.support.annotation.Nullable;
+import android.view.MenuItem;
+import android.view.View;
+
+import com.mnnyang.gzuclassschedule.BaseActivity;
+import com.mnnyang.gzuclassschedule.R;
+import com.mnnyang.gzuclassschedule.custom.settting.SettingItemNormal;
+import com.mnnyang.gzuclassschedule.utils.RequestPermission;
+import com.mnnyang.gzuclassschedule.utils.ToastUtils;
+
+/**
+ * Created by xxyangyoulin on 2018/3/13.
+ */
+
+public class ConfActivity extends BaseActivity implements ConfContract.View, SettingItemNormal.SettingOnClickListener {
+
+    private static final int REQUEST_CODE_IMAGE = 100;
+
+    private ConfPresenter mPresenter;
+    private SettingItemNormal mSinBgImage;
+
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_conf);
+
+        initBackToolbar(getString(R.string.conf));
+        initView();
+
+        mPresenter = new ConfPresenter(this);
+    }
+
+    private void initView() {
+        mSinBgImage = findViewById(R.id.sin_background_iamge);
+
+        mSinBgImage.setSettingOnClickListener(this);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                finish();
+                break;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+
+    @Override
+    public void onClick(View view, boolean checked) {
+        switch (view.getId()) {
+            case R.id.sin_background_iamge:
+                confBgImage();
+                break;
+
+            default:
+                break;
+
+        }
+    }
+
+    @Override
+    public void confBgImage() {
+        RequestPermission.with(this)
+                .permissions(Manifest.permission.READ_EXTERNAL_STORAGE)
+                .request(new RequestPermission.Callback() {
+                    @Override
+                    public void onGranted() {
+                        selectImage();
+                    }
+
+                    @Override
+                    public void onDenied() {
+                        ToastUtils.show(getString(R.string.storage_explanation));
+                    }
+                });
+    }
+
+    private void selectImage(){
+        //TODO bg iamge
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+    }
+}
