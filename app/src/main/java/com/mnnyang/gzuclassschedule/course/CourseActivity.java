@@ -5,6 +5,8 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
@@ -21,6 +23,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.widget.HorizontalScrollView;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 import android.widget.TextView;
@@ -46,6 +49,8 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 
+import static com.mnnyang.gzuclassschedule.app.Constant.INTENT_UPDATE_TYPE_OTHER;
+
 public class CourseActivity extends BaseActivity implements CourseContract.View,
         View.OnClickListener, CourseTableView.OnItemClickListener {
 
@@ -61,6 +66,7 @@ public class CourseActivity extends BaseActivity implements CourseContract.View,
     private UpdateReceiver mUpdateReceiver;
     private ShowDetailDialog mDialog;
     private int mCurrentCsNameId;
+    private ImageView mIvBackground;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -68,6 +74,7 @@ public class CourseActivity extends BaseActivity implements CourseContract.View,
         setContentView(R.layout.activity_course);
 
         initToolbar();
+        initBackground();
         initWeekTitle();
         initCourseView();
         initFab();
@@ -76,6 +83,11 @@ public class CourseActivity extends BaseActivity implements CourseContract.View,
         mPresenter = new CoursePresenter(this);
 
         updateView();
+    }
+
+    private void initBackground() {
+        mIvBackground = findViewById(R.id.iv_background);
+
     }
 
     private void initWeekTitle() {
@@ -158,13 +170,13 @@ public class CourseActivity extends BaseActivity implements CourseContract.View,
         public void onReceive(Context context, Intent intent) {
             int type = intent.getIntExtra(Constant.INTENT_UPDATE_TYPE, 0);
 
-            System.out.println(type);
+            LogUtil.i(this,"type"+type);
 
             switch (type) {
                 case Constant.INTENT_UPDATE_TYPE_COURSE:
                     updateCoursePreference();
                     break;
-                case Constant.INTENT_UPDATE_TYPE_OTHER:
+                case INTENT_UPDATE_TYPE_OTHER:
                     updateOtherPreference();
                     break;
             }
@@ -211,6 +223,7 @@ public class CourseActivity extends BaseActivity implements CourseContract.View,
     }
 
     public void updateOtherPreference() {
+        mPresenter.loadBackground();
         updateFabVisible();
     }
 
@@ -243,6 +256,19 @@ public class CourseActivity extends BaseActivity implements CourseContract.View,
         }
         mTvWeekCount.setText("第" + mCurrentWeekCount + "周");
         mCourseView.getCtView().setCurrentWeekCount(mCurrentWeekCount);
+    }
+
+    @Override
+    public void setBackground(Bitmap bitmap) {
+        boolean enabled = Preferences.getBoolean(getString(R.string.app_preference_bg_enabled),
+                false);
+
+        if (enabled){
+            mIvBackground.setImageBitmap(bitmap);
+        }else{
+            mIvBackground.setImageBitmap(null);
+        }
+
     }
 
     @Override
@@ -294,16 +320,16 @@ public class CourseActivity extends BaseActivity implements CourseContract.View,
 
         popupView.getViewTreeObserver().addOnGlobalLayoutListener(
                 new ViewTreeObserver.OnGlobalLayoutListener() {
-            @Override
-            public void onGlobalLayout() {
-                popupView.getViewTreeObserver()
-                        .removeGlobalOnLayoutListener(this);
-                ViewGroup llView = (ViewGroup) popupView.getChildAt(0);
-                int width = llView.getChildAt(0).getWidth();
-                int x = width * (mCurrentWeekCount - 3);
-                popupView.scrollTo(x, 0);
-            }
-        });
+                    @Override
+                    public void onGlobalLayout() {
+                        popupView.getViewTreeObserver()
+                                .removeGlobalOnLayoutListener(this);
+                        ViewGroup llView = (ViewGroup) popupView.getChildAt(0);
+                        int width = llView.getChildAt(0).getWidth();
+                        int x = width * (mCurrentWeekCount - 3);
+                        popupView.scrollTo(x, 0);
+                    }
+                });
     }
 
     @NonNull

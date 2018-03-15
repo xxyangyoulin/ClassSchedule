@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.design.widget.CoordinatorLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -8,16 +7,23 @@
     android:orientation="vertical"
     tools:context="com.mnnyang.gzuclassschedule.course.CourseActivity">
 
-    <include layout="@layout/title_toolbar"/>
+    <include layout="@layout/title_toolbar" />
+
+    <ImageView
+        android:id="@+id/iv_background"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="?attr/actionBarSize"
+        android:alpha="0.8"
+        android:scaleType="centerCrop" />
 
     <com.mnnyang.gzuclassschedule.custom.course.CourseView
         android:id="@+id/course_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginStart="4dp"
-        android:layout_marginEnd="8dp"
         android:layout_marginTop="?attr/actionBarSize"
-        />
+        android:paddingEnd="8dp"
+        android:paddingStart="4dp" />
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/fab"
@@ -25,6 +31,6 @@
         android:layout_height="wrap_content"
         android:layout_gravity="end|bottom"
         android:layout_margin="16dp"
-        android:src="@drawable/ic_svg_add"/>
+        android:src="@drawable/ic_svg_add" />
 
 </android.support.design.widget.CoordinatorLayout>

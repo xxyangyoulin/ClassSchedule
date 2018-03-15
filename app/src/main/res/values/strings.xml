@@ -94,5 +94,11 @@
     <string name="conf">配置</string>
     <string name="background_image">背景图片</string>
     <string name="conf_interface">界面</string>
-    <string name="storage_explanation">需要读取存储空间权限才能继续操作!</string>
+    <string name="storage_explanation">需要读取存储空间和拍照权限才能继续操作!</string>
+    <string name="select_image_failed">图片选择失败</string>
+    <string name="app_preference_bg_iamge_path">bg_image_path</string>
+    <string name="app_preference_bg_enabled">bg_enabled</string>
+    <string name="bg_enabled">已启用背景</string>
+    <string name="bg_disabled">已禁用背景</string>
+    <string name="select_iamge_succeed">设置背景成功</string>
 </resources>

@@ -147,6 +147,11 @@ public class SettingActivity extends BaseActivity implements SettingContract.Vie
         }
     }
 
+    @Override
+    public void onCheckedChanged(View view, boolean checked) {
+        //nothing
+    }
+
 
     int theme;
 

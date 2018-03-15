@@ -18,7 +18,6 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
-
             <TextView
                 android:id="@android:id/title"
                 style="@style/CategoryStyle"
@@ -71,6 +70,7 @@
                 android:layout_height="wrap_content"
                 app:item_title="@string/show_noon_course"
                 app:showSwitch="true"
+                app:detach="true"
                 app:summary="@string/show_noon_course_summary" />
 
             <View
@@ -83,6 +83,7 @@
                 android:id="@+id/sin_hide_fab"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                app:detach="true"
                 app:item_title="@string/hide_fab"
                 app:showSwitch="true"
                 app:summary="@string/hide_fab_summary" />

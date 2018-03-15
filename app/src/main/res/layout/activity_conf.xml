@@ -15,7 +15,13 @@
         android:id="@+id/sin_background_iamge"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        app:checked="false"
         app:item_title="@string/background_image"
-        app:showSwitch="false" />
+        app:showSwitch="true" />
+
+    <ImageView
+        android:id="@+id/iv"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
 
 </LinearLayout>

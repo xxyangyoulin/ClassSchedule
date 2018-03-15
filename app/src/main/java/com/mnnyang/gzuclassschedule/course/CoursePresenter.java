@@ -1,8 +1,19 @@
 package com.mnnyang.gzuclassschedule.course;
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.text.TextUtils;
+
+import com.mnnyang.gzuclassschedule.R;
+import com.mnnyang.gzuclassschedule.app.app;
 import com.mnnyang.gzuclassschedule.data.bean.Course;
 import com.mnnyang.gzuclassschedule.data.db.CourseDbDao;
+import com.mnnyang.gzuclassschedule.utils.ImageResizer;
+import com.mnnyang.gzuclassschedule.utils.LogUtil;
+import com.mnnyang.gzuclassschedule.utils.Preferences;
+import com.mnnyang.gzuclassschedule.utils.ScreenUtils;
 
+import java.io.FileNotFoundException;
 import java.util.ArrayList;
 
 import rx.Observable;
@@ -25,6 +36,51 @@ public class CoursePresenter implements CourseContract.Presenter {
 
     @Override
     public void start() {
+        //nothing
+    }
+
+    @Override
+    public void loadBackground() {
+        String path = Preferences.getString(app.mContext.getString(R.string.app_preference_bg_iamge_path), "");
+        if (!TextUtils.isEmpty(path)) {
+            loadImage(path);
+        }else{
+            LogUtil.e(this,"no background");
+        }
+    }
+
+    private void loadImage(final String path) {
+        Observable.create(new Observable.OnSubscribe<Bitmap>() {
+            @Override
+            public void call(Subscriber<? super Bitmap> subscriber) {
+                Bitmap bitmap = ImageResizer.decodeSampledBitmapFromFile(path,
+                        ScreenUtils.getSWidth(), 0);
+                if (bitmap == null){
+                    subscriber.onError(new FileNotFoundException());
+                }else{
+                    subscriber.onNext(bitmap);
+                }
+                subscriber.onCompleted();
+            }
+        }).subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Observer<Bitmap>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        e.printStackTrace();
+                    }
+
+                    @Override
+                    public void onNext(Bitmap bitmap) {
+                        mCourseView.setBackground(bitmap);
+                    }
+                });
+
     }
 
     @Override

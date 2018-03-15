@@ -20,5 +20,6 @@
         <attr name="summary" format="string|reference" />
         <attr name="showSwitch" format="boolean"/>
         <attr name="checked" format="boolean" />
+        <attr name="detach" format="boolean" />
     </declare-styleable>
 </resources>

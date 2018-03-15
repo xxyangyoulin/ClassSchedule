@@ -119,6 +119,8 @@ public class CourseTableView extends FrameLayout {
      */
     private int mVerticalDividerColor = 0x40000000;
 
+    private int mAlpha = 0xAA000000;
+
     /**
      * 水平分割线风格
      */
@@ -274,8 +276,8 @@ public class CourseTableView extends FrameLayout {
                 size = size % (mColors.length - 2);
             }
 
-            mNameColorMap.put(course.getName(), mColors[size]);
-            mNameColorMap.put(course.getName() + "_p", mColors[size + 1]);
+            mNameColorMap.put(course.getName(), mColors[size]+mAlpha);
+            mNameColorMap.put(course.getName() + "_p", mColors[size + 1]+mAlpha);
         }
     }
 
@@ -957,6 +959,12 @@ public class CourseTableView extends FrameLayout {
 
     public CourseTableView setNodeTextColor(int nodeTextColor) {
         mNodeTextColor = nodeTextColor;
+        return this;
+    }
+
+
+    public CourseTableView setAlphaValue(int alpha) {
+        mAlpha = alpha;
         return this;
     }
 }
