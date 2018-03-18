@@ -170,7 +170,7 @@ public class CourseActivity extends BaseActivity implements CourseContract.View,
         public void onReceive(Context context, Intent intent) {
             int type = intent.getIntExtra(Constant.INTENT_UPDATE_TYPE, 0);
 
-            LogUtil.i(this,"type"+type);
+            LogUtil.i(this, "type" + type);
 
             switch (type) {
                 case Constant.INTENT_UPDATE_TYPE_COURSE:
@@ -239,19 +239,33 @@ public class CourseActivity extends BaseActivity implements CourseContract.View,
     private void updateCurrentWeek() {
         mCurrentWeekCount = 1;
 
+        //获取开始时间
         String beginMillis = Preferences.getString(getString(
                 R.string.app_preference_start_week_begin_millis), "");
+
+        //获取当前时间
         long currentMillis = Calendar.getInstance().getTimeInMillis();
+
+        //存在开始时间
         if (!TextUtils.isEmpty(beginMillis)) {
             long intBeginMillis = Long.valueOf(beginMillis);
+
+            //获取到的配置是时间大于当前时间 重置为第一周
             if (intBeginMillis > currentMillis) {
+                LogUtil.e(this,"intBeginMillis > currentMillis");
                 PreferencesCurrentWeek(1);
-                return;
+
+            } else {
+                //计算出开始时间到现在时间的周数
+                int weekGap = TimeUtils.getWeekGap(intBeginMillis, currentMillis);
+
+                LogUtil.e(this,"差距为"+weekGap);
+                System.out.println(intBeginMillis + "----" + currentMillis);
+                mCurrentWeekCount += weekGap;
             }
-            int weekGap = TimeUtils.getWeekGap(intBeginMillis, currentMillis);
-            System.out.println(intBeginMillis + "----" + currentMillis);
-            mCurrentWeekCount += weekGap;
+
         } else {
+            //不存在开始时间 初始化为第一周
             PreferencesCurrentWeek(1);
         }
         mTvWeekCount.setText("第" + mCurrentWeekCount + "周");
@@ -263,9 +277,9 @@ public class CourseActivity extends BaseActivity implements CourseContract.View,
         boolean enabled = Preferences.getBoolean(getString(R.string.app_preference_bg_enabled),
                 false);
 
-        if (enabled){
+        if (enabled) {
             mIvBackground.setImageBitmap(bitmap);
-        }else{
+        } else {
             mIvBackground.setImageBitmap(null);
         }
 
@@ -363,12 +377,16 @@ public class CourseActivity extends BaseActivity implements CourseContract.View,
     }
 
     private void PreferencesCurrentWeek(int currentWeekCount) {
+        //得到一个当前周 周一的日期
         Calendar calendar = Calendar.getInstance();
         Date weekBegin = TimeUtils.getNowWeekBegin();
         calendar.setTime(weekBegin);
+
         if (currentWeekCount > 1) {
-            calendar.add(Calendar.DATE, -7 * (currentWeekCount - 1));
+            calendar.add(Calendar.DATE, -7 * (currentWeekCount-1));
         }
+
+        LogUtil.e(this,"preferences date"+(calendar.get(Calendar.MONTH)+1)+"-"+calendar.get(Calendar.DAY_OF_MONTH));
         Preferences.putString(getString(R.string.app_preference_start_week_begin_millis),
                 calendar.getTimeInMillis() + "");
     }
