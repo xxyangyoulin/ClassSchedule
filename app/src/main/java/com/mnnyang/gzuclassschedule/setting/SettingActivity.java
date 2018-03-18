@@ -149,7 +149,17 @@ public class SettingActivity extends BaseActivity implements SettingContract.Vie
 
     @Override
     public void onCheckedChanged(View view, boolean checked) {
-        //nothing
+        switch (view.getId()) {
+            case R.id.sin_show_noon:
+                showNoonPref(checked);
+                break;
+
+            case R.id.sin_hide_fab:
+                hideFabPref(checked);
+                break;
+            default:
+                break;
+        }
     }
 
 

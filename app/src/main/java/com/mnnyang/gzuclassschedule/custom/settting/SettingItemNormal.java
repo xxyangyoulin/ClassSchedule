@@ -95,9 +95,11 @@ public class SettingItemNormal extends LinearLayout {
             }
         });
 
+
         switchCompat.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
+
                 if (settingOnClickListener != null) {
                     settingOnClickListener.onCheckedChanged(SettingItemNormal.this,
                             switchCompat.isChecked());

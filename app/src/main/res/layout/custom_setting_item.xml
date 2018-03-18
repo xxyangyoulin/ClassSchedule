@@ -41,7 +41,6 @@
         android:id="@+id/a_switch"
         android:background="@null"
         android:layout_width="wrap_content"
-        android:clickable="true"
         android:layout_height="match_parent"
 
         android:layout_marginLeft="@dimen/margin_16dp"
