@@ -119,7 +119,10 @@ public class CourseTableView extends FrameLayout {
      */
     private int mVerticalDividerColor = 0x40000000;
 
-    private int mAlpha = 0xAA000000;
+    /**
+     * 颜色透明度
+     */
+    private int mAlpha = 0xFF000000;
 
     /**
      * 水平分割线风格

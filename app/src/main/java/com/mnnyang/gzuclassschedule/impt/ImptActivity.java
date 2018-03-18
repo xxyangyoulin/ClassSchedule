@@ -6,6 +6,9 @@ import android.os.Bundle;
 import android.text.InputType;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.LinearInterpolator;
+import android.view.animation.RotateAnimation;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -89,6 +92,27 @@ public class ImptActivity extends BaseActivity implements
     public void hideImpting() {
         LogUtil.d(this, "hideimp");
         if (mHelper != null) mHelper.hideProgressDialog();
+    }
+
+    @Override
+    public void captchaIsLoading(boolean isLoading) {
+        if (getCaptchaIV() == null) {
+            return;
+        }
+
+        if (isLoading){
+            getCaptchaIV().setImageResource(R.drawable.ic_svg_refresh);
+            RotateAnimation rotateAnimation = new RotateAnimation(0, 360f,
+                    Animation.RELATIVE_TO_SELF, 0.5f,
+                    Animation.RELATIVE_TO_SELF, 0.5f);
+
+            rotateAnimation.setDuration(1000);
+            rotateAnimation.setInterpolator(new LinearInterpolator());
+            rotateAnimation.setRepeatCount(-1);
+            getCaptchaIV().startAnimation(rotateAnimation);
+        }else{
+            getCaptchaIV().getAnimation().cancel();
+        }
     }
 
     @Override

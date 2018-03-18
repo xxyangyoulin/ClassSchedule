@@ -236,7 +236,8 @@ public class SettingActivity extends BaseActivity implements SettingContract.Vie
     }
 
     private void gotoConfActivity() {
-        gotoActivity(ConfActivity.class);
+        ToastUtils.show("还在开发中...");
+//        gotoActivity(ConfActivity.class);
     }
 
     private void gotoAboutActivity() {

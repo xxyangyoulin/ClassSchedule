@@ -30,6 +30,8 @@ public interface ImptContract {
 
         void hideImpting();
 
+        void captchaIsLoading(boolean isLoading);
+
         void showErrToast(String errMsg, boolean reLoad);
 
         void showSucceed();

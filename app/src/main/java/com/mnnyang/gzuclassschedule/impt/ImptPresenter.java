@@ -1,5 +1,7 @@
 package com.mnnyang.gzuclassschedule.impt;
 
+import android.graphics.Bitmap;
+
 import com.mnnyang.gzuclassschedule.R;
 import com.mnnyang.gzuclassschedule.app.app;
 import com.mnnyang.gzuclassschedule.data.bean.Course;
@@ -7,6 +9,7 @@ import com.mnnyang.gzuclassschedule.data.bean.CourseTime;
 import com.mnnyang.gzuclassschedule.data.db.CourseDbDao;
 import com.mnnyang.gzuclassschedule.http.HttpCallback;
 import com.mnnyang.gzuclassschedule.http.HttpUtils;
+import com.mnnyang.gzuclassschedule.utils.ToastUtils;
 import com.mnnyang.gzuclassschedule.utils.spec.ParseCourse;
 import com.mnnyang.gzuclassschedule.utils.LogUtil;
 import com.mnnyang.gzuclassschedule.utils.Preferences;
@@ -185,8 +188,35 @@ public class ImptPresenter implements ImptContract.Presenter {
         return true;
     }
 
+
+    private boolean captchaIsLoading = false;
+
     @Override
     public void getCaptcha() {
-        mModel.getCaptcha(mImptView.getCaptchaIV());
+        //防止重复点击加载验证码按钮导致多次执行
+        if (captchaIsLoading){
+            return;
+        }
+
+        captchaIsLoading = true;
+        mImptView.captchaIsLoading(true);
+
+        HttpUtils.newInstance().loadCaptcha(app.mContext.getCacheDir(),
+                new HttpCallback<Bitmap>() {
+                    @Override
+                    public void onSuccess(Bitmap bitmap) {
+                        mImptView.getCaptchaIV().setImageBitmap(bitmap);
+                        captchaIsLoading = false;
+                        mImptView.captchaIsLoading(false);
+                    }
+
+                    @Override
+                    public void onFail(String errMsg) {
+                        ToastUtils.show(errMsg);
+                        mImptView.getCaptchaIV().setImageResource(R.drawable.ic_svg_refresh);
+                        captchaIsLoading = false;
+                        mImptView.captchaIsLoading(false);
+                    }
+                });
     }
 }
