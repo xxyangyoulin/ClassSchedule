@@ -133,7 +133,7 @@ public class AddActivity extends BaseActivity implements AddContract.View, View.
         Course course = new Course();
 
         int currentCsNameId = Preferences.getInt(
-                getString(R.string.app_preference_current_sd_name_id), 0);
+                getString(R.string.app_preference_current_cs_name_id), 0);
 
         String csName = CourseDbDao.newInstance().getCsName(currentCsNameId);
 

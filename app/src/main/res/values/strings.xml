@@ -27,7 +27,7 @@
     <string name="app_preference_theme">theme</string>
     <string name="app_preference_bg_iamge_path">bg_image_path</string>
     <string name="app_preference_bg_enabled">bg_enabled</string>
-    <string name="app_preference_current_sd_name_id">current_sd_name_id</string>
+    <string name="app_preference_current_cs_name_id">current_sd_name_id</string>
 
 
 

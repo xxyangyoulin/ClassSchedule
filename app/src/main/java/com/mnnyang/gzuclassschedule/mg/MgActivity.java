@@ -130,7 +130,7 @@ public class MgActivity extends BaseActivity implements MgContract.View, View.On
                 getString(R.string.app_preference_current_sd_name),
                 getString(R.string.default_course_name));*/
         int csNameId = Preferences.getInt(
-                getString(R.string.app_preference_current_sd_name_id), 0);
+                getString(R.string.app_preference_current_cs_name_id), 0);
 
         if (id == csNameId) {
             toast(getString(R.string.you_can_not_delete_the_current_class_schedule));
@@ -173,7 +173,7 @@ public class MgActivity extends BaseActivity implements MgContract.View, View.On
 
     @Override
     public void showList(ArrayList<CsItem> csNames) {
-        int curNameId = Preferences.getInt(getString(R.string.app_preference_current_sd_name_id), 0);
+        int curNameId = Preferences.getInt(getString(R.string.app_preference_current_cs_name_id), 0);
         mAdapter.setCurrentCsNameIdTag(curNameId);
         mAdapter.notifyDataSetChanged();
     }

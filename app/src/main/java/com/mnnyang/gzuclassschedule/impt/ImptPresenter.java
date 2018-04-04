@@ -152,10 +152,10 @@ public class ImptPresenter implements ImptContract.Presenter {
                         @Override
                         public void onNext(String s) {
 
-                            System.out.println("导入成功:" + courseTimeTerm);
+                            LogUtil.i(this,"导入成功:" + courseTimeTerm);
 
                             Preferences.putInt(app.mContext.getString(
-                                    R.string.app_preference_current_sd_name_id),
+                                    R.string.app_preference_current_cs_name_id),
                                     CourseDbDao.newInstance().getCsNameId(courseTimeTerm));
 
                             mImptView.hideImpting();

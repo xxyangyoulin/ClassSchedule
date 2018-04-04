@@ -133,7 +133,7 @@ public class MgPresenter implements MgContract.Presenter {
     @Override
     public void switchCsName(int csNameId) {
         Preferences.putInt(app.mContext.getString(
-                R.string.app_preference_current_sd_name_id), csNameId);
+                R.string.app_preference_current_cs_name_id), csNameId);
 
         mView.showNotice("切换成功");
         mView.gotoCourseActivity();

@@ -6,7 +6,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
@@ -32,7 +31,6 @@ import com.mnnyang.gzuclassschedule.BaseActivity;
 import com.mnnyang.gzuclassschedule.R;
 import com.mnnyang.gzuclassschedule.add.AddActivity;
 import com.mnnyang.gzuclassschedule.app.Constant;
-import com.mnnyang.gzuclassschedule.app.app;
 import com.mnnyang.gzuclassschedule.custom.course.CourseTableView;
 import com.mnnyang.gzuclassschedule.custom.course.CourseView;
 import com.mnnyang.gzuclassschedule.data.bean.Course;
@@ -43,7 +41,6 @@ import com.mnnyang.gzuclassschedule.utils.DialogListener;
 import com.mnnyang.gzuclassschedule.utils.LogUtil;
 import com.mnnyang.gzuclassschedule.utils.Preferences;
 import com.mnnyang.gzuclassschedule.utils.TimeUtils;
-import com.mnnyang.gzuclassschedule.utils.ToastUtils;
 import com.mnnyang.gzuclassschedule.utils.spec.ShowDetailDialog;
 
 import java.util.ArrayList;
@@ -73,7 +70,7 @@ public class CourseActivity extends BaseActivity implements CourseContract.View,
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_course);
 
-        initFirstEnter();
+        initFirstStart();
         initToolbar();
         initBackground();
         initWeekTitle();
@@ -196,7 +193,7 @@ public class CourseActivity extends BaseActivity implements CourseContract.View,
 
         //get id
         mCurrentCsNameId = Preferences.getInt(
-                getString(R.string.app_preference_current_sd_name_id), 0);
+                getString(R.string.app_preference_current_cs_name_id), 0);
 
         LogUtil.i(this,"当前课表-->"+mCurrentCsNameId);
         //set name
@@ -262,7 +259,7 @@ public class CourseActivity extends BaseActivity implements CourseContract.View,
     }
 
     @Override
-    public void initFirstEnter() {
+    public void initFirstStart() {
         boolean isFirst = Preferences.getBoolean(getString(R.string.app_preference_app_is_first_start), true);
         if (!isFirst) {
             return;
@@ -270,7 +267,7 @@ public class CourseActivity extends BaseActivity implements CourseContract.View,
 
         int csNameId = CourseDbDao.newInstance().getCsNameId(getString(R.string.default_course_name));
 
-        Preferences.putInt(getString(R.string.app_preference_current_sd_name_id), csNameId);
+        Preferences.putInt(getString(R.string.app_preference_current_cs_name_id), csNameId);
 
         Preferences.putBoolean(getString(R.string.app_preference_app_is_first_start), false);
     }
