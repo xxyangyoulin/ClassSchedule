@@ -126,10 +126,12 @@ public class MgActivity extends BaseActivity implements MgContract.View, View.On
     }
 
     private void deleteDialog(final int id) {
-        String currentScheduleName = Preferences.getString(
+       /* String currentScheduleName = Preferences.getString(
                 getString(R.string.app_preference_current_sd_name),
-                getString(R.string.default_course_name));
-        int csNameId = CourseDbDao.newInstance().getCsNameId(currentScheduleName);
+                getString(R.string.default_course_name));*/
+        int csNameId = Preferences.getInt(
+                getString(R.string.app_preference_current_sd_name_id), 0);
+
         if (id == csNameId) {
             toast(getString(R.string.you_can_not_delete_the_current_class_schedule));
             return;

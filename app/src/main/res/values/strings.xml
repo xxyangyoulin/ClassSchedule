@@ -14,15 +14,22 @@
 
     <string name="default_noon_node">4</string>
     <string name="default_max_node_count">11</string>
-    <string name="default_course_name">default</string>
+    <string name="default_course_name">默认课表</string>
 
+    <string name="app_preference_app_is_first_start">app_is_first_start</string>
     <string name="app_preference_hide_fab">hide_fab</string>
     <string name="app_preference_current_week_flag">current_week_flag</string>
     <string name="app_preference_start_week_begin_millis">start_week_begin_date</string>
     <string name="app_preference_max_node">max_node</string>
     <string name="app_preference_noon_node">noon_node</string>
     <string name="app_preference_show_noon">show_noon</string>
-    <string name="app_preference_current_sd_name">current_sd_name</string>
+    <!--<string name="app_preference_current_sd_name">current_sd_name</string>-->
+    <string name="app_preference_theme">theme</string>
+    <string name="app_preference_bg_iamge_path">bg_image_path</string>
+    <string name="app_preference_bg_enabled">bg_enabled</string>
+    <string name="app_preference_current_sd_name_id">current_sd_name_id</string>
+
+
 
     <string name="chptcha">验证码</string>
     <string name="xh">学号</string>
@@ -65,7 +72,6 @@
 
     <string name="check_update">检查更新</string>
     <string name="update_succeed">更新成功</string>
-    <string name="app_preference_theme">theme</string>
     <string name="password">密码</string>
     <string name="captcha">验证码</string>
     <string name="refresh_captcha">点击刷新</string>
@@ -77,7 +83,6 @@
     <string name="you_can_not_delete_the_current_class_schedule">不能删除当前课表</string>
     <string name="edit_succeed">修改成功</string>
     <string name="course_name_already_exists">课表名称已经存在</string>
-    <string name="app_preference_current_sd_name_id">current_sd_name_id</string>
     <string name="user_add_summary">手动添加课程表数据</string>
     <string name="import_gzu_description">登录正方教务系统导入课程表</string>
     <string name="kb_manage_description">增加或删除课表数据</string>
@@ -96,8 +101,7 @@
     <string name="conf_interface">界面</string>
     <string name="storage_explanation">需要读取存储空间和拍照权限才能继续操作!</string>
     <string name="select_image_failed">图片选择失败</string>
-    <string name="app_preference_bg_iamge_path">bg_image_path</string>
-    <string name="app_preference_bg_enabled">bg_enabled</string>
+
     <string name="bg_enabled">已启用背景</string>
     <string name="bg_disabled">已禁用背景</string>
     <string name="select_iamge_succeed">设置背景成功</string>

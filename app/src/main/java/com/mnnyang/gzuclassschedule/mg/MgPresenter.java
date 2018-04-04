@@ -132,9 +132,6 @@ public class MgPresenter implements MgContract.Presenter {
 
     @Override
     public void switchCsName(int csNameId) {
-        String name = CourseDbDao.newInstance().getCsName(csNameId);
-        Preferences.putString(app.mContext.getString(
-                R.string.app_preference_current_sd_name), name);
         Preferences.putInt(app.mContext.getString(
                 R.string.app_preference_current_sd_name_id), csNameId);
 

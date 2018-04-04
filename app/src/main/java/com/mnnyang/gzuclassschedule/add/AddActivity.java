@@ -14,6 +14,7 @@ import com.mnnyang.gzuclassschedule.R;
 import com.mnnyang.gzuclassschedule.app.Constant;
 import com.mnnyang.gzuclassschedule.custom.EditTextLayout;
 import com.mnnyang.gzuclassschedule.data.bean.Course;
+import com.mnnyang.gzuclassschedule.data.db.CourseDbDao;
 import com.mnnyang.gzuclassschedule.utils.DialogHelper;
 import com.mnnyang.gzuclassschedule.utils.DialogListener;
 import com.mnnyang.gzuclassschedule.utils.LogUtil;
@@ -131,12 +132,16 @@ public class AddActivity extends BaseActivity implements AddContract.View, View.
     private void add() {
         Course course = new Course();
 
-        String currentCsName = Preferences.getString(getString(
-                R.string.app_preference_current_sd_name),
-                getString(R.string.default_course_name));
+        int currentCsNameId = Preferences.getInt(
+                getString(R.string.app_preference_current_sd_name_id), 0);
+
+        String csName = CourseDbDao.newInstance().getCsName(currentCsNameId);
+
+        LogUtil.i(this, "当前课表-->"+currentCsNameId);
 
         course.setName(mEtName.getText().toString().trim())
-                .setCsName(currentCsName.trim())
+                .setCsName(csName)
+                .setCsNameId(currentCsNameId)
                 .setClassRoom(mEtlClassroom.getText().trim())
                 .setTeacher(mEtlTeacher.getText().trim())
 

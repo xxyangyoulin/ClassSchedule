@@ -32,6 +32,7 @@ import com.mnnyang.gzuclassschedule.BaseActivity;
 import com.mnnyang.gzuclassschedule.R;
 import com.mnnyang.gzuclassschedule.add.AddActivity;
 import com.mnnyang.gzuclassschedule.app.Constant;
+import com.mnnyang.gzuclassschedule.app.app;
 import com.mnnyang.gzuclassschedule.custom.course.CourseTableView;
 import com.mnnyang.gzuclassschedule.custom.course.CourseView;
 import com.mnnyang.gzuclassschedule.data.bean.Course;
@@ -61,7 +62,6 @@ public class CourseActivity extends BaseActivity implements CourseContract.View,
     private int mCurrentWeekCount;
     private PopupWindow mPopupWindow;
     private int mCurrentMonth;
-    private String mCurrentScheduleName;
     private FloatingActionButton mFab;
     private UpdateReceiver mUpdateReceiver;
     private ShowDetailDialog mDialog;
@@ -73,12 +73,12 @@ public class CourseActivity extends BaseActivity implements CourseContract.View,
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_course);
 
+        initFirstEnter();
         initToolbar();
         initBackground();
         initWeekTitle();
         initCourseView();
         initFab();
-
         registerReceiver();
         mPresenter = new CoursePresenter(this);
 
@@ -194,32 +194,21 @@ public class CourseActivity extends BaseActivity implements CourseContract.View,
         mCurrentMonth = TimeUtils.getNowMonth();
         mCourseView.setMonth(mCurrentMonth);
 
-        mCurrentScheduleName = Preferences.getString(
-                getString(R.string.app_preference_current_sd_name),
-                getString(R.string.default_course_name));
-
         //get id
         mCurrentCsNameId = Preferences.getInt(
                 getString(R.string.app_preference_current_sd_name_id), 0);
-        //set name
-        mCurrentScheduleName = CourseDbDao.newInstance().getCsName(mCurrentCsNameId);
 
-        boolean showNoon = PreferenceManager
-                .getDefaultSharedPreferences(getBaseContext())
-                .getBoolean(getString(R.string.app_preference_show_noon), false);
+        LogUtil.i(this,"当前课表-->"+mCurrentCsNameId);
+        //set name
+        //removed
+
         int maxNode = Preferences.getInt(getString(R.string.app_preference_max_node), Constant.DEFAULT_MAX_NODE_COUNT);
 
         mCourseView.getCtView()
-                .setShowNoon(showNoon)
                 .setNodeCount(maxNode)
                 .setNoonNode(Preferences.getInt(getString(R.string.app_preference_noon_node), Integer.parseInt(getString(R.string.default_noon_node))));
 
-        LogUtil.d(this, "当前课表:" + mCurrentScheduleName);
-        if (TextUtils.isEmpty(mCurrentScheduleName)) {
-            mCurrentScheduleName = getString(R.string.default_course_name);
-        }
-
-        mPresenter.updateCourseViewData(mCurrentScheduleName);
+        mPresenter.updateCourseViewData(mCurrentCsNameId);
     }
 
     public void updateOtherPreference() {
@@ -252,14 +241,14 @@ public class CourseActivity extends BaseActivity implements CourseContract.View,
 
             //获取到的配置是时间大于当前时间 重置为第一周
             if (intBeginMillis > currentMillis) {
-                LogUtil.e(this,"intBeginMillis > currentMillis");
+                LogUtil.e(this, "intBeginMillis > currentMillis");
                 PreferencesCurrentWeek(1);
 
             } else {
                 //计算出开始时间到现在时间的周数
                 int weekGap = TimeUtils.getWeekGap(intBeginMillis, currentMillis);
 
-                LogUtil.e(this,"差距为"+weekGap);
+//                LogUtil.e(this, "差距为" + weekGap);
                 System.out.println(intBeginMillis + "----" + currentMillis);
                 mCurrentWeekCount += weekGap;
             }
@@ -270,6 +259,20 @@ public class CourseActivity extends BaseActivity implements CourseContract.View,
         }
         mTvWeekCount.setText("第" + mCurrentWeekCount + "周");
         mCourseView.getCtView().setCurrentWeekCount(mCurrentWeekCount);
+    }
+
+    @Override
+    public void initFirstEnter() {
+        boolean isFirst = Preferences.getBoolean(getString(R.string.app_preference_app_is_first_start), true);
+        if (!isFirst) {
+            return;
+        }
+
+        int csNameId = CourseDbDao.newInstance().getCsNameId(getString(R.string.default_course_name));
+
+        Preferences.putInt(getString(R.string.app_preference_current_sd_name_id), csNameId);
+
+        Preferences.putBoolean(getString(R.string.app_preference_app_is_first_start), false);
     }
 
     @Override
@@ -383,10 +386,10 @@ public class CourseActivity extends BaseActivity implements CourseContract.View,
         calendar.setTime(weekBegin);
 
         if (currentWeekCount > 1) {
-            calendar.add(Calendar.DATE, -7 * (currentWeekCount-1));
+            calendar.add(Calendar.DATE, -7 * (currentWeekCount - 1));
         }
 
-        LogUtil.e(this,"preferences date"+(calendar.get(Calendar.MONTH)+1)+"-"+calendar.get(Calendar.DAY_OF_MONTH));
+        LogUtil.e(this, "preferences date" + (calendar.get(Calendar.MONTH) + 1) + "-" + calendar.get(Calendar.DAY_OF_MONTH));
         Preferences.putString(getString(R.string.app_preference_start_week_begin_millis),
                 calendar.getTimeInMillis() + "");
     }

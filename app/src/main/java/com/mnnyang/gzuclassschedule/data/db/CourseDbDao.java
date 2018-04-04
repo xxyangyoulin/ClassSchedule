@@ -3,6 +3,7 @@ package com.mnnyang.gzuclassschedule.data.db;
 import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.support.annotation.NonNull;
 
 import com.mnnyang.gzuclassschedule.app.app;
 import com.mnnyang.gzuclassschedule.data.bean.Course;
@@ -42,6 +43,7 @@ public class CourseDbDao {
     public Course addCourse(Course course) {
         Course conflictCourse = hasConflictCourse(course);
         if (null != conflictCourse) {
+            LogUtil.e(this, "有冲突");
             return conflictCourse;
         }
 
@@ -87,7 +89,7 @@ public class CourseDbDao {
 
         try {
 
-            course.setCsNameId(getCsNameId(course.getCsName(), db));
+//            course.setCsNameId()
 
             ContentValues values = new ContentValues();
             putAllNotId(course, values);
@@ -177,22 +179,28 @@ public class CourseDbDao {
     }
 
     /**
-     * 课程冲突判断
+     * 课程冲突判断<br>
+     *
+     * @param course must be have csName
      */
     private Course hasConflictCourse(Course course) {
+
+        LogUtil.e(this,"冲突检查:-->"+course.toString());
         SQLiteDatabase db = new CourseDbHelper(app.mContext).getWritableDatabase();
 
         int csNameId = getCsNameId(course.getCsName(), db);
         course.setCsNameId(csNameId);
 
         String sql = "select * from " + CoursesPsc.CourseEntry.TABLE_NAME
-                + " where " + CoursesPsc.CourseEntry.COLUMN_NAME_WEEK + "='" + course.getWeek() + "'"
-                + " AND " + CoursesPsc.CourseEntry.COLUMN_NAME_CS_NAME_ID + "='" + csNameId + "'"
-                + " AND " + CoursesPsc.CourseEntry.COLUMN_NAME_WEEK_TYPE + "='" + course.getWeekType() + "'"
+//                + " where " + CoursesPsc.CourseEntry.COLUMN_NAME_WEEK + "='" + course.getWeek() + "'"
+                + " WHERE " + CoursesPsc.CourseEntry.COLUMN_NAME_CS_NAME_ID + "='" + course.getCsNameId() + "'"
+//                + " AND " + CoursesPsc.CourseEntry.COLUMN_NAME_WEEK_TYPE + "='" + course.getWeekType() + "'";
                 + " AND " + CoursesPsc.CourseEntry.COLUMN_NAME_COURSE_ID + "!='" + course.getCourseId() + "'";
         Cursor cursor = db.rawQuery(sql, null);
         while (cursor.moveToNext()) {
             Course conflictCourse = parse(cursor);
+            LogUtil.e(this,"疑是冲突:-->"+course.toString());
+
             sql = "select * from " + CoursesPsc.NodeEntry.TABLE_NAME
                     + " where " + CoursesPsc.NodeEntry.COLUMN_NAME_COURSE_ID + "=" + conflictCourse.getCourseId();
             Cursor nodeCursor = db.rawQuery(sql, null);
@@ -235,6 +243,8 @@ public class CourseDbDao {
      * 根据课程表名获取课程表名id 不存在则插入
      */
     public int getCsNameId(String csName) {
+        LogUtil.w(this, "在获取课表名:" + csName + "的id");
+
         SQLiteDatabase db = new CourseDbHelper(app.mContext).getWritableDatabase();
         int id = getCsNameId(csName, db);
 
@@ -243,11 +253,9 @@ public class CourseDbDao {
     }
 
     public int getCsNameId(String csName, SQLiteDatabase db) {
-        System.out.println("被调用");
-
         String sql = "select * from " + CoursesPsc.CsNameEntry.TABLE_NAME
                 + " where `" + CoursesPsc.CsNameEntry.COLUMN_NAME_NAME + "`='" + csName + "'";
-        System.out.println(sql);
+        LogUtil.i(this, sql);
         Cursor cursor = db.rawQuery(sql, null);
         if (cursor.moveToNext()) {
             int id = cursor.getInt(cursor.getColumnIndex(CoursesPsc.CsNameEntry.COLUMN_NAME_NAME_ID));
@@ -261,7 +269,6 @@ public class CourseDbDao {
     }
 
     /**
-     *
      * @param csNameId
      * @param newCsName
      * @return conflict return 0
@@ -269,9 +276,9 @@ public class CourseDbDao {
     public int updateCsName(int csNameId, String newCsName) {
         SQLiteDatabase db = new CourseDbHelper(app.mContext).getWritableDatabase();
 
-        String sql = "select * from "+CoursesPsc.CsNameEntry.TABLE_NAME
-                +" where `"+ CoursesPsc.CsNameEntry.COLUMN_NAME_NAME_ID+"`!="+csNameId
-                +" and `"+ CoursesPsc.CsNameEntry.COLUMN_NAME_NAME+"`='"+newCsName+"'";
+        String sql = "select * from " + CoursesPsc.CsNameEntry.TABLE_NAME
+                + " where `" + CoursesPsc.CsNameEntry.COLUMN_NAME_NAME_ID + "`!=" + csNameId
+                + " and `" + CoursesPsc.CsNameEntry.COLUMN_NAME_NAME + "`='" + newCsName + "'";
         Cursor cursor = db.rawQuery(sql, null);
         if (cursor.moveToNext()) {
             cursor.close();
@@ -307,15 +314,25 @@ public class CourseDbDao {
     }
 
 
-
     /**
      * 加载课程数据
      */
     public ArrayList<Course> loadCourses(String csName) {
-
         SQLiteDatabase db = new CourseDbHelper(app.mContext).getWritableDatabase();
 
         int csNameId = getCsNameId(csName, db);
+
+        db.close();
+
+        return loadCourses(csNameId);
+    }
+
+    @NonNull
+    public ArrayList<Course> loadCourses(int csNameId) {
+
+        String csName = getCsName(csNameId);
+
+        SQLiteDatabase db = new CourseDbHelper(app.mContext).getWritableDatabase();
 
         String sql = "select * from " + CoursesPsc.CourseEntry.TABLE_NAME + " where "
                 + CoursesPsc.CourseEntry.COLUMN_NAME_CS_NAME_ID + "='" + csNameId + "'";
@@ -376,7 +393,6 @@ public class CourseDbDao {
         values.put(CoursesPsc.CourseEntry.COLUMN_NAME_END_WEEK, course.getEndWeek());
         values.put(CoursesPsc.CourseEntry.COLUMN_NAME_TEACHER, course.getTeacher());
         values.put(CoursesPsc.CourseEntry.COLUMN_NAME_SOURCE, course.getSource());
-        values.put(CoursesPsc.CourseEntry.COLUMN_NAME_WEEK_TYPE, course.getWeekType());
     }
 
 
@@ -389,7 +405,7 @@ public class CourseDbDao {
                 .setStartWeek(cursor.getInt(cursor.getColumnIndex(CoursesPsc.CourseEntry.COLUMN_NAME_START_WEEK)))
                 .setEndWeek(cursor.getInt(cursor.getColumnIndex(CoursesPsc.CourseEntry.COLUMN_NAME_END_WEEK)))
                 .setSource(cursor.getString(cursor.getColumnIndex(CoursesPsc.CourseEntry.COLUMN_NAME_SOURCE)))
-                .setCsName(cursor.getString(cursor.getColumnIndex(CoursesPsc.CourseEntry.COLUMN_NAME_CS_NAME_ID)))
+                .setCsNameId(cursor.getInt(cursor.getColumnIndex(CoursesPsc.CourseEntry.COLUMN_NAME_CS_NAME_ID)))
                 .setWeekType(cursor.getInt(cursor.getColumnIndex(CoursesPsc.CourseEntry.COLUMN_NAME_WEEK_TYPE)))
                 .setCourseId(cursor.getInt(cursor.getColumnIndex(CoursesPsc.CourseEntry.COLUMN_NAME_COURSE_ID)));
         return course;

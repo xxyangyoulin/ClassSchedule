@@ -4,6 +4,10 @@ import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
+import com.mnnyang.gzuclassschedule.R;
+import com.mnnyang.gzuclassschedule.app.app;
+import com.mnnyang.gzuclassschedule.utils.Preferences;
+
 /**
  * Created by mnnyang on 17-10-23.
  */

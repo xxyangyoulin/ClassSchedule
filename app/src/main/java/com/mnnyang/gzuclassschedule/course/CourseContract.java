@@ -16,11 +16,12 @@ import java.util.ArrayList;
 public interface CourseContract {
     interface Presenter extends BasePresenter {
         void loadBackground();
-        void updateCourseViewData(String csName);
+        void updateCourseViewData(int csNameId);
         void deleteCourse(int courseId);
     }
 
     interface View extends BaseView<Presenter> {
+        void initFirstEnter();
         void setBackground(Bitmap background);
         void setCourseData(ArrayList<Course> courses);
         void updateCoursePreference();
