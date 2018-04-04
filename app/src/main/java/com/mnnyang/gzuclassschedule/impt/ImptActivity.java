@@ -100,7 +100,7 @@ public class ImptActivity extends BaseActivity implements
             return;
         }
 
-        if (isLoading){
+        if (isLoading) {
             getCaptchaIV().setImageResource(R.drawable.ic_svg_refresh);
             RotateAnimation rotateAnimation = new RotateAnimation(0, 360f,
                     Animation.RELATIVE_TO_SELF, 0.5f,
@@ -110,8 +110,11 @@ public class ImptActivity extends BaseActivity implements
             rotateAnimation.setInterpolator(new LinearInterpolator());
             rotateAnimation.setRepeatCount(-1);
             getCaptchaIV().startAnimation(rotateAnimation);
-        }else{
-            getCaptchaIV().getAnimation().cancel();
+        } else {
+            Animation animation = getCaptchaIV().getAnimation();
+            if (animation != null) {
+                animation.cancel();
+            }
         }
     }
 
@@ -177,7 +180,7 @@ public class ImptActivity extends BaseActivity implements
         //TODO 数据验证
         mXh = mEtlXh.getText().trim();
         String pwd = mEtlPwd.getText().trim();
-        LogUtil.e(this,"passwd="+pwd);
+        LogUtil.e(this, "passwd=" + pwd);
         String captcha = mEtlCaptcha.getText().trim();
 
         mPresenter.loadCourseTimeAndTerm(mXh, pwd, captcha);
