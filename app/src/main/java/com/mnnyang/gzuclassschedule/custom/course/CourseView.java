@@ -11,6 +11,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
+import android.widget.RemoteViews;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
@@ -24,6 +25,7 @@ import static com.mnnyang.gzuclassschedule.custom.util.Utils.dip2px;
  * Created by mnnyang on 17-10-20.
  */
 
+@RemoteViews.RemoteView
 public class CourseView extends LinearLayout {
 
     private String[] WEEK = {"周一", "周二", "周三", "周四", "周五", "周六", "周七"};

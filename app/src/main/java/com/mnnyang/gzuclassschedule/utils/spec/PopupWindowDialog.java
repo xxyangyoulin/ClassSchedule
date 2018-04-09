@@ -111,11 +111,11 @@ public class PopupWindowDialog {
             public void onSelected(int selectedIndex, String item) {
                 mNodeEnd = selectedIndex;
 
-                if (mNodeEnd > noonNode && mNodeStart <= noonNode) {
+               /* if (mNodeEnd > noonNode && mNodeStart <= noonNode) {
                     ToastUtils.show("早上课程的最大为 " + noonNode + " 节");
                     wvEnd.setSeletion(noonNode - 1);
                     return;
-                }
+                }*/
 
                 if (mNodeStart > mNodeEnd) {
                     wvEnd.setSeletion(mNodeStart - 1);

@@ -393,6 +393,7 @@ public class CourseDbDao {
         values.put(CoursesPsc.CourseEntry.COLUMN_NAME_END_WEEK, course.getEndWeek());
         values.put(CoursesPsc.CourseEntry.COLUMN_NAME_TEACHER, course.getTeacher());
         values.put(CoursesPsc.CourseEntry.COLUMN_NAME_SOURCE, course.getSource());
+        values.put(CoursesPsc.CourseEntry.COLUMN_NAME_WEEK_TYPE,course.getWeekType());
     }
 
 

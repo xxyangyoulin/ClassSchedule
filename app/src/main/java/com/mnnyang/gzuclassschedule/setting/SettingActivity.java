@@ -40,7 +40,7 @@ public class SettingActivity extends BaseActivity implements SettingContract.Vie
     private SettingItemNormal sinUserAdd;
     private SettingItemNormal sinImportGzu;
     private SettingItemNormal sinKbManage;
-    private SettingItemNormal sinShowNoon;
+
     private SettingItemNormal sinHideFab;
     private SettingItemNormal sinMorePref;
     private SettingItemNormal sinFeedback;
@@ -68,7 +68,7 @@ public class SettingActivity extends BaseActivity implements SettingContract.Vie
         sinUserAdd = findViewById(R.id.sin_user_add);
         sinImportGzu = findViewById(R.id.sin_import_gzu);
         sinKbManage = findViewById(R.id.sin_kb_manage);
-        sinShowNoon = findViewById(R.id.sin_show_noon);
+
         sinHideFab = findViewById(R.id.sin_hide_fab);
         sinMorePref = findViewById(R.id.sin_more_pref);
         sinFeedback = findViewById(R.id.sin_feedback);
@@ -77,7 +77,7 @@ public class SettingActivity extends BaseActivity implements SettingContract.Vie
         sinUserAdd.setSettingOnClickListener(this);
         sinImportGzu.setSettingOnClickListener(this);
         sinKbManage.setSettingOnClickListener(this);
-        sinShowNoon.setSettingOnClickListener(this);
+
         sinHideFab.setSettingOnClickListener(this);
         sinMorePref.setSettingOnClickListener(this);
         sinFeedback.setSettingOnClickListener(this);
@@ -92,10 +92,6 @@ public class SettingActivity extends BaseActivity implements SettingContract.Vie
     }
 
     private void initDefaultValues() {
-        sinShowNoon.setChecked(PreferenceManager
-                .getDefaultSharedPreferences(getBaseContext())
-                .getBoolean(getString(R.string.app_preference_show_noon),
-                        false));
 
         sinHideFab.setChecked(PreferenceManager
                 .getDefaultSharedPreferences(getBaseContext())
@@ -122,10 +118,6 @@ public class SettingActivity extends BaseActivity implements SettingContract.Vie
                 gotoMgActivity();
                 break;
 
-            case R.id.sin_show_noon:
-                showNoonPref(checked);
-                break;
-
             case R.id.sin_hide_fab:
                 hideFabPref(checked);
                 break;
@@ -150,10 +142,6 @@ public class SettingActivity extends BaseActivity implements SettingContract.Vie
     @Override
     public void onCheckedChanged(View view, boolean checked) {
         switch (view.getId()) {
-            case R.id.sin_show_noon:
-                showNoonPref(checked);
-                break;
-
             case R.id.sin_hide_fab:
                 hideFabPref(checked);
                 break;
@@ -222,16 +210,6 @@ public class SettingActivity extends BaseActivity implements SettingContract.Vie
                 .apply();
 
         notifiUpdateMainPage(Constant.INTENT_UPDATE_TYPE_OTHER);
-    }
-
-    private void showNoonPref(boolean checked) {
-        PreferenceManager
-                .getDefaultSharedPreferences(getBaseContext())
-                .edit()
-                .putBoolean(getString(R.string.app_preference_show_noon), checked)
-                .apply();
-
-        notifiUpdateMainPage(Constant.INTENT_UPDATE_TYPE_COURSE);
     }
 
 

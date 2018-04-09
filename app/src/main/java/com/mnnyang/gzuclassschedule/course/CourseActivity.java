@@ -202,8 +202,7 @@ public class CourseActivity extends BaseActivity implements CourseContract.View,
         int maxNode = Preferences.getInt(getString(R.string.app_preference_max_node), Constant.DEFAULT_MAX_NODE_COUNT);
 
         mCourseView.getCtView()
-                .setNodeCount(maxNode)
-                .setNoonNode(Preferences.getInt(getString(R.string.app_preference_noon_node), Integer.parseInt(getString(R.string.default_noon_node))));
+                .setNodeCount(maxNode);
 
         mPresenter.updateCourseViewData(mCurrentCsNameId);
     }

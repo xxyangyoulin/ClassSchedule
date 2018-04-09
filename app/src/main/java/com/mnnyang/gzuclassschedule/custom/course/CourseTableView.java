@@ -17,6 +17,7 @@ import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
+import android.widget.RemoteViews;
 import android.widget.TextView;
 
 
@@ -36,6 +37,7 @@ import static com.mnnyang.gzuclassschedule.custom.util.Utils.getColors;
  * Created by mnnyang on 17-10-20.
  */
 
+@RemoteViews.RemoteView
 public class CourseTableView extends FrameLayout {
     /**
      * 实线
@@ -159,7 +161,7 @@ public class CourseTableView extends FrameLayout {
     /**
      * 显示正午
      */
-    private boolean mShowNoon = true;
+//    private boolean mShowNoon = true;
     /**
      * 显示水平分割线
      */
@@ -185,7 +187,7 @@ public class CourseTableView extends FrameLayout {
     /**
      * 中午节数
      */
-    private int mNoonNode = 4;
+//    private int mNoonNode = 4;
 
     private Paint mDividerPaint;
 
@@ -279,8 +281,8 @@ public class CourseTableView extends FrameLayout {
                 size = size % (mColors.length - 2);
             }
 
-            mNameColorMap.put(course.getName(), mColors[size]+mAlpha);
-            mNameColorMap.put(course.getName() + "_p", mColors[size + 1]+mAlpha);
+            mNameColorMap.put(course.getName(), mColors[size] + mAlpha);
+            mNameColorMap.put(course.getName() + "_p", mColors[size + 1] + mAlpha);
         }
     }
 
@@ -310,7 +312,6 @@ public class CourseTableView extends FrameLayout {
     /**********************addView*******************************/
 
     private void addCourseItemView() {
-        LogUtil.i(this, "addCourseItemView");
         for (Course course : mCourses) {
             addCourseItemView(course);
         }
@@ -322,21 +323,13 @@ public class CourseTableView extends FrameLayout {
         removeAllViews();
 
         int margin = 0;
-        int nodeMax = mNodeCount + (mShowNoon ? 1 : 0);
+        int nodeMax = mNodeCount;
         for (int i = 0; i < nodeMax; i++) {
             String text = "";
 
-            if (true == mShowNoon) {
-                if (i < mNoonNode) {
-                    text = String.valueOf(i + 1);
-                } else if (i == mNoonNode) {
-                    text = "中\n午";
-                } else {
-                    text = String.valueOf(i);
-                }
-            } else {
-                text = String.valueOf(i + 1);
-            }
+
+
+            text = String.valueOf(i + 1);
 
             TextView tv = getNodeTextView(text);
             LayoutParams params = new LayoutParams(
@@ -354,7 +347,7 @@ public class CourseTableView extends FrameLayout {
 
 
     public void addCourseItemView(final Course course) {
-        LogUtil.i(this, "addCourseItemView");
+        LogUtil.d(this, "addCourseItemView-->" + course);
         if (course == null) {
             throw new IllegalArgumentException("course is null !");
         }
@@ -376,15 +369,15 @@ public class CourseTableView extends FrameLayout {
         //startNode
         int startNode = course.getNodes().get(0);
 
-        if (mShowNoon) {
-            if (startNode > mNoonNode) {
-                startNode++;
-            }
-        }
+//        if (mShowNoon) {
+//            if (startNode > mNoonNode) {
+//                startNode++;
+//            }
+//        }
         startNode--;
-        if (startNode == -2) {
-            startNode = mNoonNode;
-        }
+//        if (startNode == -2) {
+//            startNode = mNoonNode;
+//        }
 
         final int itemHeight = (mDividerSize + mItemHeight) * (course.getNodes().size())
                 - mVerticalDividerMargin * 2;
@@ -563,8 +556,10 @@ public class CourseTableView extends FrameLayout {
         mPaint.setStyle(Paint.Style.FILL_AND_STROKE);
         mPaint.setColor(mNodeBgColor);
 
+//        int bottom = mViewHeight + (mShowNoon ? mViewHeight : 0);
+        int bottom = mViewHeight;
         canvas.drawRect(0, 0, mNodeWidth,
-                mViewHeight + (mShowNoon ? mViewHeight : 0), mPaint);
+                bottom, mPaint);
     }
 
     Path mDividerPath = new Path();
@@ -575,7 +570,8 @@ public class CourseTableView extends FrameLayout {
         }
 
         int y = mItemHeight;
-        int endMax = mNodeCount - 1 + (mShowNoon ? 1 : 0);
+//        int endMax = mNodeCount - 1 + (mShowNoon ? 1 : 0);
+        int endMax = mNodeCount - 1;
 
         int startX = mShowNodeDivider ? 0 : mNodeWidth;
 
@@ -602,7 +598,8 @@ public class CourseTableView extends FrameLayout {
 
         int sY = 0;
         int x = mNodeWidth;
-        int lineLength = mViewHeight + (mShowNoon ? (mItemHeight + mDividerSize) : 0);
+//        int lineLength = mViewHeight + (mShowNoon ? (mItemHeight + mDividerSize) : 0);
+        int lineLength = mViewHeight;
         int maxWeek = mShowWeekend ? 7 : 5;
 
         mDividerPaint.setColor(mVerticalDividerColor);
@@ -658,8 +655,8 @@ public class CourseTableView extends FrameLayout {
         bgLayout.setOnLongClickListener(new OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
-                if (mItemClickListener!=null){
-                    mItemClickListener.onLongClick(course,bgLayout);
+                if (mItemClickListener != null) {
+                    mItemClickListener.onLongClick(course, bgLayout);
                     return true;
                 }
                 return false;
@@ -698,6 +695,7 @@ public class CourseTableView extends FrameLayout {
 
     public interface OnItemClickListener {
         void onClick(Course course, LinearLayout itemLayout);
+
         void onLongClick(Course course, LinearLayout itemLayout);
     }
 
@@ -818,23 +816,23 @@ public class CourseTableView extends FrameLayout {
         return this;
     }
 
-    public boolean isShowNoon() {
-        return mShowNoon;
-    }
+//    public boolean isShowNoon() {
+//        return mShowNoon;
+//    }
+//
+//    public CourseTableView setShowNoon(boolean showNoon) {
+//        mShowNoon = showNoon;
+//        return this;
+//    }
 
-    public CourseTableView setShowNoon(boolean showNoon) {
-        mShowNoon = showNoon;
-        return this;
-    }
-
-    public int getNoonNode() {
-        return mNoonNode;
-    }
-
-    public CourseTableView setNoonNode(int noonNode) {
-        mNoonNode = noonNode;
-        return this;
-    }
+//    public int getNoonNode() {
+//        return mNoonNode;
+//    }
+//
+//    public CourseTableView setNoonNode(int noonNode) {
+//        mNoonNode = noonNode;
+//        return this;
+//    }
 
     public int getHorizontalDividerMargin() {
         return mHorizontalDividerMargin;

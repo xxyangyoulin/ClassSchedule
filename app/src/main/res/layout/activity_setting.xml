@@ -64,19 +64,6 @@
                 style="@style/CategoryStyle"
                 android:text="@string/text_preference" />
 
-            <com.mnnyang.gzuclassschedule.custom.settting.SettingItemNormal
-                android:id="@+id/sin_show_noon"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                app:item_title="@string/show_noon_course"
-                app:showSwitch="true"
-                app:detach="true"
-                app:summary="@string/show_noon_course_summary" />
-
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/margin_1dp"
-                android:background="@color/divider" />
 
 
             <com.mnnyang.gzuclassschedule.custom.settting.SettingItemNormal
