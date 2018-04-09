@@ -11,7 +11,7 @@ public class LogUtil {
 
     private static final String STRING = "------->";
     private static final String SUFFIX = "<-------";
-    private static final boolean SHOW = true;
+    private static final boolean SHOW = false;
 
     //信息级别
     public static void i(Object tag, String msg) {
