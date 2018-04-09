@@ -64,8 +64,6 @@
                 style="@style/CategoryStyle"
                 android:text="@string/text_preference" />
 
-
-
             <com.mnnyang.gzuclassschedule.custom.settting.SettingItemNormal
                 android:id="@+id/sin_hide_fab"
                 android:layout_width="match_parent"

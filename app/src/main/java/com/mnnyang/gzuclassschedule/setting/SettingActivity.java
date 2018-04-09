@@ -150,7 +150,6 @@ public class SettingActivity extends BaseActivity implements SettingContract.Vie
         }
     }
 
-
     int theme;
 
     private void showThemeDialog() {
@@ -225,7 +224,6 @@ public class SettingActivity extends BaseActivity implements SettingContract.Vie
 
     private void gotoConfActivity() {
         ToastUtils.show("还在开发中...");
-//        gotoActivity(ConfActivity.class);
     }
 
     private void gotoAboutActivity() {
