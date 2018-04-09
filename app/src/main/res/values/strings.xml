@@ -8,7 +8,7 @@
 
     <string name="login">登录</string>
     <string name="user_add">手动添加</string>
-    <string name="import_gzu">导入贵大课表</string>
+    <string name="import_gzu">导入正方课表</string>
     <string name="kb_manage">课表管理</string>
     <string name="del_all">删除全部</string>
 
@@ -105,4 +105,10 @@
     <string name="bg_enabled">已启用背景</string>
     <string name="bg_disabled">已禁用背景</string>
     <string name="select_iamge_succeed">设置背景成功</string>
+    <string name="select_school">选择学校</string>
+    <string name="gzu">贵州大学</string>
+    <string name="other_school">其他高校</string>
+    <string name="school">学校</string>
+    <string name="please_input_school_url">请输入教务管理系统网址</string>
+    <string name="can_not_be_empty">不能为空</string>
 </resources>

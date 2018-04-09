@@ -25,6 +25,8 @@ public class DialogHelper {
      * 不确定不可关闭等待对话框<br>
      */
     public void showProgressDialog(Context context, String title, String msg, boolean canceable) {
+        hideCustomDialog();
+
         progressDialog = ProgressDialog.show(context, title, msg, true, canceable);
         progressDialog.setIndeterminate(true);
         progressDialog.setCancelable(false);

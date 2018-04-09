@@ -17,18 +17,5 @@ public class ImptModel implements ImptContract.Model {
     @Override
     public void getCaptcha(final ImageView iv) {
 
-        HttpUtils.newInstance().loadCaptcha(app.mContext.getCacheDir(),
-                new HttpCallback<Bitmap>() {
-                    @Override
-                    public void onSuccess(Bitmap bitmap) {
-                        iv.setImageBitmap(bitmap);
-                    }
-
-                    @Override
-                    public void onFail(String errMsg) {
-                        ToastUtils.show(errMsg);
-                        iv.setImageResource(R.drawable.ic_svg_refresh);
-                    }
-                });
     }
 }

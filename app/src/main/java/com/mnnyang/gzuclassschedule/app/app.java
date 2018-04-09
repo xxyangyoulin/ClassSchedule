@@ -47,6 +47,7 @@ public class app extends Application {
                 .addInterceptor(new LoggerInterceptor("TAG"))
                 .cookieJar(new CookieJarImpl(new PersistentCookieStore(getBaseContext()))) //要在内存Cookie前
                 .cookieJar(new CookieJarImpl(new MemoryCookieStore()))//内存Cookie
+                .cache(null)
                 .build();
         OkHttpUtils.initClient(okHttpClient);
     }

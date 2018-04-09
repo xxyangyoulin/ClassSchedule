@@ -17,12 +17,13 @@ import com.mnnyang.gzuclassschedule.utils.DialogHelper;
 import com.mnnyang.gzuclassschedule.utils.DialogListener;
 import com.mnnyang.gzuclassschedule.utils.ToastUtils;
 import com.mnnyang.gzuclassschedule.utils.VersionUpdate;
+import com.zhy.http.okhttp.request.OkHttpRequest;
 
 /**
  * Created by xxyangyoulin on 2018/3/13.
  */
 
-public class AboutActivity extends BaseActivity  implements AboutContract.View{
+public class AboutActivity extends BaseActivity implements AboutContract.View {
 
     private AboutPresenter mPresenter;
 

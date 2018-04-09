@@ -4,6 +4,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.InputType;
+import android.text.TextUtils;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.animation.Animation;
@@ -16,13 +17,13 @@ import android.widget.LinearLayout;
 import com.mnnyang.gzuclassschedule.BaseActivity;
 import com.mnnyang.gzuclassschedule.R;
 import com.mnnyang.gzuclassschedule.app.Constant;
+import com.mnnyang.gzuclassschedule.app.Url;
 import com.mnnyang.gzuclassschedule.course.CourseActivity;
 import com.mnnyang.gzuclassschedule.custom.EditTextLayout;
 import com.mnnyang.gzuclassschedule.data.bean.CourseTime;
 import com.mnnyang.gzuclassschedule.utils.DialogHelper;
 import com.mnnyang.gzuclassschedule.utils.LogUtil;
 import com.mnnyang.gzuclassschedule.utils.Preferences;
-import com.mnnyang.gzuclassschedule.utils.ScreenUtils;
 import com.mnnyang.gzuclassschedule.utils.ToastUtils;
 import com.mnnyang.gzuclassschedule.utils.spec.ShowTermDialog;
 
@@ -37,6 +38,7 @@ public class ImptActivity extends BaseActivity implements
     private EditTextLayout mEtlPwd;
     private EditTextLayout mEtlCaptcha;
 
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -46,7 +48,17 @@ public class ImptActivity extends BaseActivity implements
         initBackToolbar("导入课程表");
         initView();
 
-        mPresenter = new ImptPresenter(this);
+        mPresenter = new ImptPresenter(this,initSchoolUrl());
+    }
+
+    private String initSchoolUrl() {
+        Intent intent = getIntent();
+        String schoolUrl = intent.getStringExtra(Constant.INTENT_SCHOOL_URL);
+        if (TextUtils.isEmpty(schoolUrl)) {
+            schoolUrl = Url.URL_GZU_HOST;
+        }
+
+       return schoolUrl;
     }
 
     private void initView() {

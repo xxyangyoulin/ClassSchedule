@@ -30,14 +30,16 @@ public class ImptPresenter implements ImptContract.Presenter {
 
     private ImptContract.View mImptView;
     private ImptContract.Model mModel;
+    private String mSchoolUrl;
 
     private String xh;
     private String mNormalCourseHtml;
     private String mSelectYear;
     private String mSelectTerm;
 
-    public ImptPresenter(ImptContract.View imptView) {
+    public ImptPresenter(ImptContract.View imptView,String schoolUrl) {
         mImptView = imptView;
+        mSchoolUrl = schoolUrl;
         mModel = new ImptModel();
     }
 
@@ -57,7 +59,7 @@ public class ImptPresenter implements ImptContract.Presenter {
         }
 
         mImptView.showImpting();
-        HttpUtils.newInstance().toImpt(xh, year, term, new HttpCallback<String>() {
+        HttpUtils.newInstance().toImpt(mSchoolUrl,xh, year, term, new HttpCallback<String>() {
             @Override
             public void onSuccess(String s) {
                 parseCoursesHtmlToDb(s, year + "-" + term);
@@ -82,7 +84,7 @@ public class ImptPresenter implements ImptContract.Presenter {
     public void loadCourseTimeAndTerm(final String xh, String pwd, String captcha) {
         if (!verify(xh, pwd, captcha)) return;
         mImptView.showImpting();
-        HttpUtils.newInstance().login(xh, pwd, captcha, null, null,
+        HttpUtils.newInstance().login(mSchoolUrl,xh, pwd, captcha, null, null,
                 new HttpCallback<String>() {
 
                     @Override
@@ -201,7 +203,7 @@ public class ImptPresenter implements ImptContract.Presenter {
         captchaIsLoading = true;
         mImptView.captchaIsLoading(true);
 
-        HttpUtils.newInstance().loadCaptcha(app.mContext.getCacheDir(),
+        HttpUtils.newInstance().loadCaptcha(app.mContext.getCacheDir(),mSchoolUrl,
                 new HttpCallback<Bitmap>() {
                     @Override
                     public void onSuccess(Bitmap bitmap) {

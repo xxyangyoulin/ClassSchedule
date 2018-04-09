@@ -31,6 +31,7 @@
         <activity android:name=".mg.MgActivity"></activity>
         <activity android:name=".about.AboutActivity"></activity>
         <activity android:name=".conf.ConfActivity"></activity>
+        <activity android:name=".school.SchoolActivity"></activity>
 
         <!---->
         <receiver android:name=".widget.OneWidget">

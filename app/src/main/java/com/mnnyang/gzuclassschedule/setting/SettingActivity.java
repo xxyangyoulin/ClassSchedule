@@ -19,11 +19,11 @@ import com.mnnyang.gzuclassschedule.about.AboutActivity;
 import com.mnnyang.gzuclassschedule.add.AddActivity;
 import com.mnnyang.gzuclassschedule.app.Constant;
 import com.mnnyang.gzuclassschedule.app.app;
-import com.mnnyang.gzuclassschedule.conf.ConfActivity;
 import com.mnnyang.gzuclassschedule.course.CourseActivity;
 import com.mnnyang.gzuclassschedule.custom.settting.SettingItemNormal;
 import com.mnnyang.gzuclassschedule.impt.ImptActivity;
 import com.mnnyang.gzuclassschedule.mg.MgActivity;
+import com.mnnyang.gzuclassschedule.school.SchoolActivity;
 import com.mnnyang.gzuclassschedule.utils.ActivityUtil;
 import com.mnnyang.gzuclassschedule.utils.DialogHelper;
 import com.mnnyang.gzuclassschedule.utils.DialogListener;
@@ -111,7 +111,7 @@ public class SettingActivity extends BaseActivity implements SettingContract.Vie
                 gotoAddActivity();
                 break;
             case R.id.sin_import_gzu:
-                gotoImpActivity();
+                importCourseTable();
                 break;
 
             case R.id.sin_kb_manage:
@@ -222,6 +222,12 @@ public class SettingActivity extends BaseActivity implements SettingContract.Vie
         return super.onOptionsItemSelected(item);
     }
 
+    private void importCourseTable() {
+
+
+        gotoActivity(SchoolActivity.class);
+    }
+
     private void gotoConfActivity() {
         ToastUtils.show("还在开发中...");
     }
@@ -234,14 +240,9 @@ public class SettingActivity extends BaseActivity implements SettingContract.Vie
         gotoActivity(MgActivity.class);
     }
 
-    private void gotoImpActivity() {
-        gotoActivity(ImptActivity.class);
-    }
-
     public void gotoAddActivity() {
         gotoActivity(AddActivity.class);
     }
-
 
     @Override
     public void showNotice(String notice) {

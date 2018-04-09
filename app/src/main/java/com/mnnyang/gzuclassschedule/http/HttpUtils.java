@@ -28,6 +28,7 @@ public class HttpUtils {
     private HttpUtils() {
     }
 
+
     private static class Holder {
         private static final HttpUtils HTTP_UTILS = new HttpUtils();
     }
@@ -37,8 +38,23 @@ public class HttpUtils {
     }
 
 
-    public void loadCaptcha(final File dir, final HttpCallback<Bitmap> callback) {
-        OkHttpUtils.post().url(Url.URL_LOGIN_PAGE)
+    public void testUrl(String url, final HttpCallback<String> callback) {
+        OkHttpUtils.get().url(url).build().execute(new StringCallback() {
+            @Override
+            public void onError(Call call, Exception e, int id) {
+                callback.onFail(e.getMessage());
+                e.printStackTrace();
+            }
+
+            @Override
+            public void onResponse(String response, int id) {
+                callback.onSuccess(response);
+            }
+        });
+    }
+
+    public void loadCaptcha(final File dir, final String schoolUrl, final HttpCallback<Bitmap> callback) {
+        OkHttpUtils.post().url(schoolUrl+"/"+Url.default2)
                 .build().execute(new StringCallback() {
             @Override
             public void onError(Call call, Exception e, int id) {
@@ -49,13 +65,13 @@ public class HttpUtils {
             public void onResponse(String response, int id) {
                 Url.VIEWSTATE_LOGIN_CODE = ParseCourse.parseViewStateCode(response);
                 LogUtil.d(this, "login_code:" + Url.VIEWSTATE_LOGIN_CODE);
-                toLoadCaptcha(dir, callback);
+                toLoadCaptcha(dir, schoolUrl,callback);
             }
         });
     }
 
-    private void toLoadCaptcha(final File dir, final HttpCallback<Bitmap> callback) {
-        OkHttpUtils.get().url(Url.URL_CHECK_CODE).build().execute(
+    private void toLoadCaptcha(final File dir,String schoolUrl, final HttpCallback<Bitmap> callback) {
+        OkHttpUtils.get().url(schoolUrl+"/"+Url.CheckCode).build().execute(
                 new FileCallBack(dir.getAbsolutePath(), "loadCaptcha.jpg") {
                     @Override
                     public void onError(Call call, Exception e, int id) {
@@ -72,10 +88,10 @@ public class HttpUtils {
                 });
     }
 
-    public void login(final String xh, String passwd, String catpcha,
+    public void login(final String schoolUrl,final String xh, String passwd, String catpcha,
                       final String courseTime, final String term,
                       final HttpCallback<String> callback) {
-        OkHttpUtils.post().url(Url.URL_LOGIN_PAGE)
+        OkHttpUtils.post().url(schoolUrl+"/"+Url.default2)
                 .addParams("__VIEWSTATE", Url.VIEWSTATE_LOGIN_CODE)
                 .addParams("txtUserName", xh)
                 .addParams("Textbox1", "")
@@ -103,10 +119,10 @@ public class HttpUtils {
                     callback.onFail(app.mContext.getString(R.string.pwd_err));
                 } else {
                     if (TextUtils.isEmpty(courseTime) || TextUtils.isEmpty(term)) {
-                        toImpt(xh, callback);
+                        toImpt(xh, schoolUrl,callback);
                         return;
                     }
-                    toImpt(xh, courseTime, term, callback);
+                    toImpt(xh,schoolUrl, courseTime, term, callback);
                 }
             }
         });
@@ -118,10 +134,10 @@ public class HttpUtils {
      * @param xh
      * @param callback
      */
-    public void toImpt(String xh, final HttpCallback<String> callback) {
+    public void toImpt(String xh, String schoolUrl,final HttpCallback<String> callback) {
         LogUtil.d(this, "get normal+" + xh);
-        OkHttpUtils.get().url(Url.URL_LOAD_COURSE)
-                .addHeader("Referer", Url.URL_LOAD_COURSE + "?xh=" + xh)
+        OkHttpUtils.get().url(schoolUrl+"/"+Url.xskbcx)
+                .addHeader("Referer", schoolUrl+"/"+Url.xskbcx + "?xh=" + xh)
                 .addParams(Url.PARAM_XH, xh)
                 .build()
                 .execute(new StringCallback() {
@@ -146,11 +162,11 @@ public class HttpUtils {
      * @param term       学期num
      * @param callback
      */
-    public void toImpt(String xh, String courseTime, String term,
+    public void toImpt(String schoolUrl,String xh, String courseTime, String term,
                        final HttpCallback<String> callback) {
         LogUtil.d("toImpt", "xh" + xh + "c" + courseTime + "t" + term);
-        OkHttpUtils.post().url(Url.URL_LOAD_COURSE + "?xh=" + xh + "&xm=%D1%EE%D3%D1%C1%D6&gnmkdm=N121603")
-                .addHeader("Referer", Url.URL_LOAD_COURSE + "?xh=" + xh + "&xm=%D1%EE%D3%D1%C1%D6&gnmkdm=N121603")
+        OkHttpUtils.post().url(schoolUrl+"/"+Url.xskbcx + "?xh=" + xh + "&xm=%D1%EE%D3%D1%C1%D6&gnmkdm=N121603")
+                .addHeader("Referer", schoolUrl+"/"+Url.xskbcx + "?xh=" + xh + "&xm=%D1%EE%D3%D1%C1%D6&gnmkdm=N121603")
                 .addHeader("Connection", "keep-alive")
 
 //                .addHeader("Accept", "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8")
@@ -188,10 +204,11 @@ public class HttpUtils {
 
     /**
      * 上传解析失败的课表html
+     *
      * @param tag
      * @param html
      */
-    public void uploadParsingFailedTable(Object tag , String html){
+    public void uploadParsingFailedTable(Object tag, String html) {
         String newTag = LogUtil.getNewTag(tag);
 
     }
