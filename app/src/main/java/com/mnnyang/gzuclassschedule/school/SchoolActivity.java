@@ -25,8 +25,6 @@ import com.mnnyang.gzuclassschedule.utils.DialogListener;
 
 public class SchoolActivity extends BaseActivity implements SchoolContract.View, View.OnClickListener {
 
-    private TextView mTvOtherSchool;
-    private TextView mTvGzu;
     private SchoolContract.Presenter mPresenter;
     private DialogHelper mDialogHelper;
     private DialogHelper mTestingDialog;
@@ -44,10 +42,10 @@ public class SchoolActivity extends BaseActivity implements SchoolContract.View,
     }
 
     private void initView() {
-        mTvGzu = findViewById(R.id.tv_gzu);
-        mTvOtherSchool = findViewById(R.id.tv_other);
-        mTvOtherSchool.setOnClickListener(this);
-        mTvGzu.setOnClickListener(this);
+        TextView tvGzu = findViewById(R.id.tv_gzu);
+        TextView tvOtherSchool = findViewById(R.id.tv_other);
+        tvOtherSchool.setOnClickListener(this);
+        tvGzu.setOnClickListener(this);
     }
 
     @Override

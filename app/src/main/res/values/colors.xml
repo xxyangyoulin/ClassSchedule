@@ -1,8 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">@color/primary_green</color>
-    <color name="colorPrimaryDark">@color/primary_dark_green</color>
-    <color name="colorAccent">@color/accent_green</color>
 
     <color name="primary_dark_red">#D32F2F</color>
     <color name="primary_red">#F44336</color>
@@ -37,21 +34,14 @@
     <color name="primary_lime">#CDDC39</color>
     <color name="accent_lime">#CDDC39</color>
 
-    <color name="primary_dark_deep_orange">#E64A19</color>
-    <color name="primary_deep_orange">#FF5722</color>
-    <color name="accent_deep_orange">#FF5722</color>
-
     <color name="primary_dark_blue_grey">#455A64</color>
     <color name="primary_blue_grey">#607D8B</color>
     <color name="accent_blue_grey">#9E9E9E</color>
 
-    <color name="primary_light">#C8E6C9</color>
     <color name="primary_text">#212121</color>
     <color name="secondary_text">#757575</color>
-    <color name="icons">#FFFFFF</color>
     <color name="divider">#50BDBDBD</color>
 
-    <color name="dark_purple">#7e57c0</color>
     <color name="white_f1">#f9f9f9</color>
 
     <color name="color_g">#8AD297</color>
@@ -84,10 +74,7 @@
     <color name="color_wuw_pressed">#d3dEe5</color>
 
     <color name="color_text_not_current">#badac9</color>
-    <color name="color_normal_ic">#ffffff</color>
 
-    <color name="color_text_normal">#505050</color>
-    <color name="color_fab">#F7C56B</color>
     <color name="color_gary_40">#40000000</color>
 
     <color name="red1">#F34235</color>
@@ -96,18 +83,4 @@
     <color name="orange4">#FE9700</color>
     <color name="red5">#E81D62</color>
     <color name="blue6">#2095F2</color>
-    <color name="green7">#8AC249</color>
-    <color name="orange8">#FE5621</color>
-    <color name="black9">#363F45</color>
-    <color name="blue10">#02A8F3</color>
-    <color name="green11">#CCDB38</color>
-    <color name="brown12">#785447</color>
-    <color name="purple13">#9B26AF</color>
-    <color name="blue14">#00BBD3</color>
-    <color name="yellow15">#FEEA3A</color>
-    <color name="gary16">#9D9D9D</color>
-    <color name="deep_purple17">#6639B6</color>
-    <color name="teal18">#009587</color>
-    <color name="amber19">#FEC006</color>
-    <color name="blue_grey20">#5F7C8A</color>
 </resources>

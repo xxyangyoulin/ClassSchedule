@@ -57,7 +57,7 @@ public class ImptActivity extends BaseActivity implements
         if (TextUtils.isEmpty(schoolUrl)) {
             schoolUrl = Url.URL_GZU_HOST;
         }
-
+        schoolUrl = schoolUrl.replace(Url.default2,"");
        return schoolUrl;
     }
 

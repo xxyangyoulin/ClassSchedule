@@ -18,10 +18,6 @@ public class Url {
     public static final String xskbcx = "xskbcx.aspx";
     public static final String default2 = "default2.aspx";
 
-//    public static final String URL_CHECK_CODE = URL_GZU_HOST + CheckCode;
-//    public static final String URL_LOAD_COURSE = URL_GZU_HOST + xskbcx;
-//    public static final String URL_LOGIN_PAGE = URL_GZU_HOST + default2;
-
     public static final String PARAM_XH = "xh";
     public static final String PARAM_XND = "xnd";
     public static final String PARAM_XQD = "xqd";
