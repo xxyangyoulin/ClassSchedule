@@ -16,22 +16,22 @@
         android:supportsRtl="true"
         android:theme="@style/greenTheme">
         <activity
-            android:name=".course.CourseActivity"
+            android:name="com.mnnyang.gzuclassschedule.course.CourseActivity"
             android:launchMode="singleTask">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".setting.SettingActivity">
+        <activity android:name="com.mnnyang.gzuclassschedule.setting.SettingActivity">
 
         </activity>
-        <activity android:name=".impt.ImptActivity"></activity>
-        <activity android:name=".add.AddActivity"></activity>
-        <activity android:name=".mg.MgActivity"></activity>
-        <activity android:name=".about.AboutActivity"></activity>
-        <activity android:name=".conf.ConfActivity"></activity>
-        <activity android:name=".school.SchoolActivity"></activity>
+        <activity android:name="com.mnnyang.gzuclassschedule.impt.ImptActivity"></activity>
+        <activity android:name="com.mnnyang.gzuclassschedule.add.AddActivity"></activity>
+        <activity android:name="com.mnnyang.gzuclassschedule.mg.MgActivity"></activity>
+        <activity android:name="com.mnnyang.gzuclassschedule.about.AboutActivity"></activity>
+        <activity android:name="com.mnnyang.gzuclassschedule.conf.ConfActivity"></activity>
+        <activity android:name="com.mnnyang.gzuclassschedule.school.SchoolActivity"></activity>
 
         <!---->
         <receiver android:name=".widget.OneWidget">

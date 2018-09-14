@@ -324,6 +324,12 @@ public class Course implements Comparable<Course>,Serializable {
             return false;
         }
 
+        if (this.getEndWeek()<course.getStartWeek()
+                || course.getEndWeek()<this.getStartWeek()){
+
+            return false;
+        }
+
         return true;
     }
 

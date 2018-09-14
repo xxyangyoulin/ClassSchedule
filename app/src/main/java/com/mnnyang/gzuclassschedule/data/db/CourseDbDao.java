@@ -192,11 +192,10 @@ public class CourseDbDao {
         course.setCsNameId(csNameId);
 
         String sql = "select * from " + CoursesPsc.CourseEntry.TABLE_NAME
-//                + " where " + CoursesPsc.CourseEntry.COLUMN_NAME_WEEK + "='" + course.getWeek() + "'"
                 + " WHERE " + CoursesPsc.CourseEntry.COLUMN_NAME_CS_NAME_ID + "='" + course.getCsNameId() + "'"
-//                + " AND " + CoursesPsc.CourseEntry.COLUMN_NAME_WEEK_TYPE + "='" + course.getWeekType() + "'";
                 + " AND " + CoursesPsc.CourseEntry.COLUMN_NAME_COURSE_ID + "!='" + course.getCourseId() + "'";
         Cursor cursor = db.rawQuery(sql, null);
+
         while (cursor.moveToNext()) {
             Course conflictCourse = parse(cursor);
             LogUtil.e(this,"疑是冲突:-->"+course.toString());

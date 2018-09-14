@@ -1,4 +1,4 @@
-# 星星课表
+# MD课表
 **一款Android平台 Material design 课程表**
 <!--more-->
 1. 支持手动添加、导入课程表；
@@ -11,6 +11,9 @@
 #### 已知Bug: 
 - 导入课程, 某些教务系统课程表数据变更,可能会导致有的同学课程导入不全；
 
+#### 更新日志
+- v1.3.2
+    解决同一课表不同周数提示冲突的问题。
 
 #### **酷安上架 [前往下载](https://www.coolapk.com/apk/com.mnnyang.gzuclassschedule)**
 
