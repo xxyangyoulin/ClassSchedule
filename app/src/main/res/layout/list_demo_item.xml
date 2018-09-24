@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/item_weekday_layout"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:background="#00000000"
+    android:orientation="horizontal">
+
+    <LinearLayout
+        android:id="@+id/item_node_group"
+        android:layout_width="24dp"
+        android:layout_height="wrap_content"
+        android:orientation="vertical" />
+
+
+    <LinearLayout
+        android:id="@+id/item_weekday_day_1"
+        android:layout_width="0.0dip"
+        android:layout_height="wrap_content"
+        android:layout_weight="1.0"
+        android:orientation="vertical" />
+
+    <LinearLayout
+        android:id="@+id/item_weekday_day_2"
+        android:layout_width="0.0dip"
+        android:layout_height="wrap_content"
+        android:layout_weight="1.0"
+        android:orientation="vertical" />
+
+    <LinearLayout
+        android:id="@+id/item_weekday_day_3"
+        android:layout_width="0.0dip"
+        android:layout_height="wrap_content"
+        android:layout_weight="1.0"
+        android:orientation="vertical" />
+
+    <LinearLayout
+        android:id="@+id/item_weekday_day_4"
+        android:layout_width="0.0dip"
+        android:layout_height="wrap_content"
+        android:layout_weight="1.0"
+        android:orientation="vertical" />
+
+    <LinearLayout
+        android:id="@+id/item_weekday_day_5"
+        android:layout_width="0.0dip"
+        android:layout_height="wrap_content"
+        android:layout_weight="1.0"
+        android:orientation="vertical" />
+
+    <LinearLayout
+        android:id="@+id/item_weekday_day_6"
+        android:layout_width="0.0dip"
+        android:layout_height="wrap_content"
+        android:layout_weight="1.0"
+        android:orientation="vertical" />
+
+    <LinearLayout
+        android:id="@+id/item_weekday_day_7"
+        android:layout_width="0.0dip"
+        android:layout_height="wrap_content"
+        android:layout_weight="1.0"
+        android:orientation="vertical" />
+
+</LinearLayout>

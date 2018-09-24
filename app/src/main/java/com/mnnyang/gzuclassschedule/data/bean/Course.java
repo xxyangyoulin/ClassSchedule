@@ -3,6 +3,7 @@ package com.mnnyang.gzuclassschedule.data.bean;
 import android.support.annotation.NonNull;
 
 
+import com.mnnyang.gzuclassschedule.custom.course2.CourseAncestor;
 import com.mnnyang.gzuclassschedule.utils.LogUtil;
 
 import java.io.Serializable;
@@ -15,7 +16,7 @@ import java.util.List;
  * Created by mnnyang on 17-10-22.
  */
 
-public class Course implements Comparable<Course>,Serializable {
+public class Course extends CourseAncestor implements Comparable<Course> {
     private int courseId;
     //所有周
     public static final int WEEK_ALL = 0;
@@ -105,6 +106,7 @@ public class Course implements Comparable<Course>,Serializable {
 
     public Course setWeek(int week) {
         this.week = week;
+        this.row = this.week;
         return this;
     }
 
@@ -258,7 +260,7 @@ public class Course implements Comparable<Course>,Serializable {
 
     @Override
     public String toString() {
-        return "Course{" +
+        return super.toString()+"Course{" +
                 "courseId=" + courseId +
                 ", name='" + name + '\'' +
                 ", classRoom='" + classRoom + '\'' +

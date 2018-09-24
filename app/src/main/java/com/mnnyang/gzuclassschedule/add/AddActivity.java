@@ -13,6 +13,7 @@ import com.mnnyang.gzuclassschedule.BaseActivity;
 import com.mnnyang.gzuclassschedule.R;
 import com.mnnyang.gzuclassschedule.app.Constant;
 import com.mnnyang.gzuclassschedule.custom.EditTextLayout;
+import com.mnnyang.gzuclassschedule.custom.course2.CourseAncestor;
 import com.mnnyang.gzuclassschedule.data.bean.Course;
 import com.mnnyang.gzuclassschedule.data.db.CourseDbDao;
 import com.mnnyang.gzuclassschedule.utils.DialogHelper;
@@ -64,6 +65,8 @@ public class AddActivity extends BaseActivity implements AddContract.View, View.
     private void initDefaultValues() {
         Intent intent = getIntent();
         Course course = (Course) intent.getSerializableExtra(Constant.INTENT_COURSE);
+        boolean isAdd = intent.getBooleanExtra(Constant.INTENT_ADD, false);
+
         if (course != null) {
             //set toolbar title
             if (getSupportActionBar() != null) {
@@ -88,6 +91,11 @@ public class AddActivity extends BaseActivity implements AddContract.View, View.
 
             mBtnRemove.setVisibility(View.VISIBLE);
             isEditMode = true;
+        } else if (isAdd) {
+            CourseAncestor ancestor = (CourseAncestor) intent.getSerializableExtra(Constant.INTENT_COURSE_ANCESTOR);
+            mSelectedWeek = ancestor.getRow();
+            mSelectedNodeStart = ancestor.getCol();
+            mSelectedNodeEnd = ancestor.getCol() + ancestor.getRowNum();
         }
 
         updateWeekNode();
@@ -137,7 +145,7 @@ public class AddActivity extends BaseActivity implements AddContract.View, View.
 
         String csName = CourseDbDao.newInstance().getCsName(currentCsNameId);
 
-        LogUtil.i(this, "当前课表-->"+currentCsNameId);
+        LogUtil.i(this, "当前课表-->" + currentCsNameId);
 
         course.setName(mEtName.getText().toString().trim())
                 .setCsName(csName)

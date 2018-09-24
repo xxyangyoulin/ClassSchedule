@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<appwidget-provider xmlns:android="http://schemas.android.com/apk/res/android"
+    android:initialLayout="@layout/widget_all"
+    android:minHeight="50dp"
+    android:minWidth="200dp"
+    android:previewImage="@mipmap/ic_launcher"
+    android:resizeMode="horizontal|vertical"
+    android:updatePeriodMillis="86400000" />
+
+    <!--android:configure="com.example.android.ExampleAppWidgetConfigure"-->
+
+    <!--Google 官方给出了一个大致估算 minWidth & minHeight 的公式，
+    根据 Widget 所占的 cell 数量来计算宽高：70 × n − 30，n 是所占的 cell 数量。-->
+
+
+    <!--
+updatePeriodMillis：定义了 Widget 的刷新频率，也就是 App Widget Framework 多久请求一次
+AppWidgetProvider 的 onUpdate() 回调函数。该时间间隔并不保证精确，出于节约用户电量的考虑，
+Android 系统默认最小更新周期是 30 分钟，也就是说：如果您的程序需要实时更新数据，设置这个更新周期是 2 秒，
+那么您的程序是不会每隔 2 秒就收到更新通知的，而是要等到 30 分钟以上才可以，要想实时的更新 Widget，
+一般可以采用 Service 和 AlarmManager 对 Widget 进行更新。-->

@@ -83,4 +83,7 @@
     <color name="orange4">#FE9700</color>
     <color name="red5">#E81D62</color>
     <color name="blue6">#2095F2</color>
+    <color name="white">#FFFFFFFF</color>
+    <color name="widget_title_text_color">#FFFFFF</color>
+    <color name="widget_all_background">#40ffffff</color>
 </resources>

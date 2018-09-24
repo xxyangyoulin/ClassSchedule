@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<LinearLayout
+    xmlns:android = "http://schemas.android.com/apk/res/android"
+    android:id = "@+id/widget_list_item_layout"
+    android:layout_width = "fill_parent"
+    android:layout_height = "fill_parent"
+    android:background="#00000000"
+    android:orientation="vertical">
+    <TextView
+        android:id = "@+id/widget_list_item_tv"
+        android:layout_width = "fill_parent"
+        android:layout_height = "wrap_content"
+        android:layout_marginTop = "10dip"
+        android:layout_marginRight="10dip"
+        android:layout_marginLeft = "20dp"
+        android:text="fuck"
+        android:lineSpacingExtra = "4dip"
+        android:textSize="20sp"
+        android:textColor="#FFFFF0"/>
+</LinearLayout>

@@ -9,11 +9,10 @@ import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
-import android.support.design.widget.FloatingActionButton;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
+import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
@@ -22,7 +21,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.widget.HorizontalScrollView;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 import android.widget.TextView;
@@ -31,8 +29,9 @@ import com.mnnyang.gzuclassschedule.BaseActivity;
 import com.mnnyang.gzuclassschedule.R;
 import com.mnnyang.gzuclassschedule.add.AddActivity;
 import com.mnnyang.gzuclassschedule.app.Constant;
-import com.mnnyang.gzuclassschedule.custom.course.CourseTableView;
-import com.mnnyang.gzuclassschedule.custom.course.CourseView;
+import com.mnnyang.gzuclassschedule.custom.course2.CourseAncestor;
+import com.mnnyang.gzuclassschedule.custom.course2.CourseView;
+import com.mnnyang.gzuclassschedule.custom.util.Utils;
 import com.mnnyang.gzuclassschedule.data.bean.Course;
 import com.mnnyang.gzuclassschedule.data.db.CourseDbDao;
 import com.mnnyang.gzuclassschedule.setting.SettingActivity;
@@ -46,63 +45,106 @@ import com.mnnyang.gzuclassschedule.utils.spec.ShowDetailDialog;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 
 import static com.mnnyang.gzuclassschedule.app.Constant.INTENT_UPDATE_TYPE_OTHER;
+import static com.mnnyang.gzuclassschedule.utils.ScreenUtils.dp2px;
 
 public class CourseActivity extends BaseActivity implements CourseContract.View,
-        View.OnClickListener, CourseTableView.OnItemClickListener {
+        View.OnClickListener {
 
     CourseContract.Presenter mPresenter;
-    private CourseView mCourseView;
     private LinearLayout mLayoutWeekTitle;
     private TextView mTvWeekCount;
     private int mCurrentWeekCount;
     private PopupWindow mPopupWindow;
     private int mCurrentMonth;
-    private FloatingActionButton mFab;
     private UpdateReceiver mUpdateReceiver;
     private ShowDetailDialog mDialog;
     private int mCurrentCsNameId;
-    private ImageView mIvBackground;
+    private com.mnnyang.gzuclassschedule.custom.course2.CourseView mCourseViewV2;
+    private LinearLayout mLayoutWeekGroup;
+    private LinearLayout mLayoutNodeGroup;
+    private int WEEK_TEXT_SIZE = 13;
+    private int NODE_TEXT_SIZE = 12;
+    private int NODE_WIDTH = 28;
+    private TextView mMMonthTextView;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_course);
 
+        mLayoutWeekGroup = findViewById(R.id.layout_week_group);
+        mLayoutNodeGroup = findViewById(R.id.layout_node_group);
+
         initFirstStart();
         initToolbar();
-        initBackground();
         initWeekTitle();
         initCourseView();
-        initFab();
+        initWeekNodeGroup();
         registerReceiver();
         mPresenter = new CoursePresenter(this);
 
         updateView();
     }
 
-    private void initBackground() {
-        mIvBackground = findViewById(R.id.iv_background);
-
-    }
 
     private void initWeekTitle() {
-        mLayoutWeekTitle = (LinearLayout) findViewById(R.id.layout_week_title);
-        mTvWeekCount = (TextView) findViewById(R.id.tv_toolbar_subtitle);
-        TextView tvTitle = (TextView) findViewById(R.id.tv_toolbar_title);
-        tvTitle.setText(getString(R.string.app_name));
+        mLayoutWeekTitle = findViewById(R.id.layout_week_title);
+        mTvWeekCount = findViewById(R.id.tv_toolbar_subtitle);
         mTvWeekCount.setOnClickListener(this);
+        TextView tvTitle = findViewById(R.id.tv_toolbar_title);
+        tvTitle.setText(getString(R.string.app_name));
     }
 
+    private void initWeekNodeGroup() {
+        mLayoutNodeGroup.removeAllViews();
+        mLayoutWeekGroup.removeAllViews();
 
-    private void initFab() {
-        mFab = (FloatingActionButton) findViewById(R.id.fab);
-        mFab.setOnClickListener(this);
+
+        for (int i = -1; i < 7; i++) {
+            TextView textView = new TextView(getApplicationContext());
+            textView.setGravity(Gravity.CENTER);
+
+            textView.setWidth(0);
+            LinearLayout.LayoutParams params = null;
+
+            if (i == -1) {
+                params = new LinearLayout.LayoutParams(
+                        Utils.dip2px(getApplicationContext(), NODE_WIDTH),
+                        ViewGroup.LayoutParams.MATCH_PARENT);
+                textView.setTextSize(NODE_TEXT_SIZE);
+                textView.setText(mCurrentMonth + "\n月");
+
+
+                mMMonthTextView = textView;
+            } else {
+                params = new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.MATCH_PARENT);
+                params.weight = 1;
+                textView.setTextSize(WEEK_TEXT_SIZE);
+                textView.setText(Constant.WEEK_SINGLE[i]);
+            }
+
+            mLayoutWeekGroup.addView(textView, params);
+        }
+
+        for (int i = 1; i <= 16; i++) {
+            TextView textView = new TextView(getApplicationContext());
+            textView.setTextSize(NODE_TEXT_SIZE);
+            textView.setGravity(Gravity.CENTER);
+            textView.setText("" + i);
+
+            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
+                    ViewGroup.LayoutParams.MATCH_PARENT, Utils.dip2px(getApplicationContext(), 60));
+
+
+            mLayoutNodeGroup.addView(textView, params);
+        }
     }
 
     private void initToolbar() {
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = findViewById(R.id.toolbar);
         toolbar.setTitle("");
         toolbar.inflateMenu(R.menu.toolbar_main);
         toolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
@@ -120,40 +162,47 @@ public class CourseActivity extends BaseActivity implements CourseContract.View,
     }
 
     private void initCourseView() {
-        mCourseView = (CourseView) findViewById(R.id.course_view);
-        mCourseView.setWeekText(Constant.WEEK_SINGLE)
-                .setMonthTextSize(10)
-                .setDividerSize(0)
-                .setOnItemClickListener(this);
+        mCourseViewV2 = findViewById(R.id.course_view_v2);
+        mCourseViewV2.setCourseItemRadius(3)
+                .setTextTBMargin(dp2px(1), dp2px(1));
 
-        mCourseView.getCtView().setHorizontalDividerMargin(2);
-    }
-
-    @Override
-    public void onClick(Course course, LinearLayout itemLayout) {
-        mDialog = new ShowDetailDialog();
-        mDialog.show(this, course, new PopupWindow.OnDismissListener() {
+        mCourseViewV2.setOnItemClickListener(new CourseView.OnItemClickListener() {
             @Override
-            public void onDismiss() {
-                mDialog = null;
-            }
-        });
-    }
-
-    @Override
-    public void onLongClick(final Course course, LinearLayout itemLayout) {
-        DialogHelper dialogHelper = new DialogHelper();
-        dialogHelper.showNormalDialog(this, getString(R.string.confirm_to_delete),
-                "课程 【" + course.getName() + "】" + Constant.WEEK[course.getWeek()]
-                        + "第" + course.getNodes().get(0) + "节 " + "",
-                new DialogListener() {
+            public void onClick(List<CourseAncestor> course, View itemView) {
+                mDialog = new ShowDetailDialog();
+                mDialog.show(CourseActivity.this, (Course) course.get(0), new PopupWindow.OnDismissListener() {
                     @Override
-                    public void onPositive(DialogInterface dialog, int which) {
-                        super.onPositive(dialog, which);
-                        //delete
-                        mPresenter.deleteCourse(course.getCourseId());
+                    public void onDismiss() {
+                        mDialog = null;
                     }
                 });
+            }
+
+            @Override
+            public void onLongClick(List<CourseAncestor> courses, View itemView) {
+                final Course course = (Course) courses.get(0);
+                DialogHelper dialogHelper = new DialogHelper();
+                dialogHelper.showNormalDialog(CourseActivity.this, getString(R.string.confirm_to_delete),
+                        "课程 【" + course.getName() + "】" + Constant.WEEK[course.getWeek()]
+                                + "第" + course.getNodes().get(0) + "节 " + "",
+                        new DialogListener() {
+                            @Override
+                            public void onPositive(DialogInterface dialog, int which) {
+                                super.onPositive(dialog, which);
+                                //delete
+                                mPresenter.deleteCourse(course.getCourseId());
+                            }
+                        });
+            }
+
+            public void onAdd(CourseAncestor course, View addView) {
+                Intent intent = new Intent(CourseActivity.this, AddActivity.class);
+                intent.putExtra(Constant.INTENT_COURSE_ANCESTOR, course);
+                intent.putExtra(Constant.INTENT_ADD, true);
+                startActivity(intent);
+            }
+
+        });
     }
 
     private void registerReceiver() {
@@ -161,7 +210,6 @@ public class CourseActivity extends BaseActivity implements CourseContract.View,
         IntentFilter intentFilter = new IntentFilter(Constant.INTENT_UPDATE);
         registerReceiver(mUpdateReceiver, intentFilter);
     }
-
 
     class UpdateReceiver extends BroadcastReceiver {
         public void onReceive(Context context, Intent intent) {
@@ -189,36 +237,20 @@ public class CourseActivity extends BaseActivity implements CourseContract.View,
     public void updateCoursePreference() {
         updateCurrentWeek();
         mCurrentMonth = TimeUtils.getNowMonth();
-        mCourseView.setMonth(mCurrentMonth);
+        mMMonthTextView.setText(mCurrentMonth + "\n月");
 
         //get id
         mCurrentCsNameId = Preferences.getInt(
                 getString(R.string.app_preference_current_cs_name_id), 0);
 
-        LogUtil.i(this,"当前课表-->"+mCurrentCsNameId);
-        //set name
-        //removed
-
-        int maxNode = Preferences.getInt(getString(R.string.app_preference_max_node), Constant.DEFAULT_MAX_NODE_COUNT);
-
-        mCourseView.getCtView()
-                .setNodeCount(maxNode);
+        LogUtil.i(this, "当前课表-->" + mCurrentCsNameId);
+        //int maxNode = Preferences.getInt(getString(R.string.app_preference_max_node), Constant.DEFAULT_MAX_NODE_COUNT);
 
         mPresenter.updateCourseViewData(mCurrentCsNameId);
     }
 
     public void updateOtherPreference() {
         mPresenter.loadBackground();
-        updateFabVisible();
-    }
-
-    private void updateFabVisible() {
-        if (PreferenceManager.getDefaultSharedPreferences(getBaseContext())
-                .getBoolean(getString(R.string.app_preference_hide_fab), false)) {
-            mFab.hide();
-            return;
-        }
-        mFab.show();
     }
 
     private void updateCurrentWeek() {
@@ -254,7 +286,7 @@ public class CourseActivity extends BaseActivity implements CourseContract.View,
             PreferencesCurrentWeek(1);
         }
         mTvWeekCount.setText("第" + mCurrentWeekCount + "周");
-        mCourseView.getCtView().setCurrentWeekCount(mCurrentWeekCount);
+        mCourseViewV2.setCurrentIndex(mCurrentWeekCount);
     }
 
     @Override
@@ -273,21 +305,22 @@ public class CourseActivity extends BaseActivity implements CourseContract.View,
 
     @Override
     public void setBackground(Bitmap bitmap) {
-        boolean enabled = Preferences.getBoolean(getString(R.string.app_preference_bg_enabled),
-                false);
-
-        if (enabled) {
-            mIvBackground.setImageBitmap(bitmap);
-        } else {
-            mIvBackground.setImageBitmap(null);
-        }
-
     }
 
     @Override
     public void setCourseData(ArrayList<Course> courses) {
-        if (mCourseView != null) {
-            mCourseView.setCourseData(courses);
+        mCourseViewV2.clear();
+
+        int i = 0;
+        for (Course course : courses) {
+            course.init(course.getWeek(), course.getNodes().get(0), course.getNodes().size(), Utils.getRandomColor(i++));
+            course.setStartIndex(course.getStartWeek());
+            course.setEndIndex(course.getEndWeek());
+            course.setText(course.getName()+"\n@"+course.getClassRoom());
+            course.setShowIndex(course.getWeekType());
+
+            LogUtil.w(this, course.toString());
+            mCourseViewV2.addCourse(course);
         }
     }
 
@@ -365,8 +398,8 @@ public class CourseActivity extends BaseActivity implements CourseContract.View,
                     mCurrentWeekCount = (int) v.getTag();
                     mPopupWindow.dismiss();
                     PreferencesCurrentWeek((Integer) v.getTag());
-                    mCourseView.getCtView().setCurrentWeekCount(mCurrentWeekCount);
-                    mCourseView.updateView();
+                    mCourseViewV2.setCurrentIndex(mCurrentWeekCount);
+                    mCourseViewV2.resetView();
                     mTvWeekCount.setText("第" + mCurrentWeekCount + "周");
                 }
             });
