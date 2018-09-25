@@ -14,6 +14,11 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -101,7 +106,7 @@ public class ParseCourse {
             Elements tds = tr.getElementsByTag("td");
             for (Element td : tds) {
                 String courseSource = td.text().trim();
-                if (courseSource.length() <= 1) {
+                if (courseSource.length() <= 6) {
                     //null data
                     continue;
                 }
@@ -128,7 +133,207 @@ public class ParseCourse {
         return courses;
     }
 
+    public static void main(String[] args) {
+        //String s = readToString("/home/xxyangyoulin/Android/project/ClassSchedule/app/src/main/java/com/mnnyang/gzuclassschedule/impt/demo.html");
+        String s = "<table id=\"Table1\" class=\"blacktab\" bordercolor=\"Black\" border=\"0\" width=\"100%\">\n" +
+                "    <tbody>\n" +
+                "    <tr>\n" +
+                "        <td colspan=\"2\" rowspan=\"1\" width=\"2%\">时间</td>\n" +
+                "        <td align=\"Center\" width=\"14%\">星期一</td>\n" +
+                "        <td align=\"Center\" width=\"14%\">星期二</td>\n" +
+                "        <td align=\"Center\" width=\"14%\">星期三</td>\n" +
+                "        <td align=\"Center\" width=\"14%\">星期四</td>\n" +
+                "        <td align=\"Center\" width=\"14%\">星期五</td>\n" +
+                "        <td class=\"noprint\" align=\"Center\" width=\"14%\">星期六</td>\n" +
+                "        <td class=\"noprint\" align=\"Center\" width=\"14%\">星期日</td>\n" +
+                "    </tr>\n" +
+                "    <tr>\n" +
+                "        <td colspan=\"2\">早晨</td>\n" +
+                "        <td align=\"Center\">&nbsp;</td>\n" +
+                "        <td align=\"Center\">&nbsp;</td>\n" +
+                "        <td align=\"Center\">&nbsp;</td>\n" +
+                "        <td align=\"Center\">&nbsp;</td>\n" +
+                "        <td align=\"Center\">&nbsp;</td>\n" +
+                "        <td class=\"noprint\" align=\"Center\">&nbsp;</td>\n" +
+                "        <td class=\"noprint\" align=\"Center\">&nbsp;</td>\n" +
+                "    </tr>\n" +
+                "    <tr>\n" +
+                "        <td rowspan=\"5\" width=\"1%\">上午</td>\n" +
+                "        <td width=\"1%\">第1节</td>\n" +
+                "        <td align=\"Center\" rowspan=\"2\" width=\"7%\">船舶货运专题A<br>任选<br>周一第1,2节{第6-8周}<br>王庸凯<br>獐210<br><br>船舶货运专题A<br>任选<br>周一第1,2节{第2-4周}<br>王庸凯<br>獐210\n" +
+                "        </td>\n" +
+                "        <td align=\"Center\" width=\"7%\">&nbsp;</td>\n" +
+                "        <td align=\"Center\" width=\"7%\">&nbsp;</td>\n" +
+                "        <td align=\"Center\" width=\"7%\">&nbsp;</td>\n" +
+                "        <td align=\"Center\" rowspan=\"2\" width=\"7%\">远洋运输业务与海商法<br>必修<br>周五第1,2节{第6-17周}<br>姚智慧<br>獐332<br><br>远洋运输业务与海商法<br>必修<br>周五第1,2节{第1-4周}<br>姚智慧<br>獐332\n" +
+                "        </td>\n" +
+                "        <td class=\"noprint\" align=\"Center\" width=\"7%\">&nbsp;</td>\n" +
+                "        <td class=\"noprint\" align=\"Center\" width=\"7%\">&nbsp;</td>\n" +
+                "    </tr>\n" +
+                "    <tr>\n" +
+                "        <td>第2节</td>\n" +
+                "        <td align=\"Center\">&nbsp;</td>\n" +
+                "        <td align=\"Center\">&nbsp;</td>\n" +
+                "        <td align=\"Center\">&nbsp;</td>\n" +
+                "        <td class=\"noprint\" align=\"Center\">&nbsp;</td>\n" +
+                "        <td class=\"noprint\" align=\"Center\">&nbsp;</td>\n" +
+                "    </tr>\n" +
+                "    <tr>\n" +
+                "        <td>第3节</td>\n" +
+                "        <td align=\"Center\">&nbsp;</td>\n" +
+                "        <td align=\"Center\">&nbsp;</td>\n" +
+                "        <td align=\"Center\" rowspan=\"2\">远洋运输业务与海商法<br>必修<br>周三第3,4节{第6-17周}<br>姚智慧<br>獐131<br><br>远洋运输业务与海商法<br>必修<br>周三第3,4节{第1-4周}<br>姚智慧<br>獐131\n" +
+                "        </td>\n" +
+                "        <td align=\"Center\">&nbsp;</td>\n" +
+                "        <td align=\"Center\">&nbsp;</td>\n" +
+                "        <td class=\"noprint\" align=\"Center\">&nbsp;</td>\n" +
+                "        <td class=\"noprint\" align=\"Center\">&nbsp;</td>\n" +
+                "    </tr>\n" +
+                "    <tr>\n" +
+                "        <td>第4节</td>\n" +
+                "        <td align=\"Center\">&nbsp;</td>\n" +
+                "        <td align=\"Center\">&nbsp;</td>\n" +
+                "        <td align=\"Center\">&nbsp;</td>\n" +
+                "        <td align=\"Center\">&nbsp;</td>\n" +
+                "        <td class=\"noprint\" align=\"Center\">&nbsp;</td>\n" +
+                "        <td class=\"noprint\" align=\"Center\">&nbsp;</td>\n" +
+                "    </tr>\n" +
+                "    <tr>\n" +
+                "        <td>第5节</td>\n" +
+                "        <td align=\"Center\">&nbsp;</td>\n" +
+                "        <td align=\"Center\">&nbsp;</td>\n" +
+                "        <td align=\"Center\">&nbsp;</td>\n" +
+                "        <td align=\"Center\">&nbsp;</td>\n" +
+                "        <td align=\"Center\">&nbsp;</td>\n" +
+                "        <td class=\"noprint\" align=\"Center\">&nbsp;</td>\n" +
+                "        <td class=\"noprint\" align=\"Center\">&nbsp;</td>\n" +
+                "    </tr>\n" +
+                "    <tr>\n" +
+                "        <td rowspan=\"5\">下午</td>\n" +
+                "        <td>第6节</td>\n" +
+                "        <td align=\"Center\" rowspan=\"2\">航海气象与海洋学专题<br>任选<br>周一第6,7节{第7-18周}<br>张飞成<br>獐422</td>\n" +
+                "        <td align=\"Center\">&nbsp;</td>\n" +
+                "        <td align=\"Center\">&nbsp;</td>\n" +
+                "        <td align=\"Center\">&nbsp;</td>\n" +
+                "        <td align=\"Center\" rowspan=\"2\">船舶货运专题A<br>任选<br>周五第6,7节{第2-4周}<br>王庸凯<br>獐410<br><br>船舶货运专题A<br>任选<br>周五第6,7节{第6-8周}<br>王庸凯<br>獐410\n" +
+                "        </td>\n" +
+                "        <td class=\"noprint\" align=\"Center\">&nbsp;</td>\n" +
+                "        <td class=\"noprint\" align=\"Center\">&nbsp;</td>\n" +
+                "    </tr>\n" +
+                "    <tr>\n" +
+                "        <td>第7节</td>\n" +
+                "        <td align=\"Center\">&nbsp;</td>\n" +
+                "        <td align=\"Center\">&nbsp;</td>\n" +
+                "        <td align=\"Center\">&nbsp;</td>\n" +
+                "        <td class=\"noprint\" align=\"Center\">&nbsp;</td>\n" +
+                "        <td class=\"noprint\" align=\"Center\">&nbsp;</td>\n" +
+                "    </tr>\n" +
+                "    <tr>\n" +
+                "        <td>第8节</td>\n" +
+                "        <td align=\"Center\">&nbsp;</td>\n" +
+                "        <td align=\"Center\" rowspan=\"2\">大学生职业发展与就业指导<br>课外<br>周二第8,9节{第12-12周|双周}<br>王超鹏<br>獐103</td>\n" +
+                "        <td align=\"Center\">&nbsp;</td>\n" +
+                "        <td align=\"Center\">&nbsp;</td>\n" +
+                "        <td align=\"Center\">&nbsp;</td>\n" +
+                "        <td class=\"noprint\" align=\"Center\">&nbsp;</td>\n" +
+                "        <td class=\"noprint\" align=\"Center\">&nbsp;</td>\n" +
+                "    </tr>\n" +
+                "    <tr>\n" +
+                "        <td>第9节</td>\n" +
+                "        <td align=\"Center\">&nbsp;</td>\n" +
+                "        <td align=\"Center\">&nbsp;</td>\n" +
+                "        <td align=\"Center\">&nbsp;</td>\n" +
+                "        <td align=\"Center\">&nbsp;</td>\n" +
+                "        <td class=\"noprint\" align=\"Center\">&nbsp;</td>\n" +
+                "        <td class=\"noprint\" align=\"Center\">&nbsp;</td>\n" +
+                "    </tr>\n" +
+                "    <tr>\n" +
+                "        <td>第10节</td>\n" +
+                "        <td align=\"Center\">&nbsp;</td>\n" +
+                "        <td align=\"Center\">&nbsp;</td>\n" +
+                "        <td align=\"Center\">&nbsp;</td>\n" +
+                "        <td align=\"Center\">&nbsp;</td>\n" +
+                "        <td align=\"Center\">&nbsp;</td>\n" +
+                "        <td class=\"noprint\" align=\"Center\">&nbsp;</td>\n" +
+                "        <td class=\"noprint\" align=\"Center\">&nbsp;</td>\n" +
+                "    </tr>\n" +
+                "    <tr>\n" +
+                "        <td rowspan=\"4\" width=\"1%\">晚上</td>\n" +
+                "        <td>第11节</td>\n" +
+                "        <td align=\"Center\">&nbsp;</td>\n" +
+                "        <td align=\"Center\">&nbsp;</td>\n" +
+                "        <td align=\"Center\">&nbsp;</td>\n" +
+                "        <td align=\"Center\">&nbsp;</td>\n" +
+                "        <td align=\"Center\">&nbsp;</td>\n" +
+                "        <td class=\"noprint\" align=\"Center\">&nbsp;</td>\n" +
+                "        <td class=\"noprint\" align=\"Center\">&nbsp;</td>\n" +
+                "    </tr>\n" +
+                "    <tr>\n" +
+                "        <td>第12节</td>\n" +
+                "        <td align=\"Center\">&nbsp;</td>\n" +
+                "        <td align=\"Center\">&nbsp;</td>\n" +
+                "        <td align=\"Center\">&nbsp;</td>\n" +
+                "        <td align=\"Center\">&nbsp;</td>\n" +
+                "        <td align=\"Center\">&nbsp;</td>\n" +
+                "        <td class=\"noprint\" align=\"Center\">&nbsp;</td>\n" +
+                "        <td class=\"noprint\" align=\"Center\">&nbsp;</td>\n" +
+                "    </tr>\n" +
+                "    <tr>\n" +
+                "        <td>第13节</td>\n" +
+                "        <td align=\"Center\">&nbsp;</td>\n" +
+                "        <td align=\"Center\">&nbsp;</td>\n" +
+                "        <td align=\"Center\">&nbsp;</td>\n" +
+                "        <td align=\"Center\">&nbsp;</td>\n" +
+                "        <td align=\"Center\">&nbsp;</td>\n" +
+                "        <td class=\"noprint\" align=\"Center\">&nbsp;</td>\n" +
+                "        <td class=\"noprint\" align=\"Center\">&nbsp;</td>\n" +
+                "    </tr>\n" +
+                "    <tr>\n" +
+                "        <td>第14节</td>\n" +
+                "        <td align=\"Center\">&nbsp;</td>\n" +
+                "        <td align=\"Center\">&nbsp;</td>\n" +
+                "        <td align=\"Center\">&nbsp;</td>\n" +
+                "        <td align=\"Center\">&nbsp;</td>\n" +
+                "        <td align=\"Center\">&nbsp;</td>\n" +
+                "        <td class=\"noprint\" align=\"Center\">&nbsp;</td>\n" +
+                "        <td class=\"noprint\" align=\"Center\">&nbsp;</td>\n" +
+                "    </tr>\n" +
+                "    </tbody>\n" +
+                "</table>";
+        //System.out.println(s);
+        final ArrayList<Course> courses = ParseCourse.parse(s);
+
+        for (Course cours : courses) {
+            System.out.println(cours);
+        }
+    }
+
+    public static String readToString(String fileName) {
+        String encoding = "UTF-8";
+        File file = new File(fileName);
+        Long filelength = file.length();
+        byte[] filecontent = new byte[filelength.intValue()];
+        try {
+            FileInputStream in = new FileInputStream(file);
+            in.read(filecontent);
+            in.close();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        try {
+            return new String(filecontent, encoding);
+        } catch (UnsupportedEncodingException e) {
+            System.err.println("The OS does not support " + encoding);
+            e.printStackTrace();
+            return null;
+        }
+    }
+
     private static ArrayList<Course> parseTextInfo(String source, int node) {
+
+        System.out.println("---->"+source+"]]]");
 
         ArrayList<Course> courses = new ArrayList<>();
         String[] split = source.split(" ");
@@ -164,7 +369,7 @@ public class ParseCourse {
             course.setSource(source);
             course.setName(source);
 
-            Log.e("ParseCourse", "parseTextInfo omit:" + source);
+            //Log.e("ParseCourse", "parseTextInfo omit:" + source);
         }
 
         return courses;
@@ -172,8 +377,8 @@ public class ParseCourse {
 
     /**
      * 周一第1,2节{第2-16周|双周}
-     *  {第1-15周|2节/单周}
-     *
+     * {第1-15周|2节/单周}
+     * <p>
      * TODO 周一第1,2节{第1-15周|2节/周} //次格式未解决 数据不足
      */
     private static void parseTime(Course course, String time, int htmlNode) {
@@ -186,9 +391,9 @@ public class ParseCourse {
 
         //单双周
         if (time.contains("|单周")) {
-            course.setWeekType(Course.WEEK_SINGLE);
+            course.setWeekType(Course.SHOW_SINGLE);
         } else if (time.contains("|双周")) {
-            course.setWeekType(Course.WEEK_DOUBLE);
+            course.setWeekType(Course.SHOW_DOUBLE);
         }
 
         //节数
@@ -204,7 +409,7 @@ public class ParseCourse {
             course.setNodes(nodes);
         } else if (htmlNode != 0) {
             course.addNode(htmlNode);
-        }else{
+        } else {
             //周一第1,2节{第1-15周|2节/周}
             //TODO 上传无法解析的数据
         }

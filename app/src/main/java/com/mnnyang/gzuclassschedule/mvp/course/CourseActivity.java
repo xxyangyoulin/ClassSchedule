@@ -1,5 +1,6 @@
 package com.mnnyang.gzuclassschedule.course;
 
+import android.annotation.SuppressLint;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -27,7 +28,7 @@ import android.widget.TextView;
 
 import com.mnnyang.gzuclassschedule.BaseActivity;
 import com.mnnyang.gzuclassschedule.R;
-import com.mnnyang.gzuclassschedule.add.AddActivity;
+import com.mnnyang.gzuclassschedule.mvp.add.AddActivity;
 import com.mnnyang.gzuclassschedule.app.Constant;
 import com.mnnyang.gzuclassschedule.custom.course2.CourseAncestor;
 import com.mnnyang.gzuclassschedule.custom.course2.CourseView;
@@ -40,7 +41,13 @@ import com.mnnyang.gzuclassschedule.utils.DialogListener;
 import com.mnnyang.gzuclassschedule.utils.LogUtil;
 import com.mnnyang.gzuclassschedule.utils.Preferences;
 import com.mnnyang.gzuclassschedule.utils.TimeUtils;
+import com.mnnyang.gzuclassschedule.utils.event.CourseChangedEvent;
+import com.mnnyang.gzuclassschedule.utils.spec.ParseCourse;
 import com.mnnyang.gzuclassschedule.utils.spec.ShowDetailDialog;
+
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -61,7 +68,6 @@ public class CourseActivity extends BaseActivity implements CourseContract.View,
     private int mCurrentMonth;
     private UpdateReceiver mUpdateReceiver;
     private ShowDetailDialog mDialog;
-    private int mCurrentCsNameId;
     private com.mnnyang.gzuclassschedule.custom.course2.CourseView mCourseViewV2;
     private LinearLayout mLayoutWeekGroup;
     private LinearLayout mLayoutNodeGroup;
@@ -74,6 +80,11 @@ public class CourseActivity extends BaseActivity implements CourseContract.View,
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_course);
+
+        //EvenBus
+        EventBus.getDefault().register(this);
+
+        ParseCourse.main(new String[]{});
 
         mLayoutWeekGroup = findViewById(R.id.layout_week_group);
         mLayoutNodeGroup = findViewById(R.id.layout_node_group);
@@ -234,25 +245,27 @@ public class CourseActivity extends BaseActivity implements CourseContract.View,
         updateOtherPreference();
     }
 
+    @SuppressLint("SetTextI18n")
     public void updateCoursePreference() {
         updateCurrentWeek();
         mCurrentMonth = TimeUtils.getNowMonth();
         mMMonthTextView.setText(mCurrentMonth + "\n月");
 
         //get id
-        mCurrentCsNameId = Preferences.getInt(
+        int currentCsNameId = Preferences.getInt(
                 getString(R.string.app_preference_current_cs_name_id), 0);
 
-        LogUtil.i(this, "当前课表-->" + mCurrentCsNameId);
+        LogUtil.i(this, "当前课表-->" + currentCsNameId);
         //int maxNode = Preferences.getInt(getString(R.string.app_preference_max_node), Constant.DEFAULT_MAX_NODE_COUNT);
 
-        mPresenter.updateCourseViewData(mCurrentCsNameId);
+        mPresenter.updateCourseViewData(currentCsNameId);
     }
 
     public void updateOtherPreference() {
         mPresenter.loadBackground();
     }
 
+    @SuppressLint("SetTextI18n")
     private void updateCurrentWeek() {
         mCurrentWeekCount = 1;
 
@@ -316,7 +329,7 @@ public class CourseActivity extends BaseActivity implements CourseContract.View,
             course.init(course.getWeek(), course.getNodes().get(0), course.getNodes().size(), Utils.getRandomColor(i++));
             course.setStartIndex(course.getStartWeek());
             course.setEndIndex(course.getEndWeek());
-            course.setText(course.getName()+"\n@"+course.getClassRoom());
+            course.setText(course.getName() + "\n@" + course.getClassRoom());
             course.setShowIndex(course.getWeekType());
 
             LogUtil.w(this, course.toString());
@@ -327,9 +340,6 @@ public class CourseActivity extends BaseActivity implements CourseContract.View,
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
-            case R.id.fab:
-                fab(v);
-                break;
             case R.id.tv_toolbar_subtitle:
                 weekTitle(v);
                 break;
@@ -423,11 +433,6 @@ public class CourseActivity extends BaseActivity implements CourseContract.View,
                 calendar.getTimeInMillis() + "");
     }
 
-    private void fab(View v) {
-        Intent intent = new Intent(CourseActivity.this, AddActivity.class);
-        startActivity(intent);
-    }
-
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         switch (keyCode) {
@@ -449,9 +454,17 @@ public class CourseActivity extends BaseActivity implements CourseContract.View,
         return super.onTouchEvent(event);
     }
 
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void courseChangedEvent(CourseChangedEvent event) {
+
+    }
+
+
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        //EvenBus
+        EventBus.getDefault().unregister(this);
         if (mUpdateReceiver != null) {
             unregisterReceiver(mUpdateReceiver);
         }

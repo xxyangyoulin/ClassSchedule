@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/widget_box_2"
+        android:background="@android:color/transparent"
+        android:paddingLeft="2dp"
+        android:paddingRight="2dp"
+        android:layout_width="fill_parent"
+        android:layout_height="72.0dip"
+        android:layout_margin="1.0dip"
+        android:gravity="center|top"
+        android:textColor="@color/white"
+        android:textSize="12.0sp"
+        android:textStyle="bold" />
+</LinearLayout>

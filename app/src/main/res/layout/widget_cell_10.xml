@@ -7,11 +7,11 @@
     <TextView
         android:id="@+id/widget_box_3"
         android:layout_width="fill_parent"
-        android:layout_height="109.0dip"
-        android:layout_margin="1.0dip"
+        android:layout_height="109.0dp"
+        android:layout_margin="1.0dp"
         android:background="@android:color/transparent"
-        android:gravity="center"
         android:text=""
+        android:padding="2dp"
         android:textColor="@color/white"
         android:textSize="12.0sp"
         android:textStyle="bold" />

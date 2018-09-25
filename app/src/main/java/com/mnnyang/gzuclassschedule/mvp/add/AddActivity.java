@@ -1,5 +1,7 @@
 package com.mnnyang.gzuclassschedule.add;
 
+import android.appwidget.AppWidgetManager;
+import android.content.ComponentName;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
@@ -8,9 +10,11 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.RemoteViews;
 
 import com.mnnyang.gzuclassschedule.BaseActivity;
 import com.mnnyang.gzuclassschedule.R;
+import com.mnnyang.gzuclassschedule.app.AppUtils;
 import com.mnnyang.gzuclassschedule.app.Constant;
 import com.mnnyang.gzuclassschedule.custom.EditTextLayout;
 import com.mnnyang.gzuclassschedule.custom.course2.CourseAncestor;
@@ -21,6 +25,7 @@ import com.mnnyang.gzuclassschedule.utils.DialogListener;
 import com.mnnyang.gzuclassschedule.utils.LogUtil;
 import com.mnnyang.gzuclassschedule.utils.Preferences;
 import com.mnnyang.gzuclassschedule.utils.spec.PopupWindowDialog;
+import com.mnnyang.gzuclassschedule.widget.MyWidget;
 
 public class AddActivity extends BaseActivity implements AddContract.View, View.OnClickListener {
 
@@ -38,7 +43,7 @@ public class AddActivity extends BaseActivity implements AddContract.View, View.
     private int mSelectedStartWeek = 1;
     private int mSelectedEndWeek = 16;
 
-    private int mWeekType = Course.WEEK_ALL;
+    private int mWeekType = Course.SHOW_ALL;
 
     /**
      * 编辑模式
@@ -258,6 +263,9 @@ public class AddActivity extends BaseActivity implements AddContract.View, View.
     public void onAddSucceed(Course course) {
         toast("【" + course.getName() + "】" + getString(R.string.add_succeed));
         notifiUpdateMainPage(Constant.INTENT_UPDATE_TYPE_COURSE);
+
+        //更新桌面小部件
+        new AppUtils().updateWidget(this);
         finish();
     }
 

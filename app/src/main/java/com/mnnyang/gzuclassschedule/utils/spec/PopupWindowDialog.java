@@ -185,15 +185,15 @@ public class PopupWindowDialog {
             public void onCheckedChanged(RadioGroup group, int checkedId) {
                 switch (checkedId) {
                     case R.id.arb_all:
-                        mWeekType = Course.WEEK_ALL;
+                        mWeekType = Course.SHOW_ALL;
                         break;
 
                     case R.id.arb_single:
-                        mWeekType = Course.WEEK_SINGLE;
+                        mWeekType = Course.SHOW_SINGLE;
                         break;
 
                     case R.id.arb_double:
-                        mWeekType = Course.WEEK_DOUBLE;
+                        mWeekType = Course.SHOW_DOUBLE;
                         break;
                 }
             }

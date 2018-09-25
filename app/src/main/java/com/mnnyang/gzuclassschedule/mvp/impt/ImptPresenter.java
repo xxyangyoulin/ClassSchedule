@@ -9,11 +9,17 @@ import com.mnnyang.gzuclassschedule.data.bean.CourseTime;
 import com.mnnyang.gzuclassschedule.data.db.CourseDbDao;
 import com.mnnyang.gzuclassschedule.http.HttpCallback;
 import com.mnnyang.gzuclassschedule.http.HttpUtils;
+import com.mnnyang.gzuclassschedule.utils.FileUtils;
 import com.mnnyang.gzuclassschedule.utils.ToastUtils;
 import com.mnnyang.gzuclassschedule.utils.spec.ParseCourse;
 import com.mnnyang.gzuclassschedule.utils.LogUtil;
 import com.mnnyang.gzuclassschedule.utils.Preferences;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 
 import rx.Observable;

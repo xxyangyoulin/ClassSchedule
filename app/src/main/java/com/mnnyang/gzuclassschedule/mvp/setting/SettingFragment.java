@@ -17,7 +17,7 @@ import android.widget.ScrollView;
 
 import com.mnnyang.gzuclassschedule.BaseActivity;
 import com.mnnyang.gzuclassschedule.R;
-import com.mnnyang.gzuclassschedule.add.AddActivity;
+import com.mnnyang.gzuclassschedule.mvp.add.AddActivity;
 import com.mnnyang.gzuclassschedule.app.Constant;
 import com.mnnyang.gzuclassschedule.app.app;
 import com.mnnyang.gzuclassschedule.course.CourseActivity;
