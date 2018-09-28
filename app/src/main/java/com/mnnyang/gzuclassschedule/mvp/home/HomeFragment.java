@@ -6,24 +6,35 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.mnnyang.gzuclassschedule.BaseFragment;
 import com.mnnyang.gzuclassschedule.R;
 import com.mnnyang.gzuclassschedule.app.Cache;
+import com.mnnyang.gzuclassschedule.data.beanv2.UserWrapper;
+import com.mnnyang.gzuclassschedule.mvp.login.LoginActivity;
 import com.mnnyang.gzuclassschedule.mvp.mg.MgActivity;
 import com.mnnyang.gzuclassschedule.mvp.setting.SettingActivity;
 import com.mnnyang.gzuclassschedule.utils.DialogHelper;
+import com.mnnyang.gzuclassschedule.utils.LogUtil;
 import com.mnnyang.gzuclassschedule.utils.RequestPermission;
 import com.mnnyang.gzuclassschedule.utils.ScreenUtils;
+import com.mnnyang.gzuclassschedule.utils.event.CourseDataChangeEvent;
+import com.mnnyang.gzuclassschedule.utils.event.LoginEvent;
 import com.yzq.zxinglibrary.android.CaptureActivity;
 import com.yzq.zxinglibrary.common.Constant;
+
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.Objects;
 
@@ -44,6 +55,7 @@ public class HomeFragment extends BaseFragment implements HomeContract.View, Vie
     private CircleImageView mCivAvator;
     private View mLayoutSetting;
     private View mLayoutCourseMg;
+    private TextView mTvUsername;
 
     @Override
     protected int getLayout() {
@@ -51,8 +63,16 @@ public class HomeFragment extends BaseFragment implements HomeContract.View, Vie
     }
 
     @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        //EvenBus
+        EventBus.getDefault().register(this);
+    }
+
+    @Override
     public void initView() {
         mToolbar = mRootView.findViewById(R.id.toolbar);
+        mTvUsername = mRootView.findViewById(R.id.tv_username);
         mViewShare = mRootView.findViewById(R.id.layout_share);
         mLayoutSetting = mRootView.findViewById(R.id.layout_setting);
         mLayoutCourseMg = mRootView.findViewById(R.id.layout_course_mg);
@@ -72,16 +92,6 @@ public class HomeFragment extends BaseFragment implements HomeContract.View, Vie
     @Override
     public void initData() {
         new HomePresenter(this).start();
-        mPresenter.loadAvator(mCivAvator);
-
-        String email = Cache.instance().getEmail();
-        if (!TextUtils.isEmpty(email)) {
-            String gravatar = getGravatar(email);
-            System.out.println("-----------" + gravatar);
-            Glide.with(getContext())
-                    .load(gravatar)
-                    .into(mCivAvator);
-        }
     }
 
     @Override
@@ -200,6 +210,42 @@ public class HomeFragment extends BaseFragment implements HomeContract.View, Vie
     }
 
     @Override
+    public void noSignInPage() {
+        mTvUsername.setText("未登录");
+        mTvUsername.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(activity, LoginActivity.class));
+            }
+        });
+        //mCivAvator
+    }
+
+    @Override
+    public void signedInPage() {
+        mTvUsername.setOnClickListener(null);
+    }
+
+    @Override
+    public void userInfoSucceed(UserWrapper.User user) {
+        mTvUsername.setText(user.getEmail());
+        updateShowAvator();
+        Toast.makeText(activity, user.toString(), Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void updateShowAvator() {
+        String email = Cache.instance().getEmail();
+        if (!TextUtils.isEmpty(email)) {
+            String gravatar = getGravatar(email);
+            System.out.println("-----------" + gravatar);
+            Glide.with(getContext())
+                    .load(gravatar)
+                    .into(mCivAvator);
+        }
+    }
+
+    @Override
     public void createQRCodeSucceed(Bitmap bitmap) {
         DialogHelper dialogHelper = new DialogHelper();
         View dialogView = View.inflate(getContext(), R.layout.dialog_qr_code, null);
@@ -224,6 +270,12 @@ public class HomeFragment extends BaseFragment implements HomeContract.View, Vie
         return fragment;
     }
 
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void loginEvent(LoginEvent event) {
+        mPresenter.loadUserInfo();
+        LogUtil.e(this,"收到事件");
+    }
+
     @Override
     public void setPresenter(HomeContract.Presenter presenter) {
         mPresenter = presenter;
@@ -233,5 +285,14 @@ public class HomeFragment extends BaseFragment implements HomeContract.View, Vie
     public void close() {
         super.close();
         activity.finish();
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        //EvenBus
+        if (EventBus.getDefault().isRegistered(this)) {
+            EventBus.getDefault().unregister(this);
+        }
     }
 }

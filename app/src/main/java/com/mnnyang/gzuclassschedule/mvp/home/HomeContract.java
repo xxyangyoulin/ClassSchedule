@@ -5,11 +5,15 @@ import android.widget.ImageView;
 
 import com.mnnyang.gzuclassschedule.BasePresenter;
 import com.mnnyang.gzuclassschedule.BaseView;
+import com.mnnyang.gzuclassschedule.data.beanv2.UserWrapper;
 import com.mnnyang.gzuclassschedule.mvp.mg.MgContract;
 
 public interface HomeContract {
     interface Presenter extends BasePresenter {
         void loadAvator(ImageView iv);
+
+        void loadUserInfo();
+
         void createQRCode();
 
         void showCourseGroup();
@@ -23,6 +27,14 @@ public interface HomeContract {
         void showLoading(String msg);
 
         void stopLoading();
+
+        void noSignInPage();
+
+        void signedInPage();
+
+        void userInfoSucceed(UserWrapper.User user);
+
+        void updateShowAvator();
 
         void createQRCodeSucceed(Bitmap bitmap);
 

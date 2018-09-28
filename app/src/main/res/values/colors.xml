@@ -89,4 +89,6 @@
     <color name="pink_dialog">#f06292</color>
     <color name="blue_dialog">#4fc3f7</color>
     <color name="black">#000000</color>
+    <color name="color_login">#00acc1</color>
+    <color name="color_no_login">#9E9E9E</color>
 </resources>

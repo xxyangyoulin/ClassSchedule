@@ -6,10 +6,12 @@ import android.support.annotation.NonNull;
 import android.widget.ImageView;
 
 import com.mnnyang.gzuclassschedule.app.AppUtils;
+import com.mnnyang.gzuclassschedule.app.Cache;
 import com.mnnyang.gzuclassschedule.data.bean.Course;
 import com.mnnyang.gzuclassschedule.data.bean.CsItem;
 import com.mnnyang.gzuclassschedule.data.bean.CsName;
 import com.mnnyang.gzuclassschedule.data.beanv2.BaseBean;
+import com.mnnyang.gzuclassschedule.data.beanv2.UserWrapper;
 import com.mnnyang.gzuclassschedule.data.db.CourseDbDao;
 import com.mnnyang.gzuclassschedule.data.http.HttpCallback;
 import com.mnnyang.gzuclassschedule.data.http.MyHttpUtils;
@@ -43,12 +45,38 @@ public class HomePresenter implements HomeContract.Presenter {
 
     @Override
     public void start() {
+        loadUserInfo();
+        mView.updateShowAvator();
     }
-
 
     @Override
     public void loadAvator(ImageView iv) {
 
+    }
+
+    @Override
+    public void loadUserInfo() {
+        new MyHttpUtils().userInfo(new HttpCallback<UserWrapper>() {
+            @Override
+            public void onSuccess(UserWrapper userWrapper) {
+                if (userWrapper != null) {
+                    if (userWrapper.getCode() == 1) {
+                        Cache.instance().setUser(userWrapper.getData());
+
+                        //mView.signedInPage();
+                        mView.userInfoSucceed(userWrapper.getData());
+                    } else if (userWrapper.getCode() == 3) {
+                        mView.noSignInPage();
+                        LogUtil.e(this, userWrapper.toString());
+                    }
+                }
+            }
+
+            @Override
+            public void onFail(String errMsg) {
+                LogUtil.e(this, errMsg);
+            }
+        });
     }
 
     public static String getGravatar(String email) {

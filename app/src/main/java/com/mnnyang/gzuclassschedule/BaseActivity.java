@@ -26,8 +26,15 @@ public abstract class BaseActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         LogUtil.d(TAG, "onCreate");
 
-        initTheme();
+        if (canInitTheme()) {
+            initTheme();
+        }
+
         ActivityUtil.addActivity(this);
+    }
+
+    protected boolean canInitTheme() {
+        return true;
     }
 
     /**

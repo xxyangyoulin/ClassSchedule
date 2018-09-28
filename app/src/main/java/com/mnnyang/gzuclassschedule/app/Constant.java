@@ -53,4 +53,5 @@ public class Constant {
             "上天蓝",
             "鸡蛋色",
             "低调灰",};
+    public static String PREFERENCE_USER_EMAIL = "user_email";
 }

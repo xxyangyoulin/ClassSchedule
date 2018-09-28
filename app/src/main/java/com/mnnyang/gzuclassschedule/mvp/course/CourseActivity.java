@@ -1,5 +1,6 @@
 package com.mnnyang.gzuclassschedule.mvp.course;
 
+import android.animation.ValueAnimator;
 import android.annotation.SuppressLint;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -7,6 +8,7 @@ import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -20,6 +22,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
+import android.view.animation.DecelerateInterpolator;
 import android.widget.HorizontalScrollView;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
@@ -27,6 +30,7 @@ import android.widget.TextView;
 
 import com.mnnyang.gzuclassschedule.BaseActivity;
 import com.mnnyang.gzuclassschedule.R;
+import com.mnnyang.gzuclassschedule.RecyclerBaseAdapter;
 import com.mnnyang.gzuclassschedule.app.Constant;
 import com.mnnyang.gzuclassschedule.custom.course.CourseAncestor;
 import com.mnnyang.gzuclassschedule.custom.course.CourseView;
@@ -39,6 +43,7 @@ import com.mnnyang.gzuclassschedule.utils.DialogHelper;
 import com.mnnyang.gzuclassschedule.utils.DialogListener;
 import com.mnnyang.gzuclassschedule.utils.LogUtil;
 import com.mnnyang.gzuclassschedule.utils.Preferences;
+import com.mnnyang.gzuclassschedule.utils.ScreenUtils;
 import com.mnnyang.gzuclassschedule.utils.TimeUtils;
 import com.mnnyang.gzuclassschedule.utils.event.CourseDataChangeEvent;
 import com.mnnyang.gzuclassschedule.utils.spec.ParseCourse;
@@ -54,7 +59,6 @@ import java.util.Date;
 import java.util.List;
 
 import static com.mnnyang.gzuclassschedule.utils.ScreenUtils.dp2px;
-import static java.security.AccessController.getContext;
 
 /**
  * TODO 添加删除撤销
@@ -77,6 +81,8 @@ public class CourseActivity extends BaseActivity implements CourseContract.View,
     private int NODE_WIDTH = 28;
     private TextView mMMonthTextView;
     private RecyclerView mRvSelectWeek;
+    private int mHeightSelectWeek;
+    private boolean mSelectWeekIsShow = false;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -108,13 +114,80 @@ public class CourseActivity extends BaseActivity implements CourseContract.View,
 
     private void initSelectWeek() {
         mRvSelectWeek = findViewById(R.id.recycler_view_select_week);
+
+        LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) mRvSelectWeek.getLayoutParams();
+        params.topMargin = -ScreenUtils.dp2px(45);
+        mRvSelectWeek.setLayoutParams(params);
+
         mRvSelectWeek.setLayoutManager(new LinearLayoutManager(getApplicationContext(),
                 RecyclerView.HORIZONTAL, false));
         ArrayList<String> strings = new ArrayList<>();
-        for (int i = 0; i < 25; i++) {
-            strings.add("第"+i+"节");
+        for (int i = 1; i <= 25; i++) {
+            strings.add("第" + i + "节");
         }
-        mRvSelectWeek.setAdapter(new SelectWeekAdapter(R.layout.adapter_select_week, strings));
+        SelectWeekAdapter selectWeekAdapter = new SelectWeekAdapter(R.layout.adapter_select_week, strings);
+        mRvSelectWeek.setAdapter(selectWeekAdapter);
+
+        mRvSelectWeek.addOnLayoutChangeListener(new View.OnLayoutChangeListener() {
+            @Override
+            public void onLayoutChange(View v, int left, int top, int right, int bottom,
+                                       int oldLeft, int oldTop, int oldRight, int oldBottom) {
+                mHeightSelectWeek = bottom - top;
+            }
+        });
+
+
+        selectWeekAdapter.setItemClickListener(new RecyclerBaseAdapter.ItemClickListener() {
+            @Override
+            public void onItemClick(View view, final RecyclerBaseAdapter.ViewHolder holder) {
+                mCurrentWeekCount = holder.getAdapterPosition() + 1;
+                PreferencesCurrentWeek(mCurrentWeekCount);
+                mCourseViewV2.setCurrentIndex(mCurrentWeekCount);
+                mCourseViewV2.resetView();
+                mTvWeekCount.setText("第" + mCurrentWeekCount + "周");
+
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        animSelectWeek(false);
+                    }
+                }, 150);
+            }
+
+            @Override
+            public void onItemLongClick(View view, RecyclerBaseAdapter.ViewHolder holder) {
+
+            }
+        });
+    }
+
+
+    private void animSelectWeek(boolean show) {
+        mSelectWeekIsShow = show;
+
+        int start = 0, end = 0;
+        if (show) {
+            start = -mHeightSelectWeek;
+            end = 0;
+        } else {
+            start = 0;
+            end = -mHeightSelectWeek;
+        }
+
+        ValueAnimator animator = ValueAnimator.ofInt(start, end);
+        animator.setDuration(300);
+        animator.setInterpolator(new DecelerateInterpolator());
+
+        animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+            @Override
+            public void onAnimationUpdate(ValueAnimator animation) {
+                System.out.println(animation.getAnimatedValue());
+                LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) mRvSelectWeek.getLayoutParams();
+                params.topMargin = (int) animation.getAnimatedValue();
+                mRvSelectWeek.setLayoutParams(params);
+            }
+        });
+        animator.start();
     }
 
 
@@ -123,7 +196,7 @@ public class CourseActivity extends BaseActivity implements CourseContract.View,
         mTvWeekCount = findViewById(R.id.tv_toolbar_subtitle);
         mTvWeekCount.setOnClickListener(this);
         TextView tvTitle = findViewById(R.id.tv_toolbar_title);
-        tvTitle.setText(getString(R.string.app_name));
+        tvTitle.setText(getString(R.string.class_schedule));
     }
 
     private void initWeekNodeGroup() {
@@ -188,10 +261,19 @@ public class CourseActivity extends BaseActivity implements CourseContract.View,
         });
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     private void initCourseView() {
         mCourseViewV2 = findViewById(R.id.course_view_v2);
         mCourseViewV2.setCourseItemRadius(3)
                 .setTextTBMargin(dp2px(1), dp2px(1));
+
+        mCourseViewV2.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                System.out.println("touch");
+                return false;
+            }
+        });
 
         mCourseViewV2.setOnItemClickListener(new CourseView.OnItemClickListener() {
             @Override
@@ -336,8 +418,8 @@ public class CourseActivity extends BaseActivity implements CourseContract.View,
     }
 
     private void weekTitle(View v) {
-        popupWindow(v);
-
+        //popupWindow(v);
+        animSelectWeek(!mSelectWeekIsShow);
     }
 
     private void popupWindow(View v) {

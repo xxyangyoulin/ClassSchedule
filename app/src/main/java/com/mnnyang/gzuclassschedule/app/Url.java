@@ -13,6 +13,7 @@ public class Url {
     public static final String URL_UPLOAD_COURSE = URL_HOST+"main/upload_course/";
     public static final String URL_LOGIN = URL_HOST+"user/login/";
     public static final String URL_REGISTER = URL_HOST+"user/register/";
+    public static final String URL_USER_INFO = URL_HOST+"user/info/";
 
 
     public static final String URL_GZU_HOST = "http://210.40.2.253:8888/";

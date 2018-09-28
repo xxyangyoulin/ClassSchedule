@@ -95,4 +95,5 @@
     <string name="school">学校</string>
     <string name="please_input_school_url">请输入教务管理系统网址</string>
     <string name="can_not_be_empty">不能为空</string>
+    <string name="class_schedule">课程表</string>
 </resources>

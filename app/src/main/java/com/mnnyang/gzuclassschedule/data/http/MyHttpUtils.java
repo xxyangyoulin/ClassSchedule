@@ -3,6 +3,7 @@ package com.mnnyang.gzuclassschedule.data.http;
 import com.mnnyang.gzuclassschedule.app.Constant;
 import com.mnnyang.gzuclassschedule.app.Url;
 import com.mnnyang.gzuclassschedule.data.beanv2.BaseBean;
+import com.mnnyang.gzuclassschedule.data.beanv2.UserWrapper;
 import com.mnnyang.gzuclassschedule.utils.LogUtil;
 import com.zhy.http.okhttp.OkHttpUtils;
 
@@ -72,4 +73,24 @@ public class MyHttpUtils {
                     }
                 });
     }
+
+    public void userInfo(final HttpCallback<UserWrapper> callback) {
+        OkHttpUtils.get()
+                .url(Url.URL_USER_INFO)
+                .build()
+                .execute(new JsonCallback<UserWrapper>(UserWrapper.class) {
+                    @Override
+                    public void onError(Call call, Exception e, int id) {
+                        e.printStackTrace();
+                        callback.onFail(e.getMessage());
+                    }
+
+                    @Override
+                    public void onResponse(UserWrapper response, int id) {
+                        callback.onSuccess(response);
+                    }
+                });
+    }
+
+
 }

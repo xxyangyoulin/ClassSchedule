@@ -7,6 +7,8 @@ import android.support.v7.widget.ContentFrameLayout;
 import android.view.MenuItem;
 
 import com.mnnyang.gzuclassschedule.BaseActivity;
+import com.mnnyang.gzuclassschedule.R;
+import com.mnnyang.gzuclassschedule.app.Cache;
 import com.mnnyang.gzuclassschedule.utils.ActivityUtil;
 
 public class HomeActivity extends BaseActivity {
@@ -14,10 +16,6 @@ public class HomeActivity extends BaseActivity {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        //setContentView(R.layout.fragment_home);
-        //initBackToolbar("");
-
-        //new HomePresenter(this);
 
         @SuppressLint("RestrictedApi")
         ContentFrameLayout contentFrameLayout = new ContentFrameLayout(this);
@@ -25,6 +23,11 @@ public class HomeActivity extends BaseActivity {
 
         ActivityUtil.replaceFragmentToActivity(getSupportFragmentManager(),
                 HomeFragment.newInstance(), android.R.id.content);
+    }
+
+    @Override
+    protected boolean canInitTheme() {
+        return false;
     }
 
     @Override

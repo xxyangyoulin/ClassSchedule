@@ -32,6 +32,4 @@ public abstract class JsonCallback<T> extends Callback<T> {
 
         return null;
     }
-
-
 }

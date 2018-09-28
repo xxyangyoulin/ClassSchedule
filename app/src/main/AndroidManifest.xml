@@ -34,8 +34,15 @@
         <activity android:name=".mvp.about.AboutActivity"></activity>
         <activity android:name=".mvp.conf.ConfActivity"></activity>
         <activity android:name=".mvp.school.SchoolActivity"></activity>
-        <activity android:name=".mvp.home.HomeActivity"></activity>
-        <activity android:name=".mvp.login.LoginActivity">
+        <activity
+            android:name=".mvp.home.HomeActivity"
+            android:launchMode="singleTask">
+
+        </activity>
+        <activity
+            android:name=".mvp.login.LoginActivity"
+            android:launchMode="singleInstance"
+            android:theme="@style/LoginTheme">
 
         </activity>
 

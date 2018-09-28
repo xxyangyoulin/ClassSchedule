@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TextInputEditText;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -14,6 +15,9 @@ import com.mnnyang.gzuclassschedule.app.Cache;
 import com.mnnyang.gzuclassschedule.data.beanv2.BaseBean;
 import com.mnnyang.gzuclassschedule.mvp.home.HomeActivity;
 import com.mnnyang.gzuclassschedule.utils.DialogHelper;
+import com.mnnyang.gzuclassschedule.utils.event.LoginEvent;
+
+import org.greenrobot.eventbus.EventBus;
 
 public class LoginActivity extends BaseActivity implements LoginContact.View {
 
@@ -34,11 +38,17 @@ public class LoginActivity extends BaseActivity implements LoginContact.View {
 
         initView();
         initListener();
+        initBackToolbar("");
+
         initToSignUp();
 
         new LoginPresenter(this).start();
     }
 
+    @Override
+    protected boolean canInitTheme() {
+        return false;
+    }
 
     private void initView() {
         mTvBigTitle = findViewById(R.id.tv_big_title);
@@ -71,6 +81,16 @@ public class LoginActivity extends BaseActivity implements LoginContact.View {
                 }
             }
         });
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                finish();
+                break;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     private void switchStatus() {
@@ -120,7 +140,8 @@ public class LoginActivity extends BaseActivity implements LoginContact.View {
         String email = mEtEmail.getText().toString();
         Cache.instance().setEmail(email);
 
-        startActivity(new Intent(this, HomeActivity.class));
+        EventBus.getDefault().post(new LoginEvent());
+        finish();
     }
 
     @Override

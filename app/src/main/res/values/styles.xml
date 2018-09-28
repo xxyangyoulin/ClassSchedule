@@ -5,6 +5,16 @@
         <!-- Customize your theme here. -->
     </style>
 
+    <style name="LoginTheme" parent="greenTheme">
+        <item name="colorPrimaryDark">@color/color_login</item>
+    </style>
+
+    <style name="NoLogin" parent="AppTheme">
+        <item name="colorPrimaryDark">#616161</item>
+        <item name="colorPrimary">#9E9E9E</item>
+        <item name="colorAccent">#9E9E9E</item>
+    </style>
+
     <style name="RedTheme" parent="AppTheme">
         <item name="colorPrimaryDark">@color/primary_dark_red</item>
         <item name="colorPrimary">@color/primary_red</item>
@@ -46,6 +56,7 @@
         <item name="colorPrimary">@color/primary_green</item>
         <item name="colorAccent">@color/accent_green</item>
     </style>
+
 
     <style name="limeTheme" parent="AppTheme">
         <item name="colorPrimaryDark">@color/primary_dark_lime</item>

@@ -34,10 +34,10 @@
                     android:layout_width="56dp"
                     android:layout_height="56dp"
                     android:layout_gravity="center"
-                    android:layout_marginTop="24dp"
-                    android:src="@drawable/avator"
+                    android:layout_marginTop="8dp"
+                    android:src="@drawable/ic_account_circle_black_24dp"
                     app:civ_border_color="@color/white"
-                    app:civ_border_width="2dp" />
+                    app:civ_border_width="0dp" />
 
                 <TextView
                     android:id="@+id/tv_username"
@@ -47,9 +47,9 @@
                     android:layout_marginTop="@dimen/margin_16dp"
                     android:clickable="true"
                     android:focusable="true"
+                    android:text="xxyangyoulin"
                     android:textColor="@color/white"
-                    android:textSize="16sp"
-                    tools:text="xxyangyoulin" />
+                    android:textSize="16sp" />
 
 
                 <LinearLayout
@@ -59,15 +59,15 @@
                     android:orientation="horizontal">
 
                     <LinearLayout
+                        android:id="@+id/layout_upload"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:background="?attr/selectableItemBackground"
                         android:clickable="true"
                         android:focusable="true"
-                        android:id="@+id/layout_upload"
                         android:gravity="center"
-                        android:orientation="vertical"
+                        android:orientation="horizontal"
                         android:padding="@dimen/margin_16dp">
 
                         <ImageView
@@ -78,13 +78,14 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginTop="2dp"
+                            android:layout_marginLeft="@dimen/margin_8dp"
                             android:text="同步到网络"
                             android:textColor="@color/white_f1"
-                            android:textSize="12sp" />
+                            android:textSize="10sp" />
                     </LinearLayout>
 
                     <LinearLayout
+                        android:id="@+id/layout_overwrite_local"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
@@ -92,8 +93,7 @@
                         android:clickable="true"
                         android:focusable="true"
                         android:gravity="center"
-                        android:id="@+id/layout_overwrite_local"
-                        android:orientation="vertical"
+                        android:orientation="horizontal"
                         android:paddingBottom="@dimen/margin_16dp"
                         android:paddingTop="@dimen/margin_16dp">
 
@@ -104,11 +104,12 @@
 
                         <TextView
                             android:layout_width="wrap_content"
+
                             android:layout_height="wrap_content"
-                            android:layout_marginTop="2dp"
+                            android:layout_marginLeft="@dimen/margin_8dp"
                             android:text="网络覆盖本地"
                             android:textColor="@color/white_f1"
-                            android:textSize="12sp" />
+                            android:textSize="10sp" />
                     </LinearLayout>
                 </LinearLayout>
             </LinearLayout>
