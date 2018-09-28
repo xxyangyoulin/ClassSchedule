@@ -1,4 +1,4 @@
-package com.mnnyang.gzuclassschedule.mg;
+package com.mnnyang.gzuclassschedule.mvp.mg;
 
 import android.text.TextUtils;
 
@@ -11,11 +11,14 @@ import com.mnnyang.gzuclassschedule.utils.Preferences;
 
 import java.util.ArrayList;
 
-import rx.Observable;
-import rx.Observer;
-import rx.Subscriber;
-import rx.android.schedulers.AndroidSchedulers;
-import rx.schedulers.Schedulers;
+import io.reactivex.Observable;
+import io.reactivex.ObservableEmitter;
+import io.reactivex.ObservableOnSubscribe;
+import io.reactivex.Observer;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.schedulers.Schedulers;
+
 
 /**
  * Created by mnnyang on 17-11-4.
@@ -28,6 +31,8 @@ public class MgPresenter implements MgContract.Presenter {
 
     public MgPresenter(MgContract.View view, ArrayList<CsItem> csItems) {
         mView = view;
+        mView.setPresenter(this);
+
         mCsItems = csItems;
         mModel = new MgModel();
     }
@@ -39,7 +44,42 @@ public class MgPresenter implements MgContract.Presenter {
 
     @Override
     public void reloadCsNameList() {
-        Observable.create(new Observable.OnSubscribe<ArrayList<CsItem>>() {
+
+        Observable.create(new ObservableOnSubscribe<ArrayList<CsItem>>() {
+            @Override
+            public void subscribe(ObservableEmitter<ArrayList<CsItem>> emitter) throws Exception {
+                ArrayList<CsItem> data = mModel.getCsItemData();
+                emitter.onNext(data);
+                emitter.onComplete();
+            }
+        }).subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Observer<ArrayList<CsItem>>() {
+                    @Override
+                    public void onSubscribe(Disposable d) {
+
+                    }
+
+                    @Override
+                    public void onNext(ArrayList<CsItem> csItems) {
+                        mCsItems.clear();
+                        mCsItems.addAll(csItems);
+                        mView.showList(mCsItems);
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        e.printStackTrace();
+
+                    }
+
+                    @Override
+                    public void onComplete() {
+
+                    }
+                });
+
+        /*Observable.create(new Observable.OnSubscribe<ArrayList<CsItem>>() {
             @Override
             public void call(Subscriber<? super ArrayList<CsItem>> subscriber) {
                 ArrayList<CsItem> data = mModel.getCsItemData();
@@ -66,7 +106,7 @@ public class MgPresenter implements MgContract.Presenter {
                         mCsItems.addAll(items);
                         mView.showList(mCsItems);
                     }
-                });
+                });*/
     }
 
     @Override
@@ -75,13 +115,13 @@ public class MgPresenter implements MgContract.Presenter {
             mView.showNotice(app.mContext.getString(R.string.course_name_can_not_be_empty));
         } else {
             //TODO 检查
-            boolean isConflict = CourseDbDao.newInstance().hasConflictCourseTableName(csName);
+            boolean isConflict = CourseDbDao.instance().hasConflictCourseTableName(csName);
             if (isConflict) {
                 //notice conflict
                 mView.showNotice(app.mContext.getString(R.string.course_name_is_conflicting));
             } else {
                 //add cs_name
-                CourseDbDao.newInstance().getCsNameId(csName);
+                CourseDbDao.instance().getCsNameId(csName);
                 mView.addCsNameSucceed();
             }
         }
@@ -90,7 +130,7 @@ public class MgPresenter implements MgContract.Presenter {
     @Override
     public void editCsName(int id, String newCsName) {
 
-        int update = CourseDbDao.newInstance().updateCsName(id, newCsName);
+        int update = CourseDbDao.instance().updateCsName(id, newCsName);
         if (update == 0) {
             mView.showNotice(app.mContext.getString(R.string.course_name_already_exists));
         } else {
@@ -100,11 +140,46 @@ public class MgPresenter implements MgContract.Presenter {
 
     @Override
     public void deleteCsName(final int csNameId, final DialogHelper dh) {
-        Observable.create(new Observable.OnSubscribe<String>() {
+
+
+        Observable.create(new ObservableOnSubscribe<String>() {
+            @Override
+            public void subscribe(ObservableEmitter<String> emitter) throws Exception {
+                CourseDbDao dao = CourseDbDao.instance();
+                dao.removeByCsNameId(csNameId);
+                emitter.onNext("ok");
+            }
+        }).subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Observer<String>() {
+                    @Override
+                    public void onSubscribe(Disposable d) {
+
+                    }
+
+                    @Override
+                    public void onNext(String s) {
+                        dh.hideProgressDialog();
+                        mView.deleteFinish();
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        e.printStackTrace();
+                        dh.hideProgressDialog();
+                    }
+
+                    @Override
+                    public void onComplete() {
+
+                    }
+                });
+
+        /*Observable.create(new Observable.OnSubscribe<String>() {
 
             @Override
             public void call(Subscriber<? super String> subscriber) {
-                CourseDbDao dao = CourseDbDao.newInstance();
+                CourseDbDao dao = CourseDbDao.instance();
                 dao.removeByCsNameId(csNameId);
                 subscriber.onNext("ok");
             }
@@ -127,7 +202,7 @@ public class MgPresenter implements MgContract.Presenter {
                         dh.hideProgressDialog();
                         mView.deleteFinish();
                     }
-                });
+                });*/
     }
 
     @Override

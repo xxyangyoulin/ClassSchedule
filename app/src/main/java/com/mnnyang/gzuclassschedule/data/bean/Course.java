@@ -1,12 +1,12 @@
 package com.mnnyang.gzuclassschedule.data.bean;
 
 import android.support.annotation.NonNull;
+import android.text.TextUtils;
 
 
-import com.mnnyang.gzuclassschedule.custom.course2.CourseAncestor;
+import com.mnnyang.gzuclassschedule.custom.course.CourseAncestor;
 import com.mnnyang.gzuclassschedule.utils.LogUtil;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -18,69 +18,82 @@ import java.util.List;
 
 public class Course extends CourseAncestor implements Comparable<Course> {
     private int courseId;
-    //所有周
-    public static final int WEEK_ALL = 0;
-    //双周
-    public static final int WEEK_DOUBLE = 1;
-    //单周
-    public static final int WEEK_SINGLE = 2;
-
     public static final int NODE_NOON = -1;
 
     /**
      * 课程名称
      */
-    protected String name;
+    private String name;
     /**
      * 教室
      */
-    protected String classRoom;
+    private String classRoom;
 
     /**
      * 星期几 1-7
      */
-    protected int week;
+    private int week;
 
     /**
-     * 节数 -1为中午(-_-!!中午还有上课的...)
+     * 节数
      */
-    protected List<Integer> nodes = new ArrayList<>();
+    private List<Integer> nodes = new ArrayList<>();
 
     /**
      * 起始周
      */
-    protected int startWeek;
+    private int startWeek;
     /**
      * 结束周
      */
-    protected int endWeek;
+    private int endWeek;
 
     /**
      * 单双周类型
      */
-    protected int weekType = WEEK_ALL;
+    private int weekType = SHOW_ALL;
 
     /**
      * 上课教师
      */
-    protected String teacher;
+    private String teacher;
 
     /**
      * 原文本
      */
-    protected String source;
+    private String source;
 
     /**
      * 是否显示
      */
-    protected boolean showOverlap = true;
+    private boolean showOverlap = true;
 
-    protected String csName;
+    private String csName;
 
     /**
      * 课程表名 courseId
      */
     private int csNameId;
+
+    public void init() {
+        setRow(getWeek());
+        setStartIndex(getStartWeek());
+        setEndIndex(getEndWeek());
+        setShowType(getWeekType());
+
+        if (!getNodes().isEmpty()) {
+            setCol(getNodes().get(0));
+            setRowNum(getNodes().size());
+        } else {
+            LogUtil.e(this, "Node data is empty-->" + this.toString());
+        }
+
+        if (TextUtils.isEmpty(getClassRoom())) {
+            setText(getName());
+        } else {
+            setText(getName() + "\n@" + getClassRoom());
+        }
+    }
 
     public String getName() {
         return name;
@@ -260,7 +273,25 @@ public class Course extends CourseAncestor implements Comparable<Course> {
 
     @Override
     public String toString() {
-        return super.toString()+"Course{" +
+        return super.toString() + "Course{" +
+                "courseId=" + courseId +
+                ", name='" + name + '\'' +
+                ", classRoom='" + classRoom + '\'' +
+                ", week=" + week +
+                ", nodes=" + nodes +
+                ", startWeek=" + startWeek +
+                ", endWeek=" + endWeek +
+                ", weekType=" + weekType +
+                ", teacher='" + teacher + '\'' +
+                ", source='" + source + '\'' +
+                ", showOverlap=" + showOverlap +
+                ", csName='" + csName + '\'' +
+                ", csNameId=" + csNameId +
+                '}';
+    }
+
+    public String toSelfString() {
+        return "Course{" +
                 "courseId=" + courseId +
                 ", name='" + name + '\'' +
                 ", classRoom='" + classRoom + '\'' +
@@ -326,8 +357,8 @@ public class Course extends CourseAncestor implements Comparable<Course> {
             return false;
         }
 
-        if (this.getEndWeek()<course.getStartWeek()
-                || course.getEndWeek()<this.getStartWeek()){
+        if (this.getEndWeek() < course.getStartWeek()
+                || course.getEndWeek() < this.getStartWeek()) {
 
             return false;
         }

@@ -86,4 +86,7 @@
     <color name="white">#FFFFFFFF</color>
     <color name="widget_title_text_color">#FFFFFF</color>
     <color name="widget_all_background">#40ffffff</color>
+    <color name="pink_dialog">#f06292</color>
+    <color name="blue_dialog">#4fc3f7</color>
+    <color name="black">#000000</color>
 </resources>

@@ -1,7 +1,6 @@
-package com.mnnyang.gzuclassschedule.course;
+package com.mnnyang.gzuclassschedule.mvp.course;
 
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.text.TextUtils;
 
 import com.mnnyang.gzuclassschedule.R;
@@ -16,11 +15,14 @@ import com.mnnyang.gzuclassschedule.utils.ScreenUtils;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
 
-import rx.Observable;
-import rx.Observer;
-import rx.Subscriber;
-import rx.android.schedulers.AndroidSchedulers;
-import rx.schedulers.Schedulers;
+import io.reactivex.Observable;
+import io.reactivex.ObservableEmitter;
+import io.reactivex.ObservableOnSubscribe;
+import io.reactivex.Observer;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.schedulers.Schedulers;
+
 
 /**
  * Created by mnnyang on 17-10-19.
@@ -28,10 +30,12 @@ import rx.schedulers.Schedulers;
 
 public class CoursePresenter implements CourseContract.Presenter {
 
-    private CourseContract.View mCourseView;
+    private CourseContract.View mView;
 
     public CoursePresenter(CourseContract.View mCourseView) {
-        this.mCourseView = mCourseView;
+        this.mView = mCourseView;
+        mView.setPresenter(this);
+
     }
 
     @Override
@@ -44,30 +48,35 @@ public class CoursePresenter implements CourseContract.Presenter {
         String path = Preferences.getString(app.mContext.getString(R.string.app_preference_bg_iamge_path), "");
         if (!TextUtils.isEmpty(path)) {
             loadImage(path);
-        }else{
-            LogUtil.e(this,"no background");
+        } else {
+            LogUtil.e(this, "no background");
         }
     }
 
     private void loadImage(final String path) {
-        Observable.create(new Observable.OnSubscribe<Bitmap>() {
+        Observable.create(new ObservableOnSubscribe<Bitmap>() {
             @Override
-            public void call(Subscriber<? super Bitmap> subscriber) {
+            public void subscribe(ObservableEmitter<Bitmap> emitter) throws Exception {
                 Bitmap bitmap = ImageResizer.decodeSampledBitmapFromFile(path,
                         ScreenUtils.getSWidth(), 0);
-                if (bitmap == null){
-                    subscriber.onError(new FileNotFoundException());
-                }else{
-                    subscriber.onNext(bitmap);
+                if (bitmap == null) {
+                    emitter.onError(new FileNotFoundException());
+                } else {
+                    emitter.onNext(bitmap);
                 }
-                subscriber.onCompleted();
+                emitter.onComplete();
             }
         }).subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Observer<Bitmap>() {
                     @Override
-                    public void onCompleted() {
+                    public void onSubscribe(Disposable d) {
 
+                    }
+
+                    @Override
+                    public void onNext(Bitmap bitmap) {
+                        mView.setBackground(bitmap);
                     }
 
                     @Override
@@ -76,19 +85,81 @@ public class CoursePresenter implements CourseContract.Presenter {
                     }
 
                     @Override
-                    public void onNext(Bitmap bitmap) {
-                        mCourseView.setBackground(bitmap);
+                    public void onComplete() {
+
                     }
                 });
+                /*Observable.create(new Observable.OnSubscribe<Bitmap>() {
+                    @Override
+                    public void call(Subscriber<? super Bitmap> subscriber) {
+                        Bitmap bitmap = ImageResizer.decodeSampledBitmapFromFile(path,
+                                ScreenUtils.getSWidth(), 0);
+                        if (bitmap == null) {
+                            subscriber.onError(new FileNotFoundException());
+                        } else {
+                            subscriber.onNext(bitmap);
+                        }
+                        subscriber.onCompleted();
+                    }
+                }).subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe(new Observer<Bitmap>() {
+                            @Override
+                            public void onCompleted() {
+
+                            }
+
+                            @Override
+                            public void onError(Throwable e) {
+                                e.printStackTrace();
+                            }
+
+                            @Override
+                            public void onNext(Bitmap bitmap) {
+                                mCourseView.setBackground(bitmap);
+                            }
+                        });*/
 
     }
 
     @Override
     public void updateCourseViewData(final int csNameId) {
-        Observable.create(new Observable.OnSubscribe<ArrayList<Course>>() {
+        Observable.create(new ObservableOnSubscribe<ArrayList<Course>>() {
+            @Override
+            public void subscribe(ObservableEmitter<ArrayList<Course>> emitter) throws Exception {
+                CourseDbDao dao = CourseDbDao.instance();
+                final ArrayList<Course> courses = dao.loadCourses(csNameId);
+                emitter.onNext(courses);
+                emitter.onComplete();
+            }
+        }).subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Observer<ArrayList<Course>>() {
+                    @Override
+                    public void onSubscribe(Disposable d) {
+
+                    }
+
+                    @Override
+                    public void onNext(ArrayList<Course> courses) {
+                        mView.setCourseData(courses);
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        e.printStackTrace();
+                    }
+
+                    @Override
+                    public void onComplete() {
+
+                    }
+                });
+
+        /*Observable.create(new Observable.OnSubscribe<ArrayList<Course>>() {
             @Override
             public void call(Subscriber<? super ArrayList<Course>> subscriber) {
-                CourseDbDao dao = CourseDbDao.newInstance();
+                CourseDbDao dao = CourseDbDao.instance();
                 final ArrayList<Course> courses = dao.loadCourses(csNameId);
                 subscriber.onNext(courses);
                 subscriber.onCompleted();
@@ -111,12 +182,12 @@ public class CoursePresenter implements CourseContract.Presenter {
                     public void onNext(ArrayList<Course> courses) {
                         mCourseView.setCourseData(courses);
                     }
-                });
+                });*/
     }
 
     @Override
     public void deleteCourse(int courseId) {
-        CourseDbDao.newInstance().removeCourse(courseId);
-        mCourseView.updateCoursePreference(); //must be main thread
+        CourseDbDao.instance().removeCourse(courseId);
+        mView.updateCoursePreference(); //must be main thread
     }
 }

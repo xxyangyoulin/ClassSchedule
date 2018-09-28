@@ -1,4 +1,4 @@
-package com.mnnyang.gzuclassschedule.conf;
+package com.mnnyang.gzuclassschedule.mvp.conf;
 
 import android.Manifest;
 import android.content.Intent;
@@ -12,13 +12,15 @@ import android.view.View;
 
 import com.mnnyang.gzuclassschedule.BaseActivity;
 import com.mnnyang.gzuclassschedule.R;
-import com.mnnyang.gzuclassschedule.app.Constant;
 import com.mnnyang.gzuclassschedule.custom.settting.SettingItemNormal;
 import com.mnnyang.gzuclassschedule.utils.FileUtils;
 import com.mnnyang.gzuclassschedule.utils.Preferences;
 import com.mnnyang.gzuclassschedule.utils.RequestPermission;
 import com.mnnyang.gzuclassschedule.utils.ToastUtils;
+import com.mnnyang.gzuclassschedule.utils.event.ConfigEvent;
 import com.mnnyang.gzuclassschedule.utils.spec.SelectImageHelper;
+
+import org.greenrobot.eventbus.EventBus;
 
 /**
  * Created by xxyangyoulin on 2018/3/13.
@@ -28,7 +30,7 @@ public class ConfActivity extends BaseActivity implements ConfContract.View, Set
 
     private static final int REQUEST_CODE_IMAGE = 100;
 
-    private ConfPresenter mPresenter;
+    private ConfContract.Presenter mPresenter;
     private SettingItemNormal mSinBgImage;
     private SelectImageHelper mSelectImageHelper;
 
@@ -91,13 +93,13 @@ public class ConfActivity extends BaseActivity implements ConfContract.View, Set
     private void changeBgState(boolean checked) {
         Preferences.putBoolean(getString(R.string.app_preference_bg_enabled), checked);
 
-        if (checked){
+        if (checked) {
             toast(getString(R.string.bg_enabled));
-        }else{
+        } else {
             toast(getString(R.string.bg_disabled));
         }
 
-        notifiUpdateMainPage(Constant.INTENT_UPDATE_TYPE_OTHER);
+        EventBus.getDefault().post(new ConfigEvent());
         return;
     }
 
@@ -146,8 +148,9 @@ public class ConfActivity extends BaseActivity implements ConfContract.View, Set
                         //直接保存图片的路径得了 然后设置到图片上
                         Preferences.putString(getString(R.string.app_preference_bg_iamge_path),
                                 sourceFilePath);
-                        //
-                        notifiUpdateMainPage(Constant.INTENT_UPDATE_TYPE_OTHER);
+
+                        EventBus.getDefault().post(new ConfigEvent());
+
                         toast(getString(R.string.select_iamge_succeed));
                     } else {
                         toast(getString(R.string.select_image_failed));
@@ -156,5 +159,10 @@ public class ConfActivity extends BaseActivity implements ConfContract.View, Set
 
                 break;
         }
+    }
+
+    @Override
+    public void setPresenter(ConfContract.Presenter presenter) {
+        mPresenter = presenter;
     }
 }

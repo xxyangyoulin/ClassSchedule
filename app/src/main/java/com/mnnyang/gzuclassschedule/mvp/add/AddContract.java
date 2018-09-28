@@ -1,4 +1,4 @@
-package com.mnnyang.gzuclassschedule.add;
+package com.mnnyang.gzuclassschedule.mvp.add;
 
 import com.mnnyang.gzuclassschedule.BasePresenter;
 import com.mnnyang.gzuclassschedule.BaseView;

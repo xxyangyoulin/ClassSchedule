@@ -300,11 +300,11 @@ public class ParseCourse {
                 "    </tr>\n" +
                 "    </tbody>\n" +
                 "</table>";
-        //System.out.println(s);
+
         final ArrayList<Course> courses = ParseCourse.parse(s);
 
-        for (Course cours : courses) {
-            System.out.println(cours);
+        for (Course course : courses) {
+            System.out.println("TEST"+course.toSelfString());
         }
     }
 

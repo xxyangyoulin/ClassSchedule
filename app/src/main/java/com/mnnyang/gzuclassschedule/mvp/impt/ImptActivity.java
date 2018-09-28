@@ -1,4 +1,4 @@
-package com.mnnyang.gzuclassschedule.impt;
+package com.mnnyang.gzuclassschedule.mvp.impt;
 
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -16,16 +16,20 @@ import android.widget.LinearLayout;
 
 import com.mnnyang.gzuclassschedule.BaseActivity;
 import com.mnnyang.gzuclassschedule.R;
+import com.mnnyang.gzuclassschedule.app.AppUtils;
 import com.mnnyang.gzuclassschedule.app.Constant;
 import com.mnnyang.gzuclassschedule.app.Url;
-import com.mnnyang.gzuclassschedule.course.CourseActivity;
+import com.mnnyang.gzuclassschedule.mvp.course.CourseActivity;
 import com.mnnyang.gzuclassschedule.custom.EditTextLayout;
 import com.mnnyang.gzuclassschedule.data.bean.CourseTime;
 import com.mnnyang.gzuclassschedule.utils.DialogHelper;
 import com.mnnyang.gzuclassschedule.utils.LogUtil;
 import com.mnnyang.gzuclassschedule.utils.Preferences;
 import com.mnnyang.gzuclassschedule.utils.ToastUtils;
+import com.mnnyang.gzuclassschedule.utils.event.CourseDataChangeEvent;
 import com.mnnyang.gzuclassschedule.utils.spec.ShowTermDialog;
+
+import org.greenrobot.eventbus.EventBus;
 
 public class ImptActivity extends BaseActivity implements
         ImptContract.View, View.OnClickListener {
@@ -48,7 +52,7 @@ public class ImptActivity extends BaseActivity implements
         initBackToolbar("导入课程表");
         initView();
 
-        mPresenter = new ImptPresenter(this,initSchoolUrl());
+        new ImptPresenter(this,initSchoolUrl());
     }
 
     private String initSchoolUrl() {
@@ -142,7 +146,9 @@ public class ImptActivity extends BaseActivity implements
 
     @Override
     public void showSucceed() {
-        notifiUpdateMainPage(Constant.INTENT_UPDATE_TYPE_COURSE);
+        EventBus.getDefault().post(new CourseDataChangeEvent());
+        AppUtils.updateWidget(this);
+
         ToastUtils.show("导入成功");
         Preferences.putString(Constant.XH, mXh);
         Intent intent = new Intent(this, CourseActivity.class);
@@ -212,5 +218,10 @@ public class ImptActivity extends BaseActivity implements
                 break;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void setPresenter(ImptContract.Presenter presenter) {
+        mPresenter = presenter;
     }
 }

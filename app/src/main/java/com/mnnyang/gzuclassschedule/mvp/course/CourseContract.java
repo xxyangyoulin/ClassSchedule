@@ -1,4 +1,4 @@
-package com.mnnyang.gzuclassschedule.course;
+package com.mnnyang.gzuclassschedule.mvp.course;
 
 
 import android.graphics.Bitmap;

@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context="com.mnnyang.gzuclassschedule.setting.SettingActivity">
+    tools:context=".mvp.setting.SettingActivity">
 
     <include layout="@layout/title_toolbar" />
 
@@ -64,19 +64,19 @@
                 style="@style/CategoryStyle"
                 android:text="@string/text_preference" />
 
-            <com.mnnyang.gzuclassschedule.custom.settting.SettingItemNormal
-                android:id="@+id/sin_hide_fab"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                app:detach="true"
-                app:item_title="@string/hide_fab"
-                app:showSwitch="true"
-                app:summary="@string/hide_fab_summary" />
+            <!--<com.mnnyang.gzuclassschedule.custom.settting.SettingItemNormal-->
+                <!--android:id="@+id/sin_hide_fab"-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--app:detach="true"-->
+                <!--app:item_title="@string/hide_fab"-->
+                <!--app:showSwitch="true"-->
+                <!--app:summary="@string/hide_fab_summary" />-->
 
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/margin_1dp"
-                android:background="@color/divider" />
+            <!--<View-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="@dimen/margin_1dp"-->
+                <!--android:background="@color/divider" />-->
 
 
             <HorizontalScrollView

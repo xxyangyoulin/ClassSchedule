@@ -32,6 +32,7 @@ public abstract class BaseActivity extends AppCompatActivity {
 
     /**
      * 初始化toolbar功能为返回
+     *
      * @param title
      */
     protected void initBackToolbar(String title) {
@@ -53,17 +54,6 @@ public abstract class BaseActivity extends AppCompatActivity {
     protected void initTheme() {
         int anInt = Preferences.getInt(getString(R.string.app_preference_theme), 0);
         setTheme(Constant.themeArray[anInt]);
-    }
-
-    /**
-     * 通知更新主页
-     */
-
-    public void notifiUpdateMainPage(int type) {
-        Intent intent = new Intent();
-        intent.setAction(Constant.INTENT_UPDATE);
-        intent.putExtra(Constant.INTENT_UPDATE_TYPE, type);
-        sendBroadcast(intent);
     }
 
     public void toast(String msg) {

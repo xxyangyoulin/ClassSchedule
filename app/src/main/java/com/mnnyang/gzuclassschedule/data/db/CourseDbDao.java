@@ -30,7 +30,7 @@ public class CourseDbDao {
         private static final CourseDbDao DAO = new CourseDbDao();
     }
 
-    public static CourseDbDao newInstance() {
+    public static CourseDbDao instance() {
         return Holder.DAO;
     }
 

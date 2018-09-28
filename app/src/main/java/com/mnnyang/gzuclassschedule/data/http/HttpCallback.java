@@ -1,4 +1,4 @@
-package com.mnnyang.gzuclassschedule.http;
+package com.mnnyang.gzuclassschedule.data.http;
 
 public abstract class HttpCallback<T> {
     public abstract void onSuccess(T t);

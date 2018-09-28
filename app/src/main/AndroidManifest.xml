@@ -6,6 +6,8 @@
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.CAMERA" />
+
 
     <application
         android:name=".app.app"
@@ -16,26 +18,36 @@
         android:supportsRtl="true"
         android:theme="@style/greenTheme">
         <activity
-            android:name="com.mnnyang.gzuclassschedule.course.CourseActivity"
+            android:name=".mvp.course.CourseActivity"
             android:launchMode="singleTask">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name="com.mnnyang.gzuclassschedule.setting.SettingActivity">
+        <activity android:name=".mvp.setting.SettingActivity">
 
         </activity>
-        <activity android:name="com.mnnyang.gzuclassschedule.impt.ImptActivity"></activity>
-        <activity android:name="com.mnnyang.gzuclassschedule.add.AddActivity"></activity>
-        <activity android:name="com.mnnyang.gzuclassschedule.mg.MgActivity"></activity>
-        <activity android:name="com.mnnyang.gzuclassschedule.about.AboutActivity"></activity>
-        <activity android:name="com.mnnyang.gzuclassschedule.conf.ConfActivity"></activity>
-        <activity android:name="com.mnnyang.gzuclassschedule.school.SchoolActivity"></activity>
+        <activity android:name=".mvp.impt.ImptActivity"></activity>
+        <activity android:name=".mvp.add.AddActivity"></activity>
+        <activity android:name=".mvp.mg.MgActivity"></activity>
+        <activity android:name=".mvp.about.AboutActivity"></activity>
+        <activity android:name=".mvp.conf.ConfActivity"></activity>
+        <activity android:name=".mvp.school.SchoolActivity"></activity>
+        <activity android:name=".mvp.home.HomeActivity"></activity>
+        <activity android:name=".mvp.login.LoginActivity">
+
+        </activity>
 
 
         <receiver android:name=".widget.MyWidget">
             <intent-filter>
+                <action android:name="com.mnnyang.action.UPDATE_WIDGET" />
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+                <action android:name="android.intent.action.DATE_CHANGED" />
+                <action android:name="android.intent.action.USER_PRESENT" />
+                <action android:name="android.intent.action.TIME_TICK" />
+                <action android:name="android.intent.action.TIME_SET" />
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
             </intent-filter>
             <meta-data
@@ -46,7 +58,7 @@
         <service
             android:name=".widget.UpdateService"
             android:exported="false"
-            android:permission="android.permission.BIND_REMOTEVIEWS"/>
+            android:permission="android.permission.BIND_REMOTEVIEWS" />
     </application>
 
 </manifest>

@@ -1,4 +1,4 @@
-package com.mnnyang.gzuclassschedule.school;
+package com.mnnyang.gzuclassschedule.mvp.school;
 
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -15,7 +15,7 @@ import com.mnnyang.gzuclassschedule.BaseActivity;
 import com.mnnyang.gzuclassschedule.R;
 import com.mnnyang.gzuclassschedule.app.Constant;
 import com.mnnyang.gzuclassschedule.app.Url;
-import com.mnnyang.gzuclassschedule.impt.ImptActivity;
+import com.mnnyang.gzuclassschedule.mvp.impt.ImptActivity;
 import com.mnnyang.gzuclassschedule.utils.DialogHelper;
 import com.mnnyang.gzuclassschedule.utils.DialogListener;
 
@@ -38,7 +38,7 @@ public class SchoolActivity extends BaseActivity implements SchoolContract.View,
 
         initView();
 
-        mPresenter = new SchoolPresenter(this);
+        new SchoolPresenter(this);
     }
 
     private void initView() {
@@ -149,5 +149,10 @@ public class SchoolActivity extends BaseActivity implements SchoolContract.View,
 
     private void selectedGzu() {
         mPresenter.testUrl(Url.URL_GZU_HOST);
+    }
+
+    @Override
+    public void setPresenter(SchoolContract.Presenter presenter) {
+        mPresenter = presenter;
     }
 }

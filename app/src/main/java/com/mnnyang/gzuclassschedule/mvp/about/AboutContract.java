@@ -1,8 +1,7 @@
-package com.mnnyang.gzuclassschedule.about;
+package com.mnnyang.gzuclassschedule.mvp.about;
 
 import com.mnnyang.gzuclassschedule.BasePresenter;
 import com.mnnyang.gzuclassschedule.BaseView;
-import com.mnnyang.gzuclassschedule.data.bean.Course;
 import com.mnnyang.gzuclassschedule.data.bean.Version;
 
 /**

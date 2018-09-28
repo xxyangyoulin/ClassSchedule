@@ -1,4 +1,4 @@
-package com.mnnyang.gzuclassschedule.conf;
+package com.mnnyang.gzuclassschedule.mvp.conf;
 
 /**
  * Created by xxyangyoulin on 2018/3/13.
@@ -9,6 +9,7 @@ public class ConfPresenter implements ConfContract.Presenter {
 
     public ConfPresenter(ConfContract.View mView) {
         this.mView = mView;
+        mView.setPresenter(this);
     }
 
     @Override

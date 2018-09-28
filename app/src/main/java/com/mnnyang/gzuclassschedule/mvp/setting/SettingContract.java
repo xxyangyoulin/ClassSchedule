@@ -1,10 +1,8 @@
-package com.mnnyang.gzuclassschedule.setting;
+package com.mnnyang.gzuclassschedule.mvp.setting;
 
 
 import com.mnnyang.gzuclassschedule.BasePresenter;
 import com.mnnyang.gzuclassschedule.BaseView;
-import com.mnnyang.gzuclassschedule.data.bean.Course;
-import com.mnnyang.gzuclassschedule.http.HttpCallback;
 
 /**
  * Created by mnnyang on 17-10-3.

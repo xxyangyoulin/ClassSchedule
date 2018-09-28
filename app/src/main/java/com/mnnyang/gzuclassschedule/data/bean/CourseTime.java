@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 /**
  * Created by mnnyang on 17-11-4.
+ * used in network
  */
 
 public class CourseTime {

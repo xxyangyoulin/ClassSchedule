@@ -10,7 +10,7 @@ import android.net.Uri;
 import com.google.gson.Gson;
 import com.mnnyang.gzuclassschedule.app.Url;
 import com.mnnyang.gzuclassschedule.data.bean.Version;
-import com.mnnyang.gzuclassschedule.http.HttpCallback;
+import com.mnnyang.gzuclassschedule.data.http.HttpCallback;
 import com.zhy.http.okhttp.OkHttpUtils;
 import com.zhy.http.okhttp.callback.StringCallback;
 

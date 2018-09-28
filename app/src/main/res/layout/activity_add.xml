@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:gravity="center_horizontal"
     android:orientation="vertical"
-    tools:context="com.mnnyang.gzuclassschedule.add.AddActivity">
+    tools:context=".mvp.add.AddActivity">
 
     <android.support.design.widget.AppBarLayout
         android:layout_width="match_parent"

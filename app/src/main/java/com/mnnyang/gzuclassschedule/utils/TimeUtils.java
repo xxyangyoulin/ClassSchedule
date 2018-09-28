@@ -26,20 +26,8 @@ public class TimeUtils {
      * @return
      */
     public static Date getNowWeekBegin() {
-//        int mondayPlus;
-//        Calendar cd = Calendar.getInstance();
-//        int dayOfWeek = cd.get(Calendar.DAY_OF_WEEK) - 1;
-//        if (dayOfWeek == 1) {
-//            mondayPlus = 0;
-//        } else {
-//            mondayPlus = 1 - dayOfWeek;
-//        }
-//        GregorianCalendar currentDate = new GregorianCalendar();
-//        currentDate.add(GregorianCalendar.DATE, mondayPlus);
-
         return getThisWeekMonday(new Date());
     }
-
 
     public static Date getThisWeekMonday(Date date) {
         Calendar cal = Calendar.getInstance();

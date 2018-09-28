@@ -1,4 +1,4 @@
-package com.mnnyang.gzuclassschedule.setting;
+package com.mnnyang.gzuclassschedule.mvp.setting;
 
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -15,14 +15,14 @@ import android.widget.ScrollView;
 
 import com.mnnyang.gzuclassschedule.BaseActivity;
 import com.mnnyang.gzuclassschedule.R;
-import com.mnnyang.gzuclassschedule.about.AboutActivity;
+import com.mnnyang.gzuclassschedule.mvp.about.AboutActivity;
 import com.mnnyang.gzuclassschedule.mvp.add.AddActivity;
 import com.mnnyang.gzuclassschedule.app.Constant;
 import com.mnnyang.gzuclassschedule.app.app;
-import com.mnnyang.gzuclassschedule.course.CourseActivity;
+import com.mnnyang.gzuclassschedule.mvp.course.CourseActivity;
 import com.mnnyang.gzuclassschedule.custom.settting.SettingItemNormal;
-import com.mnnyang.gzuclassschedule.mg.MgActivity;
-import com.mnnyang.gzuclassschedule.school.SchoolActivity;
+import com.mnnyang.gzuclassschedule.mvp.mg.MgActivity;
+import com.mnnyang.gzuclassschedule.mvp.school.SchoolActivity;
 import com.mnnyang.gzuclassschedule.utils.ActivityUtil;
 import com.mnnyang.gzuclassschedule.utils.DialogHelper;
 import com.mnnyang.gzuclassschedule.utils.DialogListener;
@@ -36,15 +36,15 @@ import static com.mnnyang.gzuclassschedule.app.Constant.themeNameArray;
 
 public class SettingActivity extends BaseActivity implements SettingContract.View,
         SettingItemNormal.SettingOnClickListener {
+    private SettingContract.Presenter mPresenter;
+
     private SettingItemNormal sinUserAdd;
     private SettingItemNormal sinImportGzu;
     private SettingItemNormal sinKbManage;
 
-    private SettingItemNormal sinHideFab;
     private SettingItemNormal sinMorePref;
     private SettingItemNormal sinFeedback;
     private SettingItemNormal sinAbout;
-    private SettingPresenter mPresenter;
     private HorizontalScrollView hsvTheme;
     private LinearLayout layoutTheme;
 
@@ -57,7 +57,7 @@ public class SettingActivity extends BaseActivity implements SettingContract.Vie
         initView();
         initDefaultValues();
 
-        mPresenter = new SettingPresenter(this);
+        new SettingPresenter(this);
     }
 
     private void initView() {
@@ -68,7 +68,6 @@ public class SettingActivity extends BaseActivity implements SettingContract.Vie
         sinImportGzu = findViewById(R.id.sin_import_gzu);
         sinKbManage = findViewById(R.id.sin_kb_manage);
 
-        sinHideFab = findViewById(R.id.sin_hide_fab);
         sinMorePref = findViewById(R.id.sin_more_pref);
         sinFeedback = findViewById(R.id.sin_feedback);
         sinAbout = findViewById(R.id.sin_about);
@@ -77,7 +76,6 @@ public class SettingActivity extends BaseActivity implements SettingContract.Vie
         sinImportGzu.setSettingOnClickListener(this);
         sinKbManage.setSettingOnClickListener(this);
 
-        sinHideFab.setSettingOnClickListener(this);
         sinMorePref.setSettingOnClickListener(this);
         sinFeedback.setSettingOnClickListener(this);
         sinAbout.setSettingOnClickListener(this);
@@ -91,12 +89,6 @@ public class SettingActivity extends BaseActivity implements SettingContract.Vie
     }
 
     private void initDefaultValues() {
-
-        sinHideFab.setChecked(PreferenceManager
-                .getDefaultSharedPreferences(getBaseContext())
-                .getBoolean(getString(R.string.app_preference_hide_fab),
-                        true));
-
         VersionUpdate vu = new VersionUpdate();
         String versionName = vu.getLocalVersionName(app.mContext);
         sinAbout.setSummary(versionName);
@@ -115,10 +107,6 @@ public class SettingActivity extends BaseActivity implements SettingContract.Vie
 
             case R.id.sin_kb_manage:
                 gotoMgActivity();
-                break;
-
-            case R.id.sin_hide_fab:
-                hideFabPref(checked);
                 break;
 
             case R.id.sin_more_pref:
@@ -140,13 +128,7 @@ public class SettingActivity extends BaseActivity implements SettingContract.Vie
 
     @Override
     public void onCheckedChanged(View view, boolean checked) {
-        switch (view.getId()) {
-            case R.id.sin_hide_fab:
-                hideFabPref(checked);
-                break;
-            default:
-                break;
-        }
+
     }
 
     int theme;
@@ -200,17 +182,6 @@ public class SettingActivity extends BaseActivity implements SettingContract.Vie
                 });
     }
 
-    private void hideFabPref(boolean checked) {
-        PreferenceManager
-                .getDefaultSharedPreferences(getBaseContext())
-                .edit()
-                .putBoolean(getString(R.string.app_preference_hide_fab), checked)
-                .apply();
-
-        notifiUpdateMainPage(Constant.INTENT_UPDATE_TYPE_OTHER);
-    }
-
-
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
@@ -246,5 +217,10 @@ public class SettingActivity extends BaseActivity implements SettingContract.Vie
     @Override
     public void showNotice(String notice) {
         ToastUtils.show(notice);
+    }
+
+    @Override
+    public void setPresenter(SettingContract.Presenter presenter) {
+        mPresenter = presenter;
     }
 }

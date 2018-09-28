@@ -1,4 +1,4 @@
-package com.mnnyang.gzuclassschedule.mg;
+package com.mnnyang.gzuclassschedule.mvp.mg;
 
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -16,22 +16,25 @@ import android.widget.EditText;
 
 import com.mnnyang.gzuclassschedule.BaseActivity;
 import com.mnnyang.gzuclassschedule.R;
-import com.mnnyang.gzuclassschedule.app.Constant;
-import com.mnnyang.gzuclassschedule.course.CourseActivity;
+import com.mnnyang.gzuclassschedule.app.AppUtils;
+import com.mnnyang.gzuclassschedule.mvp.course.CourseActivity;
 import com.mnnyang.gzuclassschedule.data.bean.CsItem;
 import com.mnnyang.gzuclassschedule.data.db.CourseDbDao;
-import com.mnnyang.gzuclassschedule.mg.adapter.MgAdapter;
+import com.mnnyang.gzuclassschedule.mvp.mg.adapter.MgAdapter;
 import com.mnnyang.gzuclassschedule.utils.DialogHelper;
 import com.mnnyang.gzuclassschedule.utils.DialogListener;
 import com.mnnyang.gzuclassschedule.utils.Preferences;
 import com.mnnyang.gzuclassschedule.utils.ToastUtils;
+import com.mnnyang.gzuclassschedule.utils.event.CourseDataChangeEvent;
 import com.mnnyang.gzuclassschedule.utils.spec.RecyclerBaseAdapter;
+
+import org.greenrobot.eventbus.EventBus;
 
 import java.util.ArrayList;
 
 public class MgActivity extends BaseActivity implements MgContract.View, View.OnClickListener {
 
-    private MgPresenter mPresenter;
+    private MgContract.Presenter mPresenter;
     private MgAdapter mAdapter;
     ArrayList<CsItem> csItems = new ArrayList<>();
     private DialogHelper mCsNameDialogHelper;
@@ -43,8 +46,8 @@ public class MgActivity extends BaseActivity implements MgContract.View, View.On
         initBackToolbar(getString(R.string.kb_manage));
         initRecyclerView();
         initFab();
-        mPresenter = new MgPresenter(this, csItems);
-        mPresenter.start();
+
+        new MgPresenter(this, csItems).start();
     }
 
     private void initFab() {
@@ -101,7 +104,7 @@ public class MgActivity extends BaseActivity implements MgContract.View, View.On
 
         final EditText editText = view.findViewById(R.id.et_course_table_name);
         //default value
-        editText.setHint(CourseDbDao.newInstance().getCsName(id));
+        editText.setHint(CourseDbDao.instance().getCsName(id));
 
         mCsNameDialogHelper.showCustomDialog(this, view,
                 getString(R.string.please_input_course_table_name), new DialogListener() {
@@ -115,12 +118,12 @@ public class MgActivity extends BaseActivity implements MgContract.View, View.On
                     public void onPositive(DialogInterface dialog, int which) {
                         super.onPositive(dialog, which);
                         String courseTableName = editText.getText().toString().trim();
-                        if (TextUtils.isEmpty(courseTableName)){
+                        if (TextUtils.isEmpty(courseTableName)) {
                             toast(getString(R.string.course_name_can_not_be_empty));
                             return;
                         }
 
-                        mPresenter.editCsName(id,courseTableName);
+                        mPresenter.editCsName(id, courseTableName);
                     }
                 });
     }
@@ -166,7 +169,8 @@ public class MgActivity extends BaseActivity implements MgContract.View, View.On
                     public void onPositive(DialogInterface dialog, int which) {
                         super.onPositive(dialog, which);
                         mPresenter.switchCsName(tag);
-                        notifiUpdateMainPage(Constant.INTENT_UPDATE_TYPE_COURSE);
+                        EventBus.getDefault().post(new CourseDataChangeEvent());
+                        AppUtils.updateWidget(getBaseContext());
                     }
                 });
     }
@@ -193,7 +197,8 @@ public class MgActivity extends BaseActivity implements MgContract.View, View.On
     @Override
     public void deleteFinish() {
         mPresenter.reloadCsNameList();
-        notifiUpdateMainPage(Constant.INTENT_UPDATE_TYPE_COURSE);
+        EventBus.getDefault().post(new CourseDataChangeEvent());
+        AppUtils.updateWidget(this);
     }
 
     @Override
@@ -264,5 +269,10 @@ public class MgActivity extends BaseActivity implements MgContract.View, View.On
                         mPresenter.addCsName(courseTableName);
                     }
                 });
+    }
+
+    @Override
+    public void setPresenter(MgContract.Presenter presenter) {
+        mPresenter = presenter;
     }
 }

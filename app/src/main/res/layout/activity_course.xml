@@ -1,22 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context="com.mnnyang.gzuclassschedule.course.CourseActivity">
+    tools:context=".mvp.course.CourseActivity">
 
     <include layout="@layout/title_toolbar" />
 
-    <!--<com.mnnyang.gzuclassschedule.custom.course.CourseView-->
-    <!--android:id="@+id/course_view"-->
-    <!--android:layout_width="match_parent"-->
-    <!--android:layout_height="match_parent"-->
-    <!--android:layout_marginTop="?attr/actionBarSize"-->
-    <!--android:paddingEnd="8dp"-->
-    <!--android:paddingStart="4dp" />-->
-
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/recycler_view_select_week"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal" />
 
     <LinearLayout
         android:id="@+id/layout_week_group"
@@ -38,12 +34,12 @@
 
             <LinearLayout
                 android:id="@+id/layout_node_group"
-                android:orientation="vertical"
                 android:layout_width="28dp"
-                android:layout_height="match_parent" />
+                android:layout_height="match_parent"
+                android:orientation="vertical" />
 
 
-            <com.mnnyang.gzuclassschedule.custom.course2.CourseView
+            <com.mnnyang.gzuclassschedule.custom.course.CourseView
                 android:id="@+id/course_view_v2"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content" />

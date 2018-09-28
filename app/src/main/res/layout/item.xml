@@ -10,11 +10,11 @@
         android:id = "@+id/widget_list_item_tv"
         android:layout_width = "fill_parent"
         android:layout_height = "wrap_content"
-        android:layout_marginTop = "10dip"
-        android:layout_marginRight="10dip"
+        android:layout_marginTop = "10dp"
+        android:layout_marginRight="10dp"
         android:layout_marginLeft = "20dp"
         android:text="fuck"
-        android:lineSpacingExtra = "4dip"
+        android:lineSpacingExtra = "4dp"
         android:textSize="20sp"
         android:textColor="#FFFFF0"/>
 </LinearLayout>

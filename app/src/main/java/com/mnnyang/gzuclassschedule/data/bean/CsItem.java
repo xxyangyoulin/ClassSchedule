@@ -2,6 +2,7 @@ package com.mnnyang.gzuclassschedule.data.bean;
 
 /**
  * Created by mnnyang on 17-11-4.
+ * used in network
  */
 
 public class CsItem {

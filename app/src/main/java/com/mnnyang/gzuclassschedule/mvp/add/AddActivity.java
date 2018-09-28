@@ -1,7 +1,5 @@
-package com.mnnyang.gzuclassschedule.add;
+package com.mnnyang.gzuclassschedule.mvp.add;
 
-import android.appwidget.AppWidgetManager;
-import android.content.ComponentName;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
@@ -10,22 +8,23 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.RemoteViews;
 
 import com.mnnyang.gzuclassschedule.BaseActivity;
 import com.mnnyang.gzuclassschedule.R;
 import com.mnnyang.gzuclassschedule.app.AppUtils;
 import com.mnnyang.gzuclassschedule.app.Constant;
 import com.mnnyang.gzuclassschedule.custom.EditTextLayout;
-import com.mnnyang.gzuclassschedule.custom.course2.CourseAncestor;
+import com.mnnyang.gzuclassschedule.custom.course.CourseAncestor;
 import com.mnnyang.gzuclassschedule.data.bean.Course;
 import com.mnnyang.gzuclassschedule.data.db.CourseDbDao;
 import com.mnnyang.gzuclassschedule.utils.DialogHelper;
 import com.mnnyang.gzuclassschedule.utils.DialogListener;
 import com.mnnyang.gzuclassschedule.utils.LogUtil;
 import com.mnnyang.gzuclassschedule.utils.Preferences;
+import com.mnnyang.gzuclassschedule.utils.event.CourseDataChangeEvent;
 import com.mnnyang.gzuclassschedule.utils.spec.PopupWindowDialog;
-import com.mnnyang.gzuclassschedule.widget.MyWidget;
+
+import org.greenrobot.eventbus.EventBus;
 
 public class AddActivity extends BaseActivity implements AddContract.View, View.OnClickListener {
 
@@ -64,7 +63,7 @@ public class AddActivity extends BaseActivity implements AddContract.View, View.
 
         initDefaultValues();
 
-        mPresenter = new AddPresenter(this);
+        new AddPresenter(this);
     }
 
     private void initDefaultValues() {
@@ -148,7 +147,7 @@ public class AddActivity extends BaseActivity implements AddContract.View, View.
         int currentCsNameId = Preferences.getInt(
                 getString(R.string.app_preference_current_cs_name_id), 0);
 
-        String csName = CourseDbDao.newInstance().getCsName(currentCsNameId);
+        String csName = CourseDbDao.instance().getCsName(currentCsNameId);
 
         LogUtil.i(this, "当前课表-->" + currentCsNameId);
 
@@ -262,24 +261,29 @@ public class AddActivity extends BaseActivity implements AddContract.View, View.
     @Override
     public void onAddSucceed(Course course) {
         toast("【" + course.getName() + "】" + getString(R.string.add_succeed));
-        notifiUpdateMainPage(Constant.INTENT_UPDATE_TYPE_COURSE);
-
-        //更新桌面小部件
-        new AppUtils().updateWidget(this);
+        EventBus.getDefault().post(new CourseDataChangeEvent());
+        AppUtils.updateWidget(this);
         finish();
     }
 
     @Override
     public void onDelSucceed() {
         toast(getString(R.string.delete_succeed));
-        notifiUpdateMainPage(Constant.INTENT_UPDATE_TYPE_COURSE);
+        EventBus.getDefault().post(new CourseDataChangeEvent());
+        AppUtils.updateWidget(this);
         finish();
     }
 
     @Override
     public void onUpdateSucceed(Course course) {
         toast("【" + course.getName() + "】" + getString(R.string.update_succeed));
-        notifiUpdateMainPage(Constant.INTENT_UPDATE_TYPE_COURSE);
+        EventBus.getDefault().post(new CourseDataChangeEvent());
+        AppUtils.updateWidget(this);
         finish();
+    }
+
+    @Override
+    public void setPresenter(AddContract.Presenter presenter) {
+        mPresenter = presenter;
     }
 }

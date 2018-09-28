@@ -1,4 +1,4 @@
-package com.mnnyang.gzuclassschedule.about;
+package com.mnnyang.gzuclassschedule.mvp.about;
 
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -10,6 +10,7 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.mnnyang.gzuclassschedule.BaseActivity;
+import com.mnnyang.gzuclassschedule.BasePresenter;
 import com.mnnyang.gzuclassschedule.R;
 import com.mnnyang.gzuclassschedule.app.app;
 import com.mnnyang.gzuclassschedule.data.bean.Version;
@@ -25,7 +26,7 @@ import com.zhy.http.okhttp.request.OkHttpRequest;
 
 public class AboutActivity extends BaseActivity implements AboutContract.View {
 
-    private AboutPresenter mPresenter;
+    private AboutContract.Presenter mPresenter;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -37,7 +38,7 @@ public class AboutActivity extends BaseActivity implements AboutContract.View {
         initVersionName();
         initCheckUpdate();
 
-        mPresenter = new AboutPresenter(this);
+        new AboutPresenter(this);
     }
 
     private void initVersionName() {
@@ -97,5 +98,11 @@ public class AboutActivity extends BaseActivity implements AboutContract.View {
                 break;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+
+    @Override
+    public void setPresenter(AboutContract.Presenter presenter) {
+        mPresenter = presenter;
     }
 }

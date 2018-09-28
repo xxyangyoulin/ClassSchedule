@@ -1,4 +1,4 @@
-package com.mnnyang.gzuclassschedule.custom.course2;
+package com.mnnyang.gzuclassschedule.custom.course;
 
 import java.io.Serializable;
 
@@ -19,7 +19,7 @@ public class CourseAncestor implements Serializable {
     protected int col;
 
     /** 颜色 */
-    protected int color;
+    protected int color = -1;
     protected int color2 = -1;
     /** 显示的内容 */
     protected String text;
@@ -137,7 +137,7 @@ public class CourseAncestor implements Serializable {
         return showIndex;
     }
 
-    public CourseAncestor setShowIndex(int showIndex) {
+    public CourseAncestor setShowType(int showIndex) {
         this.showIndex = showIndex;
         return this;
     }

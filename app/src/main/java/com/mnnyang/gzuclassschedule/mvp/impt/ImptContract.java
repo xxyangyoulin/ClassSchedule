@@ -1,4 +1,4 @@
-package com.mnnyang.gzuclassschedule.impt;
+package com.mnnyang.gzuclassschedule.mvp.impt;
 
 
 import android.widget.ImageView;

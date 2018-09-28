@@ -1,10 +1,9 @@
-package com.mnnyang.gzuclassschedule.about;
+package com.mnnyang.gzuclassschedule.mvp.about;
 
 import com.mnnyang.gzuclassschedule.R;
-import com.mnnyang.gzuclassschedule.app.Url;
 import com.mnnyang.gzuclassschedule.app.app;
 import com.mnnyang.gzuclassschedule.data.bean.Version;
-import com.mnnyang.gzuclassschedule.http.HttpCallback;
+import com.mnnyang.gzuclassschedule.data.http.HttpCallback;
 import com.mnnyang.gzuclassschedule.utils.LogUtil;
 import com.mnnyang.gzuclassschedule.utils.ToastUtils;
 import com.mnnyang.gzuclassschedule.utils.VersionUpdate;
@@ -18,6 +17,7 @@ public class AboutPresenter implements AboutContract.Presenter {
 
     public AboutPresenter(AboutContract.View mView) {
         this.mView = mView;
+        mView.setPresenter(this);
     }
 
     @Override

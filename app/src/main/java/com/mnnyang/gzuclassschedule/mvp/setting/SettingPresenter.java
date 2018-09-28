@@ -1,37 +1,14 @@
-package com.mnnyang.gzuclassschedule.setting;
+package com.mnnyang.gzuclassschedule.mvp.setting;
 
-import android.app.Activity;
-import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.net.Uri;
-import android.support.v7.app.AlertDialog;
 
-import com.google.gson.Gson;
 import com.mnnyang.gzuclassschedule.R;
 import com.mnnyang.gzuclassschedule.app.app;
-import com.mnnyang.gzuclassschedule.data.bean.Course;
-import com.mnnyang.gzuclassschedule.data.bean.Version;
-import com.mnnyang.gzuclassschedule.data.db.CourseDbDao;
-import com.mnnyang.gzuclassschedule.http.HttpCallback;
-import com.mnnyang.gzuclassschedule.http.HttpUtils;
-import com.mnnyang.gzuclassschedule.utils.ActivityUtil;
-import com.mnnyang.gzuclassschedule.utils.DialogHelper;
-import com.mnnyang.gzuclassschedule.utils.LogUtil;
-import com.mnnyang.gzuclassschedule.utils.Preferences;
-import com.mnnyang.gzuclassschedule.utils.ToastUtils;
-import com.mnnyang.gzuclassschedule.utils.VersionUpdate;
 
-import java.util.ArrayList;
 import java.util.List;
-
-import rx.Observable;
-import rx.Observer;
-import rx.Subscriber;
-import rx.android.schedulers.AndroidSchedulers;
-import rx.schedulers.Schedulers;
 
 /**
  * Created by mnnyang on 17-10-19.
@@ -43,6 +20,8 @@ public class SettingPresenter implements SettingContract.Presenter {
 
     public SettingPresenter(SettingContract.View view) {
         this.mView = view;
+        mView.setPresenter(this);
+
     }
 
     @Override

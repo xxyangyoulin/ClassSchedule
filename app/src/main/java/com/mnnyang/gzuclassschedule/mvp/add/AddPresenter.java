@@ -1,4 +1,4 @@
-package com.mnnyang.gzuclassschedule.add;
+package com.mnnyang.gzuclassschedule.mvp.add;
 
 import android.text.TextUtils;
 
@@ -15,6 +15,7 @@ public class AddPresenter implements AddContract.Presenter {
 
     public AddPresenter(AddContract.View view) {
         mView = view;
+        mView.setPresenter(this);
     }
 
     @Override
@@ -41,7 +42,7 @@ public class AddPresenter implements AddContract.Presenter {
             return;
         }
 
-        CourseDbDao dao = CourseDbDao.newInstance();
+        CourseDbDao dao = CourseDbDao.instance();
         Course course1 = dao.addCourse(course);
 
         if (course1 != null) {
@@ -54,7 +55,7 @@ public class AddPresenter implements AddContract.Presenter {
 
     @Override
     public void removeCourse(int courseId) {
-        CourseDbDao.newInstance().removeCourse(courseId);
+        CourseDbDao.instance().removeCourse(courseId);
         mView.onDelSucceed();
     }
 
@@ -77,7 +78,7 @@ public class AddPresenter implements AddContract.Presenter {
             return;
         }
 
-        CourseDbDao dao = CourseDbDao.newInstance();
+        CourseDbDao dao = CourseDbDao.instance();
         Course course1 = dao.updateCourse(course);
 
         if (course1 != null) {

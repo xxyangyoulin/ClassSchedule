@@ -5,14 +5,15 @@
     android:orientation="vertical">
 
     <TextView
-        android:id="@+id/widget_box_1"
+        android:id="@+id/widget_cell_1"
         android:layout_width="fill_parent"
-        android:layout_height="35.0dip"
-        android:layout_margin="1.0dip"
+        android:layout_height="35.0dp"
+        android:layout_margin="1.0dp"
         android:background="@android:color/transparent"
-        android:text=""
+        android:paddingLeft="1dp"
+        android:paddingRight="1dp"
         android:textColor="@color/white"
         android:textSize="12.0sp"
-        android:textStyle="bold" />
+        android:textStyle="normal" />
 
 </LinearLayout>

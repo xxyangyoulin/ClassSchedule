@@ -1,7 +1,7 @@
-package com.mnnyang.gzuclassschedule.school;
+package com.mnnyang.gzuclassschedule.mvp.school;
 
-import com.mnnyang.gzuclassschedule.http.HttpCallback;
-import com.mnnyang.gzuclassschedule.http.HttpUtils;
+import com.mnnyang.gzuclassschedule.data.http.HttpCallback;
+import com.mnnyang.gzuclassschedule.data.http.HttpUtils;
 
 /**
  * Created by xxyangyoulin on 2018/4/9.
@@ -14,6 +14,8 @@ public class SchoolPresenter implements SchoolContract.Presenter {
 
     public SchoolPresenter(SchoolContract.View view) {
         mView = view;
+        mView.setPresenter(this);
+
     }
 
     @Override

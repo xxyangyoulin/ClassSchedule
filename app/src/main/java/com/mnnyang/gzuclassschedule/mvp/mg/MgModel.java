@@ -1,4 +1,4 @@
-package com.mnnyang.gzuclassschedule.mg;
+package com.mnnyang.gzuclassschedule.mvp.mg;
 
 import com.mnnyang.gzuclassschedule.data.bean.CsItem;
 import com.mnnyang.gzuclassschedule.data.db.CourseDbDao;
@@ -12,6 +12,6 @@ import java.util.ArrayList;
 public class MgModel implements MgContract.Model {
     @Override
     public ArrayList<CsItem> getCsItemData() {
-        return CourseDbDao.newInstance().loadCsNameList();
+        return CourseDbDao.instance().loadCsNameList();
     }
 }

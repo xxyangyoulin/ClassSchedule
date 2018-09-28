@@ -1,16 +1,15 @@
-package com.mnnyang.gzuclassschedule.course;
+package com.mnnyang.gzuclassschedule.mvp.course;
 
 import android.annotation.SuppressLint;
-import android.content.BroadcastReceiver;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.view.Gravity;
@@ -28,20 +27,20 @@ import android.widget.TextView;
 
 import com.mnnyang.gzuclassschedule.BaseActivity;
 import com.mnnyang.gzuclassschedule.R;
-import com.mnnyang.gzuclassschedule.mvp.add.AddActivity;
 import com.mnnyang.gzuclassschedule.app.Constant;
-import com.mnnyang.gzuclassschedule.custom.course2.CourseAncestor;
-import com.mnnyang.gzuclassschedule.custom.course2.CourseView;
+import com.mnnyang.gzuclassschedule.custom.course.CourseAncestor;
+import com.mnnyang.gzuclassschedule.custom.course.CourseView;
 import com.mnnyang.gzuclassschedule.custom.util.Utils;
 import com.mnnyang.gzuclassschedule.data.bean.Course;
 import com.mnnyang.gzuclassschedule.data.db.CourseDbDao;
-import com.mnnyang.gzuclassschedule.setting.SettingActivity;
+import com.mnnyang.gzuclassschedule.mvp.add.AddActivity;
+import com.mnnyang.gzuclassschedule.mvp.home.HomeActivity;
 import com.mnnyang.gzuclassschedule.utils.DialogHelper;
 import com.mnnyang.gzuclassschedule.utils.DialogListener;
 import com.mnnyang.gzuclassschedule.utils.LogUtil;
 import com.mnnyang.gzuclassschedule.utils.Preferences;
 import com.mnnyang.gzuclassschedule.utils.TimeUtils;
-import com.mnnyang.gzuclassschedule.utils.event.CourseChangedEvent;
+import com.mnnyang.gzuclassschedule.utils.event.CourseDataChangeEvent;
 import com.mnnyang.gzuclassschedule.utils.spec.ParseCourse;
 import com.mnnyang.gzuclassschedule.utils.spec.ShowDetailDialog;
 
@@ -54,9 +53,12 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
-import static com.mnnyang.gzuclassschedule.app.Constant.INTENT_UPDATE_TYPE_OTHER;
 import static com.mnnyang.gzuclassschedule.utils.ScreenUtils.dp2px;
+import static java.security.AccessController.getContext;
 
+/**
+ * TODO 添加删除撤销
+ */
 public class CourseActivity extends BaseActivity implements CourseContract.View,
         View.OnClickListener {
 
@@ -66,15 +68,15 @@ public class CourseActivity extends BaseActivity implements CourseContract.View,
     private int mCurrentWeekCount;
     private PopupWindow mPopupWindow;
     private int mCurrentMonth;
-    private UpdateReceiver mUpdateReceiver;
     private ShowDetailDialog mDialog;
-    private com.mnnyang.gzuclassschedule.custom.course2.CourseView mCourseViewV2;
+    private CourseView mCourseViewV2;
     private LinearLayout mLayoutWeekGroup;
     private LinearLayout mLayoutNodeGroup;
     private int WEEK_TEXT_SIZE = 13;
     private int NODE_TEXT_SIZE = 12;
     private int NODE_WIDTH = 28;
     private TextView mMMonthTextView;
+    private RecyclerView mRvSelectWeek;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -91,13 +93,28 @@ public class CourseActivity extends BaseActivity implements CourseContract.View,
 
         initFirstStart();
         initToolbar();
-        initWeekTitle();
+        initWeek();
         initCourseView();
         initWeekNodeGroup();
-        registerReceiver();
         mPresenter = new CoursePresenter(this);
 
         updateView();
+    }
+
+    private void initWeek() {
+        initWeekTitle();
+        initSelectWeek();
+    }
+
+    private void initSelectWeek() {
+        mRvSelectWeek = findViewById(R.id.recycler_view_select_week);
+        mRvSelectWeek.setLayoutManager(new LinearLayoutManager(getApplicationContext(),
+                RecyclerView.HORIZONTAL, false));
+        ArrayList<String> strings = new ArrayList<>();
+        for (int i = 0; i < 25; i++) {
+            strings.add("第"+i+"节");
+        }
+        mRvSelectWeek.setAdapter(new SelectWeekAdapter(R.layout.adapter_select_week, strings));
     }
 
 
@@ -112,7 +129,6 @@ public class CourseActivity extends BaseActivity implements CourseContract.View,
     private void initWeekNodeGroup() {
         mLayoutNodeGroup.removeAllViews();
         mLayoutWeekGroup.removeAllViews();
-
 
         for (int i = -1; i < 7; i++) {
             TextView textView = new TextView(getApplicationContext());
@@ -144,7 +160,7 @@ public class CourseActivity extends BaseActivity implements CourseContract.View,
             TextView textView = new TextView(getApplicationContext());
             textView.setTextSize(NODE_TEXT_SIZE);
             textView.setGravity(Gravity.CENTER);
-            textView.setText("" + i);
+            textView.setText(String.valueOf(i));
 
             LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
                     ViewGroup.LayoutParams.MATCH_PARENT, Utils.dip2px(getApplicationContext(), 60));
@@ -163,7 +179,7 @@ public class CourseActivity extends BaseActivity implements CourseContract.View,
             public boolean onMenuItemClick(MenuItem item) {
                 if (item.getItemId() == R.id.action_set) {
                     Intent intent = new Intent(CourseActivity.this,
-                            SettingActivity.class);
+                            HomeActivity.class);
                     startActivity(intent);
                     return true;
                 }
@@ -216,30 +232,6 @@ public class CourseActivity extends BaseActivity implements CourseContract.View,
         });
     }
 
-    private void registerReceiver() {
-        mUpdateReceiver = new UpdateReceiver();
-        IntentFilter intentFilter = new IntentFilter(Constant.INTENT_UPDATE);
-        registerReceiver(mUpdateReceiver, intentFilter);
-    }
-
-    class UpdateReceiver extends BroadcastReceiver {
-        public void onReceive(Context context, Intent intent) {
-            int type = intent.getIntExtra(Constant.INTENT_UPDATE_TYPE, 0);
-
-            LogUtil.i(this, "type" + type);
-
-            switch (type) {
-                case Constant.INTENT_UPDATE_TYPE_COURSE:
-                    updateCoursePreference();
-                    break;
-                case INTENT_UPDATE_TYPE_OTHER:
-                    updateOtherPreference();
-                    break;
-            }
-        }
-    }
-
-
     private void updateView() {
         updateCoursePreference();
         updateOtherPreference();
@@ -256,8 +248,6 @@ public class CourseActivity extends BaseActivity implements CourseContract.View,
                 getString(R.string.app_preference_current_cs_name_id), 0);
 
         LogUtil.i(this, "当前课表-->" + currentCsNameId);
-        //int maxNode = Preferences.getInt(getString(R.string.app_preference_max_node), Constant.DEFAULT_MAX_NODE_COUNT);
-
         mPresenter.updateCourseViewData(currentCsNameId);
     }
 
@@ -309,7 +299,7 @@ public class CourseActivity extends BaseActivity implements CourseContract.View,
             return;
         }
 
-        int csNameId = CourseDbDao.newInstance().getCsNameId(getString(R.string.default_course_name));
+        int csNameId = CourseDbDao.instance().getCsNameId(getString(R.string.default_course_name));
 
         Preferences.putInt(getString(R.string.app_preference_current_cs_name_id), csNameId);
 
@@ -326,11 +316,10 @@ public class CourseActivity extends BaseActivity implements CourseContract.View,
 
         int i = 0;
         for (Course course : courses) {
-            course.init(course.getWeek(), course.getNodes().get(0), course.getNodes().size(), Utils.getRandomColor(i++));
-            course.setStartIndex(course.getStartWeek());
-            course.setEndIndex(course.getEndWeek());
-            course.setText(course.getName() + "\n@" + course.getClassRoom());
-            course.setShowIndex(course.getWeekType());
+            course.init();
+            if (course.getColor() == -1) {
+                course.setColor(Utils.getRandomColor(i++));
+            }
 
             LogUtil.w(this, course.toString());
             mCourseViewV2.addCourse(course);
@@ -447,26 +436,27 @@ public class CourseActivity extends BaseActivity implements CourseContract.View,
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
-        if (mDialog != null) {
-            mDialog.dismiss();
-            System.out.println("去关闭");
-        }
+        if (mDialog != null) mDialog.dismiss();
         return super.onTouchEvent(event);
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
-    public void courseChangedEvent(CourseChangedEvent event) {
-
+    public void courseChangeEvent(CourseDataChangeEvent event) {
+        //更新主界面
+        updateView();
     }
-
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
         //EvenBus
-        EventBus.getDefault().unregister(this);
-        if (mUpdateReceiver != null) {
-            unregisterReceiver(mUpdateReceiver);
+        if (EventBus.getDefault().isRegistered(this)) {
+            EventBus.getDefault().unregister(this);
         }
+    }
+
+    @Override
+    public void setPresenter(CourseContract.Presenter presenter) {
+        mPresenter = presenter;
     }
 }

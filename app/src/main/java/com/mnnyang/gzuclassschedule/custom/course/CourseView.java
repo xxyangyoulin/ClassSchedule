@@ -1,361 +1,606 @@
 package com.mnnyang.gzuclassschedule.custom.course;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.DashPathEffect;
+import android.graphics.Paint;
+import android.graphics.Path;
+import android.graphics.drawable.StateListDrawable;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.text.TextPaint;
 import android.util.AttributeSet;
-import android.view.Gravity;
+import android.util.Log;
+import android.util.TypedValue;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
-import android.widget.RemoteViews;
-import android.widget.ScrollView;
 import android.widget.TextView;
 
-import com.mnnyang.gzuclassschedule.data.bean.Course;
+import com.mnnyang.gzuclassschedule.R;
+import com.mnnyang.gzuclassschedule.custom.util.Utils;
 
 import java.util.ArrayList;
+import java.util.List;
 
-import static com.mnnyang.gzuclassschedule.custom.util.Utils.dip2px;
+public class CourseView extends FrameLayout {
 
-/**
- * Created by mnnyang on 17-10-20.
- */
+    private int mWidth;
+    private int mHeight;
 
-@RemoteViews.RemoteView
-public class CourseView extends LinearLayout {
+    private int mRowCount = 7;
+    private int mColCount = 16;
 
-    private String[] WEEK = {"周一", "周二", "周三", "周四", "周五", "周六", "周七"};
-    /**
-     * 星期高度
-     */
-    private int mWeekHeight;
+    private int mRowItemWidth = dip2px(50);
+    private int mColItemHeight = dip2px(60);
 
-    /**
-     * 星期宽度
-     */
-    private int mWeekWidth;
-    /**
-     * 月份宽度
-     */
-    private int mMonthWidth;
+    private int mCurrentIndex = 1;
+    private String mNotCurrentPrefix = "[非本周]";
 
-    /**
-     * 分割线尺寸
-     */
-    private int mDividerSize;
+    /** 行item的宽度根据view的总宽度自动平均分配 */
+    private boolean mRowItemWidthAuto = true;
 
-    /**
-     * view宽度
-     */
-    private int mViewWidth;
+    List<CourseAncestor> mCourseList = new ArrayList<>();
 
-    /**
-     * 月份大小
-     */
-    private int mMonthTextSize;
+    private CourseAncestor mAddTagCourse;
+    private View mAddTagCourseView;
 
-    /**
-     * 星期大小
-     */
-    private int mWeekTextSize;
+    /** item view radius */
+    private float mCourseItemRadius = 0;
 
-    /**
-     * 水平分割线颜色
-     */
-    private int mHorizontalDividerColor;
+    private Paint mLinePaint;
+    private Path mLinePath = new Path();
 
-    /**
-     * 顶部背景颜色
-     */
-    private int mTopWeekBgColor;
+    /** 显示垂直分割线 */
+    private boolean mShowVerticalLine = false;
 
-    /**
-     * 是否显示周末
-     */
-    private boolean mShowWeekend = true;
+    /** 显示水平分割线 */
+    private boolean mShowHorizontalLine = true;
 
-    private CourseTableView.OnItemClickListener mItemClickListener;
-    private CourseTableView ctView = new CourseTableView(getContext());
-    private int mMonthTextColor;
-    private int mWeekTextColor;
+    /** 第一次绘制 */
+    private boolean mFirstDraw;
 
-    private int mMonth = 7;
+    /** text */
+    private int mTextLRPadding = dip2px(2);
+    private int mTextTBPadding = dip2px(4);
+    private int textTBMargin = dip2px(3);
+    private int textLRMargin = textTBMargin;
+    private int mTextColor = Color.WHITE;
+    private int mTextSize = 12;
 
-    public CourseView(Context context) {
+    /** 不活跃的背景 */
+    private int mInactiveBackgroundColor = 0xFFE3EEF5;
+    private int mInactiveTextColor = 0xFFbadac9;
+
+    public CourseView(@NonNull Context context) {
         super(context);
-        setCourseData();
     }
 
-    public CourseView(Context context, @Nullable AttributeSet attrs) {
+    public CourseView(@NonNull Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
-        setCourseData();
+
+        init();
     }
 
-    public CourseView(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
-        super(context, attrs, defStyleAttr);
-        setCourseData();
+    private void init() {
+        l("调用init");
+        initPaint();
     }
 
-    private void setCourseData() {
-        setOrientation(VERTICAL);
-        initDefaultSize();
-    }
-
-    public CourseView setCourseData(ArrayList<Course> courses) {
-        ctView.setCourseData(courses);
-        return this;
-    }
-
-    /**
-     * @param course success return null or return conflict object
-     * @return
-     */
-    public Course addCourse(@NonNull Course course) {
-        return ctView.addCourse(course);
-    }
-
-    private void initDefaultSize() {
-        mWeekHeight = dip2px(getContext(), 45);
-        mMonthWidth = dip2px(getContext(), 28);
-        mDividerSize = dip2px(getContext(), 1);
-        mMonthTextSize = 13;
-        mWeekTextSize = 13;
-
-        mHorizontalDividerColor = 0x15000000;
-        mTopWeekBgColor = Color.TRANSPARENT;
-        mWeekTextColor = 0xaa000000;
-        mMonthTextColor = 0xd0000000;
+    private void initPaint() {
+        mLinePaint = new Paint(Paint.ANTI_ALIAS_FLAG);
+        mLinePaint.setColor(Color.LTGRAY);
+        mLinePaint.setStrokeWidth(1);
+        mLinePaint.setStyle(Paint.Style.STROKE);
+        mLinePaint.setPathEffect(new DashPathEffect(new float[]{5, 5}, 0));
     }
 
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-        mViewWidth = MeasureSpec.getSize(widthMeasureSpec);
-        mWeekWidth = (int) ((mViewWidth - mMonthWidth) / (mShowWeekend ? 7 : 5) + 0.5f);
-
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
-    }
+        l("调用onMeasure");
 
-    boolean isFirst = true;
+        mHeight = mColItemHeight * mColCount;
+        int heightResult = MeasureSpec.makeMeasureSpec(mHeight, MeasureSpec.EXACTLY);
+
+        setMeasuredDimension(widthMeasureSpec, heightResult);
+    }
 
     @Override
-    protected void dispatchDraw(Canvas canvas) {
-        if (isFirst) {
-            addTopWeekView();
-            addCourseTableView();
-            isFirst = false;
-        }
-        super.dispatchDraw(canvas);
-    }
-
-    public void updateView() {
-        removeAllViews();
-        addTopWeekView();
-        ViewGroup viewGroup = (ViewGroup) ctView.getParent();
-        if (viewGroup != null) viewGroup.removeAllViews();
-
-        addCourseTableView();
-
-        if (!isFirst) ctView.resetView();
-    }
-
-    private void addCourseTableView() {
-        ScrollView scrollView = new ScrollView(getContext());
-        scrollView.setVerticalScrollBarEnabled(false);
-//        TODO 记录
-        scrollView.setOverScrollMode(OVER_SCROLL_NEVER);
-
-        ctView.setTopWeekHeight(mWeekHeight)
-                .setOnItemClickListener(mItemClickListener)
-                .setNodeWidth(mMonthWidth);
-
-        ctView.setHorizontalFadingEdgeEnabled(false);
-
-        scrollView.addView(ctView);
-        addView(scrollView);
-    }
-
-    /*********************topWeek****************************/
-
-    private void addTopWeekView() {
-        LinearLayout weekView = new LinearLayout(getContext());
-        RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(mViewWidth, mWeekHeight);
-        weekView.setLayoutParams(params);
-        weekView.setBackgroundColor(mTopWeekBgColor);
-        weekView.setGravity(Gravity.CENTER);
-        setTopWeekView(weekView);
-
-        addView(weekView);
-        View divider = new View(getContext());
-        LayoutParams params1 = new LayoutParams(mViewWidth, mDividerSize);
-        divider.setLayoutParams(params1);
-        divider.setBackgroundColor(mHorizontalDividerColor);
-        addView(divider);
-    }
-
-    private void setTopWeekView(LinearLayout view) {
-        view.setOrientation(HORIZONTAL);
-        TextView month = getTextView(mMonth + "\n月",
-                mMonthTextSize, mMonthWidth, mWeekHeight);
-        month.setTextColor(mMonthTextColor);
-        view.addView(month);
-
-        for (int i = 0; i < (mShowWeekend ? 7 : 5); i++) {
-            String text = WEEK[i];
-            TextView week = getTextView(text,
-                    mWeekTextSize, mWeekWidth, mWeekHeight);
-            week.setTextColor(mWeekTextColor);
-            view.addView(week);
+    protected void onSizeChanged(int w, int h, int oldw, int oldh) {
+        if (mRowItemWidthAuto) {
+            mWidth = w;
+            mRowItemWidth = mWidth / mRowCount;
+        } else {
+            mWidth = mRowItemWidth * mRowCount;
         }
     }
 
-    private TextView getTextView(String text, int textSize, int w, int h) {
+    /** 把数组中的数据全部添加到界面 */
+    private void initCourseItemView() {
+        l("调用initCourseItemView");
+
+        for (CourseAncestor course : mCourseList) {
+            realAddCourseItemView(course);
+        }
+    }
+
+    /** 在界面初始化之后添加数据 */
+    public void addCourse(CourseAncestor course) {
+        if (course == null) {
+            return;
+        }
+
+        if (!mCourseList.contains(course)) {
+            mCourseList.add(course);
+            realAddCourseItemView(course);
+        }
+    }
+
+    private void realAddCourseItemView(CourseAncestor course) {
+        updateItemStatus(course);
+
+        View itemView = createItemView(course);
+
+        LayoutParams params = new LayoutParams(mRowItemWidth,
+                mColItemHeight * course.getRowNum());
+
+        params.leftMargin = (course.getRow() - 1) * mRowItemWidth;
+        params.topMargin = (course.getCol() - 1) * mColItemHeight;
+
+        itemView.setLayoutParams(params);
+
+        if (!course.isDisplayable()) {
+            return;
+        }
+
+        if (course.getActiveStatus()) {
+            addView(itemView);
+        } else {
+            addView(itemView, 0);
+        }
+    }
+
+    private void updateItemStatus(CourseAncestor course) {
+        /*更新course的活跃状态*/
+        if (mCurrentIndex >= course.getStartIndex()
+                && mCurrentIndex <= course.getEndIndex()) {
+
+            if (mCurrentIndex % 2 == 1 && course.getShowType() == CourseAncestor.SHOW_DOUBLE) {
+                course.setActiveStatus(false);
+            } else if (mCurrentIndex % 2 == 0 && course.getShowType() == CourseAncestor.SHOW_SINGLE) {
+                course.setActiveStatus(false);
+            } else {
+                course.setActiveStatus(true);
+            }
+        } else {
+            course.setActiveStatus(false);
+        }
+    }
+
+    private void setItemViewBackground(CourseAncestor course, TextView tv) {
+        StateListDrawable drawable;
+
+        if (course.getActiveStatus()) {
+            drawable = getShowBgDrawable(course.getColor(), course.getColor() & 0x80FFFFFF);
+        } else {
+            drawable = getShowBgDrawable(mInactiveBackgroundColor, mInactiveBackgroundColor & 0x80FFFFFF);
+            tv.setTextColor(mInactiveTextColor);
+        }
+        tv.setBackground(drawable);
+
+    }
+
+    private StateListDrawable getShowBgDrawable(int color, int color2) {
+        return Utils.getPressedSelector(getContext(),
+                color, color2, mCourseItemRadius);
+    }
+
+    @NonNull
+    private TextView getCourseTextView(int h, int w) {
         TextView tv = new TextView(getContext());
-        tv.setHeight(h);
-        tv.setWidth(w);
-        tv.setText(text);
+        LayoutParams params = new LayoutParams(w, h);
+        tv.setLayoutParams(params);
 
-        tv.setTextSize(textSize);
-        tv.setGravity(Gravity.CENTER);
-
+        tv.setTextColor(mTextColor);
+        tv.setLineSpacing(-2, 1);
+        tv.setPadding(mTextLRPadding, mTextTBPadding, mTextLRPadding, mTextTBPadding);
+        tv.setTextColor(mTextColor);
+        tv.setTextSize(TypedValue.COMPLEX_UNIT_SP, mTextSize);
+        tv.setFocusable(true);
+        tv.setClickable(true);
+        //bold
+        TextPaint tp = tv.getPaint();
+        tp.setFakeBoldText(true);
         return tv;
     }
 
-    public CourseView setOnItemClickListener(CourseTableView.OnItemClickListener itemClickListener) {
+    @Override
+    protected void dispatchDraw(Canvas canvas) {
+        drawLine(canvas);
+        super.dispatchDraw(canvas);
+
+
+        if (!mFirstDraw) {
+            initCourseItemView();
+            mFirstDraw = true;
+        }
+    }
+
+    private void drawLine(Canvas canvas) {
+        //横线
+        if (mShowHorizontalLine) {
+            for (int i = 1; i < mColCount; i++) {
+                mLinePath.reset();
+                mLinePath.moveTo(0, i * mColItemHeight);
+                mLinePath.lineTo(mWidth, i * mColItemHeight);
+                canvas.drawPath(mLinePath, mLinePaint);
+            }
+        }
+
+        //竖线
+        if (mShowVerticalLine) {
+            for (int i = 1; i < mRowCount; i++) {
+                mLinePath.reset();
+                mLinePath.moveTo(i * mRowItemWidth, 0);
+                mLinePath.lineTo(i * mRowItemWidth, mHeight);
+                canvas.drawPath(mLinePath, mLinePaint);
+            }
+        }
+    }
+
+    /*事件*/
+    @SuppressLint("ClickableViewAccessibility")
+    @Override
+    public boolean onTouchEvent(MotionEvent event) {
+        Log.d("COurseView", "onTouchEvent");
+        switch (event.getAction()) {
+            case MotionEvent.ACTION_DOWN:
+                return true; //TODO why?
+
+            case MotionEvent.ACTION_MOVE:
+                removeAddTagView();
+                break;
+
+            case MotionEvent.ACTION_UP:
+                addTagCourseView((int) event.getX(), (int) event.getY());
+                break;
+        }
+
+        return super.onTouchEvent(event);
+    }
+
+    private void addTagCourseView(int x, int y) {
+
+        /*找到点击的方框坐标*/
+        int x1 = x / mRowItemWidth + 1;
+        int y1 = y / mColItemHeight + 1;
+
+        if (x1 > mRowCount) x1 = mRowCount;
+
+        if (y1 > mColCount) y1 = mColCount;
+
+        if (mAddTagCourse == null)
+            mAddTagCourse = new CourseAncestor();
+
+        if (mAddTagCourseView == null)
+            mAddTagCourseView = createAddTagView();
+        else removeView(mAddTagCourseView);
+
+        mAddTagCourse.setRow(x1);
+        mAddTagCourse.setCol(y1);
+
+        realAddTagCourseView();
+    }
+
+    /**
+     * 移除添加按钮
+     */
+    public void removeAddTagView() {
+        if (mAddTagCourseView != null) {
+            removeView(mAddTagCourseView);
+        }
+    }
+
+    public void resetView() {
+        removeAllViews();
+        initCourseItemView();
+    }
+
+    /**
+     * 建立添加按钮
+     */
+    private View createAddTagView() {
+        final BackgroundView bgLayout = new BackgroundView(getContext());
+
+        ImageView iv = new ImageView(getContext());
+
+        LayoutParams params = new LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT,
+                ViewGroup.LayoutParams.MATCH_PARENT);
+        params.setMargins(textLRMargin, textTBMargin, textLRMargin, textTBMargin);
+        iv.setLayoutParams(params);
+
+
+        iv.setImageResource(R.drawable.ic_svg_add);
+        iv.setScaleType(ImageView.ScaleType.CENTER);
+        iv.setBackgroundColor(Color.LTGRAY);
+
+        StateListDrawable pressedSelector = Utils.getPressedSelector(getContext(),
+                Color.LTGRAY, Color.LTGRAY, mCourseItemRadius);
+        iv.setBackground(pressedSelector);
+        iv.setClickable(true);
+        iv.setFocusable(true);
+
+        iv.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (mItemClickListener != null) {
+                    mItemClickListener.onAdd(mAddTagCourse, mAddTagCourseView);
+                    removeAddTagView();
+                }
+            }
+        });
+
+        bgLayout.addView(iv);
+        return bgLayout;
+    }
+
+    /**
+     * 建立itemview
+     */
+    @SuppressLint("ClickableViewAccessibility")
+    private View createItemView(final CourseAncestor course) {
+        final BackgroundView bgLayout = new BackgroundView(getContext());
+        //TextView
+        final TextView tv = getCourseTextView(mColItemHeight * course.getRowNum(), mRowItemWidth);
+
+        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT,
+                ViewGroup.LayoutParams.MATCH_PARENT);
+        params.setMargins(textLRMargin, textTBMargin, textLRMargin, textTBMargin);
+        tv.setLayoutParams(params);
+
+        String showText = course.getActiveStatus() ? course.getText()
+                : mNotCurrentPrefix + course.getText();
+        tv.setText(showText);
+
+        bgLayout.addView(tv);
+        setItemViewBackground(course, tv);
+        itemEvent(course, bgLayout, tv);
+
+        return bgLayout;
+    }
+
+    private void itemEvent(final CourseAncestor course, final ViewGroup viewGroup, TextView textView) {
+        final List<CourseAncestor> courses = new ArrayList<>();
+        courses.add(course);
+
+        /*查找在点击的item范围内重叠的item*/
+        for (CourseAncestor findCourse : mCourseList) {
+            if (findCourse.getRow() == course.getRow()
+                    && course != findCourse) {
+
+                if (findCourse.getCol() < course.getCol() + course.getRowNum()
+                        && findCourse.getCol() >= course.getCol()) {
+                    courses.add(findCourse);
+                }
+            }
+        }
+
+        textView.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                removeAddTagView();
+                if (mItemClickListener != null) {
+                    mItemClickListener.onClick(courses, viewGroup);
+                }
+            }
+        });
+
+        textView.setOnLongClickListener(new OnLongClickListener() {
+
+            @Override
+            public boolean onLongClick(View v) {
+                removeAddTagView();
+                if (mItemClickListener != null) {
+                    mItemClickListener.onLongClick(courses, viewGroup);
+                    return true;
+                }
+                return false;
+            }
+        });
+    }
+
+    private void realAddTagCourseView() {
+        LayoutParams params = new LayoutParams(mRowItemWidth,
+                mColItemHeight * mAddTagCourse.getRowNum());
+
+        params.leftMargin = (mAddTagCourse.getRow() - 1) * mRowItemWidth;
+        params.topMargin = (mAddTagCourse.getCol() - 1) * mColItemHeight;
+
+        mAddTagCourseView.setLayoutParams(params);
+        addView(mAddTagCourseView);
+    }
+
+    private OnItemClickListener mItemClickListener;
+
+    public void clear() {
+        removeAllViews();
+        mCourseList.clear();
+    }
+
+    public abstract static class OnItemClickListener {
+        public abstract void onClick(List<CourseAncestor> course, View itemView);
+
+        public abstract void onLongClick(List<CourseAncestor> course, View itemView);
+
+        public abstract void onAdd(CourseAncestor course, View addView);
+    }
+
+    public void setOnItemClickListener(OnItemClickListener itemClickListener) {
         mItemClickListener = itemClickListener;
-        if (ctView != null) {
-            ctView.setOnItemClickListener(itemClickListener);
-        }
+    }
+
+    public int dip2px(float dpValue) {
+        return (int) (0.5f + dpValue * getContext().getResources().getDisplayMetrics().density);
+    }
+
+    /**
+     * 将sp值转换为px值，保证文字大小不变
+     */
+    public int sp2px(float spValue) {
+        return (int) (0.5f + spValue * getContext().getResources().getDisplayMetrics().scaledDensity);
+    }
+
+    public static void l(String s) {
+        System.out.println("------------------" + s);
+    }
+
+    /***************************************************/
+
+    public int getRowCount() {
+        return mRowCount;
+    }
+
+    public CourseView setRowCount(int rowCount) {
+        mRowCount = rowCount;
         return this;
     }
 
-    /***********************get/set****************************/
-
-    public int getWeekHeight() {
-        return mWeekHeight;
+    public int getColCount() {
+        return mColCount;
     }
 
-    public CourseView setWeekHeight(int weekHeight) {
-        mWeekHeight = weekHeight;
+    public CourseView setColCount(int colCount) {
+        mColCount = colCount;
         return this;
     }
 
-    public int getWeekWidth() {
-        return mWeekWidth;
+    public int getRowItemWidth() {
+        return mRowItemWidth;
     }
 
-    public CourseView setWeekWidth(int weekWidth) {
-        mWeekWidth = weekWidth;
+    public CourseView setRowItemWidth(int rowItemWidth) {
+
+        mRowItemWidth = rowItemWidth;
         return this;
     }
 
-    public int getMonthWidth() {
-        return mMonthWidth;
+    public int getColItemHeight() {
+        return mColItemHeight;
     }
 
-    public CourseView setMonthWidth(int monthWidth) {
-        mMonthWidth = dip2px(getContext(), monthWidth);
+    public CourseView setColItemHeight(int colItemHeight) {
+        mColItemHeight = colItemHeight;
         return this;
     }
 
-    public int getDividerSize() {
-        return mDividerSize;
+    public int getCurrentIndex() {
+        return mCurrentIndex;
     }
 
-    public CourseView setDividerSize(int dividerSize) {
-        mDividerSize = dividerSize;
+    public CourseView setCurrentIndex(int currentIndex) {
+        this.mCurrentIndex = currentIndex;
+        postInvalidate();
         return this;
     }
 
-    public int getMonthTextSize() {
-        return mMonthTextSize;
+    public boolean isRowItemWidthAuto() {
+        return mRowItemWidthAuto;
     }
 
-    public CourseView setMonthTextSize(int monthTextSize) {
-        mMonthTextSize = monthTextSize;
+    public CourseView setRowItemWidthAuto(boolean rowItemWidthAuto) {
+        mRowItemWidthAuto = rowItemWidthAuto;
         return this;
     }
 
-    public int getWeekTextSize() {
-        return mWeekTextSize;
+    public float getCourseItemRadius() {
+        return mCourseItemRadius;
     }
 
-    public CourseView setWeekTextSize(int weekTextSize) {
-        mWeekTextSize = weekTextSize;
+    public CourseView setCourseItemRadius(float courseItemRadius) {
+        mCourseItemRadius = courseItemRadius;
+        postInvalidate();
         return this;
     }
 
-    public int getHorizontalDividerColor() {
-        return mHorizontalDividerColor;
+    public boolean isShowVerticalLine() {
+        return mShowVerticalLine;
     }
 
-    public CourseView setHorizontalDividerColor(int horizontalDividerColor) {
-        mHorizontalDividerColor = horizontalDividerColor;
+    public CourseView setShowVerticalLine(boolean showVerticalLine) {
+        mShowVerticalLine = showVerticalLine;
         return this;
     }
 
-    public int getTopWeekBgColor() {
-        return mTopWeekBgColor;
+    public boolean isShowHorizontalLine() {
+        return mShowHorizontalLine;
     }
 
-    public CourseView setTopWeekBgColor(int topWeekBgColor) {
-        mTopWeekBgColor = topWeekBgColor;
+    public CourseView setShowHorizontalLine(boolean showHorizontalLine) {
+        mShowHorizontalLine = showHorizontalLine;
         return this;
     }
 
-    public boolean isShowWeekend() {
-        return mShowWeekend;
+    public int getTextLRPadding() {
+        return mTextLRPadding;
     }
 
-    public CourseView setShowWeekend(boolean showWeekend) {
-        mShowWeekend = showWeekend;
-        ctView.setShowWeekend(showWeekend);
+    public CourseView setTextLRPadding(int textLRPadding, int textTBPadding) {
+        mTextLRPadding = textLRPadding;
+        mTextTBPadding = textTBPadding;
+
         return this;
     }
 
-    public CourseTableView getCtView() {
-        return ctView;
+    public int getTextTBPadding() {
+        return mTextTBPadding;
     }
 
-    public int getMonthTextColor() {
-        return mMonthTextColor;
+    public int getTextColor() {
+        return mTextColor;
     }
 
-    public CourseView setMonthTextColor(int monthTextColor) {
-        mMonthTextColor = monthTextColor;
+    public CourseView setTextColor(int textColor) {
+        mTextColor = textColor;
         return this;
     }
 
-    public int getWeekTextColor() {
-        return mWeekTextColor;
+    public int getInactiveBackgroundColor() {
+        return mInactiveBackgroundColor;
     }
 
-    public CourseView setWeekTextColor(int weekTextColor) {
-        mWeekTextColor = weekTextColor;
+    public CourseView setInactiveBackgroundColor(int inactiveBackgroundColor) {
+        mInactiveBackgroundColor = inactiveBackgroundColor;
         return this;
     }
 
-    public CourseView setWeekText(String... words) {
-        if (words == null || words.length < 7) {
-            return this;
-        }
-
-        System.arraycopy(words, 0, WEEK, 0, words.length);
+    public CourseView setTextTBMargin(int textTBMargin, int textLRMargin) {
+        this.textTBMargin = textTBMargin;
+        this.textLRMargin = textLRMargin;
         return this;
     }
 
-    public int getMonth() {
-        return mMonth;
+    public int getTextTBMargin() {
+        return textTBMargin;
     }
 
-    public CourseView setMonth(int month) {
-        mMonth = month;
-        if (!isFirst) {
-            updateView();
-        }
+    public int getTextLRMargin() {
+        return textLRMargin;
+    }
+
+    public int getTextSize() {
+        return mTextSize;
+    }
+
+    public CourseView setTextSize(int textSize) {
+        mTextSize = textSize;
         return this;
     }
 }

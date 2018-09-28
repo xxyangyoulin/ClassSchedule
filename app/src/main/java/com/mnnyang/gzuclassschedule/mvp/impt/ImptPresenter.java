@@ -1,4 +1,4 @@
-package com.mnnyang.gzuclassschedule.impt;
+package com.mnnyang.gzuclassschedule.mvp.impt;
 
 import android.graphics.Bitmap;
 
@@ -7,26 +7,23 @@ import com.mnnyang.gzuclassschedule.app.app;
 import com.mnnyang.gzuclassschedule.data.bean.Course;
 import com.mnnyang.gzuclassschedule.data.bean.CourseTime;
 import com.mnnyang.gzuclassschedule.data.db.CourseDbDao;
-import com.mnnyang.gzuclassschedule.http.HttpCallback;
-import com.mnnyang.gzuclassschedule.http.HttpUtils;
-import com.mnnyang.gzuclassschedule.utils.FileUtils;
-import com.mnnyang.gzuclassschedule.utils.ToastUtils;
-import com.mnnyang.gzuclassschedule.utils.spec.ParseCourse;
+import com.mnnyang.gzuclassschedule.data.http.HttpCallback;
+import com.mnnyang.gzuclassschedule.data.http.HttpUtils;
 import com.mnnyang.gzuclassschedule.utils.LogUtil;
 import com.mnnyang.gzuclassschedule.utils.Preferences;
+import com.mnnyang.gzuclassschedule.utils.ToastUtils;
+import com.mnnyang.gzuclassschedule.utils.spec.ParseCourse;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 
-import rx.Observable;
-import rx.Observer;
-import rx.Subscriber;
-import rx.android.schedulers.AndroidSchedulers;
-import rx.schedulers.Schedulers;
+import io.reactivex.Observable;
+import io.reactivex.ObservableEmitter;
+import io.reactivex.ObservableOnSubscribe;
+import io.reactivex.Observer;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.schedulers.Schedulers;
+
 
 /**
  * Created by mnnyang on 17-10-23.
@@ -43,8 +40,10 @@ public class ImptPresenter implements ImptContract.Presenter {
     private String mSelectYear;
     private String mSelectTerm;
 
-    public ImptPresenter(ImptContract.View imptView,String schoolUrl) {
+    public ImptPresenter(ImptContract.View imptView, String schoolUrl) {
         mImptView = imptView;
+        mImptView.setPresenter(this);
+
         mSchoolUrl = schoolUrl;
         mModel = new ImptModel();
     }
@@ -65,7 +64,7 @@ public class ImptPresenter implements ImptContract.Presenter {
         }
 
         mImptView.showImpting();
-        HttpUtils.newInstance().toImpt(mSchoolUrl,xh, year, term, new HttpCallback<String>() {
+        HttpUtils.newInstance().toImpt(mSchoolUrl, xh, year, term, new HttpCallback<String>() {
             @Override
             public void onSuccess(String s) {
                 parseCoursesHtmlToDb(s, year + "-" + term);
@@ -90,7 +89,7 @@ public class ImptPresenter implements ImptContract.Presenter {
     public void loadCourseTimeAndTerm(final String xh, String pwd, String captcha) {
         if (!verify(xh, pwd, captcha)) return;
         mImptView.showImpting();
-        HttpUtils.newInstance().login(mSchoolUrl,xh, pwd, captcha, null, null,
+        HttpUtils.newInstance().login(mSchoolUrl, xh, pwd, captcha, null, null,
                 new HttpCallback<String>() {
 
                     @Override
@@ -124,19 +123,68 @@ public class ImptPresenter implements ImptContract.Presenter {
 
     private void parseCoursesHtmlToDb(final String html, final String courseTimeTerm) {
         try {
-            Observable.create(new Observable.OnSubscribe<String>() {
+            Observable.create(new ObservableOnSubscribe<String>() {
+                @Override
+                public void subscribe(ObservableEmitter<String> emitter) throws Exception {
+                    final ArrayList<Course> courses = ParseCourse.parse(html);
+
+                    //删除旧数据
+                    CourseDbDao.instance().removeByCsName(courseTimeTerm);
+
+                    //添加新数据
+                    for (Course c : courses) {
+                        c.setCsName(courseTimeTerm);
+                        CourseDbDao.instance().addCourse(c);
+                    }
+
+                    emitter.onNext("导入成功");
+                    emitter.onComplete();
+
+                }
+            }).subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(new Observer<String>() {
+                        @Override
+                        public void onSubscribe(Disposable d) {
+                        }
+
+                        @Override
+                        public void onNext(String s) {
+                            LogUtil.i(this, "导入成功:" + courseTimeTerm);
+
+                            Preferences.putInt(app.mContext.getString(
+                                    R.string.app_preference_current_cs_name_id),
+                                    CourseDbDao.instance().getCsNameId(courseTimeTerm));
+
+                            mImptView.hideImpting();
+                            mImptView.showSucceed();
+                        }
+
+                        @Override
+                        public void onError(Throwable e) {
+                            mImptView.hideImpting();
+                            mImptView.showErrToast("插入数据库失败", true);
+                        }
+
+                        @Override
+                        public void onComplete() {
+                            LogUtil.d(this, "完成");
+                        }
+                    });
+
+            /*Observable.create(new Observable.OnSubscribe<String>() {
 
                 @Override
                 public void call(Subscriber<? super String> subscriber) {
                     final ArrayList<Course> courses = ParseCourse.parse(html);
 
                     //删除旧数据
-                    CourseDbDao.newInstance().removeByCsName(courseTimeTerm);
+                    CourseDbDao.instance().removeByCsName(courseTimeTerm);
 
                     //添加新数据
                     for (Course c : courses) {
                         c.setCsName(courseTimeTerm);
-                        CourseDbDao.newInstance().addCourse(c);
+                        CourseDbDao.instance().addCourse(c);
                     }
 
                     subscriber.onNext("导入成功");
@@ -160,16 +208,16 @@ public class ImptPresenter implements ImptContract.Presenter {
                         @Override
                         public void onNext(String s) {
 
-                            LogUtil.i(this,"导入成功:" + courseTimeTerm);
+                            LogUtil.i(this, "导入成功:" + courseTimeTerm);
 
                             Preferences.putInt(app.mContext.getString(
                                     R.string.app_preference_current_cs_name_id),
-                                    CourseDbDao.newInstance().getCsNameId(courseTimeTerm));
+                                    CourseDbDao.instance().getCsNameId(courseTimeTerm));
 
                             mImptView.hideImpting();
                             mImptView.showSucceed();
                         }
-                    });
+                    });*/
         } catch (Exception e) {
             e.printStackTrace();
             mImptView.hideImpting();
@@ -202,14 +250,14 @@ public class ImptPresenter implements ImptContract.Presenter {
     @Override
     public void getCaptcha() {
         //防止重复点击加载验证码按钮导致多次执行
-        if (captchaIsLoading){
+        if (captchaIsLoading) {
             return;
         }
 
         captchaIsLoading = true;
         mImptView.captchaIsLoading(true);
 
-        HttpUtils.newInstance().loadCaptcha(app.mContext.getCacheDir(),mSchoolUrl,
+        HttpUtils.newInstance().loadCaptcha(app.mContext.getCacheDir(), mSchoolUrl,
                 new HttpCallback<Bitmap>() {
                     @Override
                     public void onSuccess(Bitmap bitmap) {

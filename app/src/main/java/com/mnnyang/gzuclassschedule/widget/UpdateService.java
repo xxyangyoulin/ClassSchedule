@@ -2,21 +2,17 @@ package com.mnnyang.gzuclassschedule.widget;
 
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Color;
-import android.os.IBinder;
 import android.os.Looper;
-import android.provider.ContactsContract;
-import android.support.annotation.Nullable;
 import android.widget.RemoteViews;
 import android.widget.RemoteViewsService;
-import android.widget.TextView;
 
 import com.mnnyang.gzuclassschedule.R;
-import com.mnnyang.gzuclassschedule.app.Constant;
-import com.mnnyang.gzuclassschedule.custom.course2.CourseAncestor;
+import com.mnnyang.gzuclassschedule.custom.course.CourseAncestor;
 import com.mnnyang.gzuclassschedule.custom.util.Utils;
 import com.mnnyang.gzuclassschedule.data.bean.Course;
 import com.mnnyang.gzuclassschedule.data.db.CourseDbDao;
+import com.mnnyang.gzuclassschedule.mvp.course.CourseActivity;
+import com.mnnyang.gzuclassschedule.utils.LogUtil;
 import com.mnnyang.gzuclassschedule.utils.Preferences;
 
 import java.util.ArrayList;
@@ -32,36 +28,23 @@ public class UpdateService extends RemoteViewsService {
     @Override
     public void onCreate() {
         super.onCreate();
-        initDemoData();
     }
 
     private void initDemoData() {
         int currentCsNameId = Preferences.getInt(
                 getString(R.string.app_preference_current_cs_name_id), 0);
-        CourseDbDao dao = CourseDbDao.newInstance();
+        CourseDbDao dao = CourseDbDao.instance();
         final ArrayList<Course> courses = dao.loadCourses(currentCsNameId);
 
         int i = 0;
         mCourses = new ArrayList<>();
         for (Course course : courses) {
-            course.init(course.getWeek(),
-                    course.getNodes().get(0),
-                    course.getNodes().size(),
-                    Utils.getRandomColor(i++));
-
-            course.setStartIndex(course.getStartWeek());
-            course.setEndIndex(course.getEndWeek());
-            course.setText(course.getName() + "\n@" + course.getClassRoom());
-            course.setShowIndex(course.getWeekType());
-
+            course.init();
+            if (course.getColor() == -1) {
+                course.setColor(Utils.getRandomColor(i++));
+            }
             mCourses.add(course);
         }
-    }
-
-    @Nullable
-    @Override
-    public IBinder onBind(Intent intent) {
-        return super.onBind(intent);
     }
 
     @Override
@@ -83,14 +66,17 @@ public class UpdateService extends RemoteViewsService {
 
         @Override
         public void onCreate() {
+
         }
 
         @Override
         public void onDataSetChanged() {
+
         }
 
         @Override
         public void onDestroy() {
+
         }
 
         @Override
@@ -100,6 +86,9 @@ public class UpdateService extends RemoteViewsService {
 
         @Override
         public RemoteViews getViewAt(int position) {
+            initDemoData();
+
+            LogUtil.e(this, "getViewAt");
             final RemoteViews bigRemoteViews = new RemoteViews(mContext.getPackageName(), R.layout.list_demo_item);
             bigRemoteViews.removeAllViews(R.id.item_node_group);
             bigRemoteViews.removeAllViews(R.id.item_weekday_day_1);
@@ -110,14 +99,15 @@ public class UpdateService extends RemoteViewsService {
             bigRemoteViews.removeAllViews(R.id.item_weekday_day_6);
             bigRemoteViews.removeAllViews(R.id.item_weekday_day_7);
 
-            Intent intent = new Intent();
+            Intent intent = new Intent(mContext, CourseActivity.class);
             //TODO
             //intent.setComponent(new ComponentName("包名", "类名"));
             //与CustomWidget中remoteViews.setPendingIntentTemplate配对使用
-            bigRemoteViews.setOnClickFillInIntent(R.id.widget_list_item_layout, intent);
+
+            bigRemoteViews.setOnClickFillInIntent(R.id.item_weekday_layout, intent);
 
             for (int i = 1; i <= maxNodeSize; i++) {
-                RemoteViews nodeRemoteViews = new RemoteViews(getPackageName(), R.layout.widget_box_0);
+                RemoteViews nodeRemoteViews = new RemoteViews(getPackageName(), R.layout.widget_node);
                 nodeRemoteViews.setTextViewText(R.id.widget_box_0, i + "");
                 bigRemoteViews.addView(R.id.item_node_group, nodeRemoteViews);
             }
@@ -129,34 +119,87 @@ public class UpdateService extends RemoteViewsService {
 
                     RemoteViews dayRemoteViews = null;
                     if (course == null) {
-                        dayRemoteViews = new RemoteViews(getPackageName(), R.layout.widget_box_1);
-                        dayRemoteViews.setTextViewText(R.id.widget_box_1, "");
+                        dayRemoteViews = new RemoteViews(getPackageName(), R.layout.widget_cell_1);
+                        dayRemoteViews.setTextViewText(R.id.widget_cell_1, "");
                     } else {
                         col = col + course.getRowNum() - 1;
+
+                        int layout = -1;
+                        int id = -1;
+
                         switch (course.getRowNum()) {
                             case 1:
-                                dayRemoteViews = new RemoteViews(getPackageName(), R.layout.widget_box_1);
-                                dayRemoteViews.setTextViewText(R.id.widget_box_1, course.getText());
-                                dayRemoteViews.setInt(R.id.widget_box_1, "setBackgroundColor", course.getColor());
+                                layout = R.layout.widget_cell_1;
+                                id = R.id.widget_cell_1;
                                 break;
                             case 2:
-                                dayRemoteViews = new RemoteViews(getPackageName(), R.layout.widget_box_2);
-                                dayRemoteViews.setTextViewText(R.id.widget_box_2, course.getText());
-                                dayRemoteViews.setInt(R.id.widget_box_2, "setBackgroundColor", course.getColor());
+                                layout = R.layout.widget_cell_2;
+                                id = R.id.widget_cell_2;
                                 break;
                             case 3:
-                                dayRemoteViews = new RemoteViews(getPackageName(), R.layout.widget_box_3);
-                                dayRemoteViews.setTextViewText(R.id.widget_box_3, course.getText());
-                                dayRemoteViews.setInt(R.id.widget_box_3, "setBackgroundColor", course.getColor());
+                                layout = R.layout.widget_cell_3;
+                                id = R.id.widget_cell_3;
                                 break;
                             case 4:
+                                layout = R.layout.widget_cell_4;
+                                id = R.id.widget_cell_4;
                                 break;
                             case 5:
+                                layout = R.layout.widget_cell_5;
+                                id = R.id.widget_cell_5;
                                 break;
                             case 6:
+                                layout = R.layout.widget_cell_6;
+                                id = R.id.widget_cell_6;
                                 break;
                             case 7:
+                                layout = R.layout.widget_cell_7;
+                                id = R.id.widget_cell_7;
                                 break;
+                            case 8:
+                                layout = R.layout.widget_cell_8;
+                                id = R.id.widget_cell_8;
+                                break;
+                            case 9:
+                                layout = R.layout.widget_cell_9;
+                                id = R.id.widget_cell_9;
+                                break;
+                            case 10:
+                                layout = R.layout.widget_cell_10;
+                                id = R.id.widget_cell_10;
+                                break;
+                            case 11:
+                                layout = R.layout.widget_cell_11;
+                                id = R.id.widget_cell_11;
+                                break;
+                            case 12:
+                                layout = R.layout.widget_cell_12;
+                                id = R.id.widget_cell_12;
+                                break;
+                            case 13:
+                                layout = R.layout.widget_cell_13;
+                                id = R.id.widget_cell_13;
+                                break;
+                            case 14:
+                                layout = R.layout.widget_cell_14;
+                                id = R.id.widget_cell_14;
+                                break;
+                            case 15:
+                                layout = R.layout.widget_cell_15;
+                                id = R.id.widget_cell_15;
+                                break;
+                            case 16:
+                                layout = R.layout.widget_cell_16;
+                                id = R.id.widget_cell_16;
+                                break;
+                            default:
+                                break;
+                        }
+
+                        if (id != -1) {
+                            dayRemoteViews = new RemoteViews(getPackageName(), layout);
+                            dayRemoteViews.setTextViewText(id, course.getText());
+                            dayRemoteViews.setInt(id, "setBackgroundColor", course.getColor());
                         }
                     }
 

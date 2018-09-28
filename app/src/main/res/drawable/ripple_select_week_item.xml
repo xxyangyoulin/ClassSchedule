@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?><!-- drawable/ripple_mask.xml-->
+<ripple xmlns:android="http://schemas.android.com/apk/res/android"
+    android:color="#666666">
+
+    <item>
+        <selector>
+            <!--<item
+                android:drawable="@color/blue2"
+                android:state_selected="true" />-->
+
+            <item
+                android:drawable="@color/black"
+                android:state_pressed="false" />
+
+        </selector>
+    </item>
+</ripple>

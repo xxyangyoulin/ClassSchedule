@@ -79,4 +79,7 @@ public class app extends Application {
         Preferences.init(mContext);
         ScreenUtils.init(mContext);
     }
+
+
+
 }

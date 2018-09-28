@@ -10,7 +10,11 @@ import android.os.Bundle;
 import android.widget.RemoteViews;
 
 import com.mnnyang.gzuclassschedule.R;
+import com.mnnyang.gzuclassschedule.app.Config;
+import com.mnnyang.gzuclassschedule.app.Constant;
+import com.mnnyang.gzuclassschedule.mvp.course.CourseActivity;
 import com.mnnyang.gzuclassschedule.utils.LogUtil;
+import com.mnnyang.gzuclassschedule.utils.Preferences;
 
 public class MyWidget extends AppWidgetProvider {
 
@@ -20,8 +24,16 @@ public class MyWidget extends AppWidgetProvider {
     /** AppWidgetProvider 继承自 BroadcastReceiver */
     @Override
     public void onReceive(Context context, Intent intent) {
+        LogUtil.d(this, "onReceive");
+
+        if (intent != null && intent.getAction() != null) {
+            LogUtil.e(this, intent.getAction());
+            if (intent.getAction().equals("com.mnnyang.action.UPDATE_WIDGET")) {
+                updateAction(context);
+            }
+        }
+
         super.onReceive(context, intent);
-        LogUtil.d(this,"onReceive");
     }
 
     /**
@@ -32,17 +44,16 @@ public class MyWidget extends AppWidgetProvider {
      */
     @Override
     public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
-        super.onUpdate(context, appWidgetManager, appWidgetIds);
-        LogUtil.d(this,"onUpdate");
+        LogUtil.d(this, "onUpdate" + appWidgetIds[0]);
 
-
-        //test1(context, appWidgetManager, appWidgetIds);
-
-        test2(context, appWidgetManager, appWidgetIds[0]);
-
+        updateAction(context);
     }
 
-    private void test2(Context context, AppWidgetManager appWidgetManager, int appWidgetId) {
+    private void updateAction(Context context) {
+
+        AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(context);
+        int[] appWidgetId = appWidgetManager.getAppWidgetIds(new ComponentName(context, MyWidget.class));
+
         thisWidget = new ComponentName(context, MyWidget.class);
         remoteViews = new RemoteViews(context.getPackageName(), R.layout.widget_all);
 
@@ -52,15 +63,16 @@ public class MyWidget extends AppWidgetProvider {
         //配置适配器
         remoteViews.setRemoteAdapter(R.id.widget_list, intent);
 
-        Intent intent1 = new Intent();
+        Intent intent1 = new Intent(context, CourseActivity.class);
         PendingIntent pendingIntentTemplate = PendingIntent.getActivity(
                 context, 1, intent1, PendingIntent.FLAG_UPDATE_CURRENT);
 
-        //拼接PendingIntent
+        ////拼接PendingIntent
         remoteViews.setPendingIntentTemplate(R.id.widget_list, pendingIntentTemplate);
 
         //更新remoteViews
         appWidgetManager.updateAppWidget(thisWidget, remoteViews);
+        appWidgetManager.notifyAppWidgetViewDataChanged(appWidgetId, R.id.widget_list);
 
         AppWidgetManager manager = AppWidgetManager.getInstance(context);
         manager.notifyAppWidgetViewDataChanged(appWidgetId, R.id.widget_list);
@@ -70,9 +82,10 @@ public class MyWidget extends AppWidgetProvider {
     @Override
     public void onDeleted(Context context, int[] appWidgetIds) {
         super.onDeleted(context, appWidgetIds);
-        LogUtil.d(this,"onDeleted");
+        LogUtil.d(this, "onDeleted");
 
     }
+
 
     /**
      * 当 Widget 第一次被添加时调用，例如用户添加了两个你的 Widget，
@@ -82,7 +95,7 @@ public class MyWidget extends AppWidgetProvider {
     @Override
     public void onEnabled(Context context) {
         super.onEnabled(context);
-        LogUtil.d(this,"onEnabled");
+        LogUtil.d(this, "onEnabled");
 
     }
 
@@ -93,7 +106,7 @@ public class MyWidget extends AppWidgetProvider {
     @Override
     public void onDisabled(Context context) {
         super.onDisabled(context);
-        LogUtil.d(this,"onDisabled");
+        LogUtil.d(this, "onDisabled");
 
     }
 
@@ -104,7 +117,7 @@ public class MyWidget extends AppWidgetProvider {
     @Override
     public void onAppWidgetOptionsChanged(Context context, AppWidgetManager appWidgetManager, int appWidgetId, Bundle newOptions) {
         super.onAppWidgetOptionsChanged(context, appWidgetManager, appWidgetId, newOptions);
-        LogUtil.d(this,"onAppWidgetOptionsChanged");
+        LogUtil.d(this, "onAppWidgetOptionsChanged");
 
     }
 }

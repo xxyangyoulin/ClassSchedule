@@ -1,4 +1,4 @@
-package com.mnnyang.gzuclassschedule.setting;
+package com.mnnyang.gzuclassschedule.mvp.setting;
 
 import android.content.Context;
 import android.content.DialogInterface;
@@ -20,9 +20,9 @@ import com.mnnyang.gzuclassschedule.R;
 import com.mnnyang.gzuclassschedule.mvp.add.AddActivity;
 import com.mnnyang.gzuclassschedule.app.Constant;
 import com.mnnyang.gzuclassschedule.app.app;
-import com.mnnyang.gzuclassschedule.course.CourseActivity;
-import com.mnnyang.gzuclassschedule.mg.MgActivity;
-import com.mnnyang.gzuclassschedule.impt.ImptActivity;
+import com.mnnyang.gzuclassschedule.mvp.course.CourseActivity;
+import com.mnnyang.gzuclassschedule.mvp.mg.MgActivity;
+import com.mnnyang.gzuclassschedule.mvp.impt.ImptActivity;
 import com.mnnyang.gzuclassschedule.utils.ActivityUtil;
 import com.mnnyang.gzuclassschedule.utils.DialogHelper;
 import com.mnnyang.gzuclassschedule.utils.DialogListener;
@@ -37,7 +37,7 @@ import static com.mnnyang.gzuclassschedule.app.Constant.themeNameArray;
 
 public class SettingFragment extends PreferenceFragment implements SettingContract.View {
 
-    private SettingPresenter mPresenter;
+    private SettingContract.Presenter mPresenter;
     private DialogHelper mDeleteDialog;
 
     @Override
@@ -68,10 +68,8 @@ public class SettingFragment extends PreferenceFragment implements SettingContra
             feedback();
             return true;
         } else if (title.equals(getString(R.string.hide_fab))) {
-            ((BaseActivity) getActivity()).notifiUpdateMainPage(Constant.INTENT_UPDATE_TYPE_OTHER);
             return true;
         } else if (title.equals(getString(R.string.show_noon_course))) {
-            ((BaseActivity) getActivity()).notifiUpdateMainPage(Constant.INTENT_UPDATE_TYPE_COURSE);
             return true;
         } else if (title.equals(getString(R.string.about))) {
 //            ((SettingActivity) getActivity()).addAboutFragment();
@@ -182,4 +180,8 @@ public class SettingFragment extends PreferenceFragment implements SettingContra
         ((BaseActivity) getActivity()).gotoActivity(AddActivity.class);
     }
 
+    @Override
+    public void setPresenter(SettingContract.Presenter presenter) {
+        mPresenter = presenter;
+    }
 }

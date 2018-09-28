@@ -7,6 +7,8 @@ import android.content.DialogInterface;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AlertDialog;
 import android.view.View;
+import android.view.Window;
+import android.widget.LinearLayout;
 
 import java.lang.reflect.Field;
 
@@ -81,28 +83,38 @@ public class DialogHelper {
                 .show();
     }
 
+
     /**
      * 自定义弹框
      */
     public void showCustomDialog(@NonNull Context context, View dialogView, String title,
-                                 @NonNull final DialogListener listener) {
-        mCustomDialog = new AlertDialog.Builder(context)
-                .setTitle(title)
-                .setPositiveButton("确定", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        listener.onPositive(dialog, which);
-                    }
-                })
-                .setNegativeButton("取消", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        listener.onNegative(dialog, which);
-                        dialog.dismiss();
-                    }
-                })
-                .setView(dialogView)
-                .create();
+                                 final DialogListener listener) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(context)
+                .setView(dialogView);
+
+
+        if (title != null) {
+            builder.setTitle(title);
+        }
+
+        if (listener != null) {
+            builder.setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    listener.onPositive(dialog, which);
+                }
+            })
+                    .setNegativeButton("取消", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            listener.onNegative(dialog, which);
+                            dialog.dismiss();
+                        }
+                    });
+        }
+
+        //此处设置位置窗体大小
+        mCustomDialog = builder.create();
 
         try {
             Field field = field = mCustomDialog.getClass().getDeclaredField("mAlert");
@@ -121,6 +133,16 @@ public class DialogHelper {
 
         mCustomDialog.show();
     }
+
+    public void showCustomDialog(@NonNull Context context, View dialogView, String title, int dialogWidth,
+                                 final DialogListener listener) {
+        showCustomDialog(context, dialogView, title, listener);
+        Window window = mCustomDialog.getWindow();
+        if (window != null) {
+            window.setLayout(dialogWidth, LinearLayout.LayoutParams.WRAP_CONTENT);
+        }
+    }
+
 
     public void hideCustomDialog() {
         if (mCustomDialog != null && mCustomDialog.isShowing()) {
