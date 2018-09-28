@@ -9,7 +9,7 @@
         <item name="colorPrimaryDark">@color/color_login</item>
     </style>
 
-    <style name="NoLogin" parent="AppTheme">
+    <style name="NoLoginTheme" parent="AppTheme">
         <item name="colorPrimaryDark">#616161</item>
         <item name="colorPrimary">#9E9E9E</item>
         <item name="colorAccent">#9E9E9E</item>

@@ -68,4 +68,6 @@ dependencies {
     implementation 'de.hdodenhof:circleimageview:2.2.0'
 
     implementation 'com.github.yuzhiqiang1993:zxing:2.2.0'
+
+    implementation 'com.github.franmontiel:PersistentCookieJar:v1.0.1'
 }

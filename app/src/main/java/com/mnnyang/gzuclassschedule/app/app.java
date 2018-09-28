@@ -5,6 +5,10 @@ import android.content.Context;
 import android.os.Handler;
 import android.os.Looper;
 
+import com.franmontiel.persistentcookiejar.ClearableCookieJar;
+import com.franmontiel.persistentcookiejar.PersistentCookieJar;
+import com.franmontiel.persistentcookiejar.cache.SetCookieCache;
+import com.franmontiel.persistentcookiejar.persistence.SharedPrefsCookiePersistor;
 import com.mnnyang.gzuclassschedule.utils.Preferences;
 import com.mnnyang.gzuclassschedule.utils.ScreenUtils;
 import com.mnnyang.gzuclassschedule.utils.ToastUtils;
@@ -40,20 +44,23 @@ public class app extends Application {
     }
 
     private void initOkHttp() {
+        ClearableCookieJar cookieJar =
+                new PersistentCookieJar(new SetCookieCache(), new SharedPrefsCookiePersistor(getApplicationContext()));
+
         OkHttpClient okHttpClient = new OkHttpClient.Builder()
 //                .followRedirects(false)  //禁制OkHttp的重定向操作，我们自己处理重定向
                 .followSslRedirects(false)
-                .cookieJar(new LocalCookieJar())   //为OkHttp设置自动携带Cookie的功能
+                //.cookieJar(new LocalCookieJar())   //为OkHttp设置自动携带Cookie的功能
                 .addInterceptor(new LoggerInterceptor("TAG"))
-                .cookieJar(new CookieJarImpl(new PersistentCookieStore(getBaseContext()))) //要在内存Cookie前
-                .cookieJar(new CookieJarImpl(new MemoryCookieStore()))//内存Cookie
+                //.cookieJar(new CookieJarImpl(new PersistentCookieStore(getBaseContext()))) //要在内存Cookie前
+                //.cookieJar(new CookieJarImpl(new MemoryCookieStore()))//内存Cookie
+                .cookieJar(cookieJar)
                 .cache(null)
                 .build();
         OkHttpUtils.initClient(okHttpClient);
     }
 
-    //CookieJar是用于保存Cookie的
-    static class  LocalCookieJar implements CookieJar {
+    static class LocalCookieJar implements CookieJar {
         List<Cookie> cookies;
 
         @Override
@@ -79,7 +86,4 @@ public class app extends Application {
         Preferences.init(mContext);
         ScreenUtils.init(mContext);
     }
-
-
-
 }

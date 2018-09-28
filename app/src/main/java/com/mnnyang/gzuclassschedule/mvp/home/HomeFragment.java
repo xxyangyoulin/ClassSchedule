@@ -1,7 +1,6 @@
 package com.mnnyang.gzuclassschedule.mvp.home;
 
 import android.Manifest;
-import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
@@ -18,6 +17,7 @@ import android.widget.Toast;
 import com.bumptech.glide.Glide;
 import com.mnnyang.gzuclassschedule.BaseFragment;
 import com.mnnyang.gzuclassschedule.R;
+import com.mnnyang.gzuclassschedule.app.AppUtils;
 import com.mnnyang.gzuclassschedule.app.Cache;
 import com.mnnyang.gzuclassschedule.data.beanv2.UserWrapper;
 import com.mnnyang.gzuclassschedule.mvp.login.LoginActivity;
@@ -27,7 +27,6 @@ import com.mnnyang.gzuclassschedule.utils.DialogHelper;
 import com.mnnyang.gzuclassschedule.utils.LogUtil;
 import com.mnnyang.gzuclassschedule.utils.RequestPermission;
 import com.mnnyang.gzuclassschedule.utils.ScreenUtils;
-import com.mnnyang.gzuclassschedule.utils.event.CourseDataChangeEvent;
 import com.mnnyang.gzuclassschedule.utils.event.LoginEvent;
 import com.yzq.zxinglibrary.android.CaptureActivity;
 import com.yzq.zxinglibrary.common.Constant;
@@ -41,7 +40,6 @@ import java.util.Objects;
 import de.hdodenhof.circleimageview.CircleImageView;
 
 import static android.app.Activity.RESULT_OK;
-import static com.mnnyang.gzuclassschedule.mvp.home.HomePresenter.getGravatar;
 
 public class HomeFragment extends BaseFragment implements HomeContract.View, View.OnClickListener {
 
@@ -65,7 +63,6 @@ public class HomeFragment extends BaseFragment implements HomeContract.View, Vie
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        //EvenBus
         EventBus.getDefault().register(this);
     }
 
@@ -81,17 +78,18 @@ public class HomeFragment extends BaseFragment implements HomeContract.View, Vie
 
         mCivAvator = mRootView.findViewById(R.id.profile_image);
 
-        backToolbar(mToolbar);
-        initToolbarMenu();
+        initToolbar();
     }
 
-    private void initToolbarMenu() {
+    private void initToolbar() {
+        backToolbar(mToolbar);
         mToolbar.inflateMenu(R.menu.toolbar_home);
     }
 
     @Override
     public void initData() {
         new HomePresenter(this).start();
+        showCacheData();
     }
 
     @Override
@@ -198,6 +196,14 @@ public class HomeFragment extends BaseFragment implements HomeContract.View, Vie
 
 
     @Override
+    public void showCacheData() {
+        String email = Cache.instance().getEmail();
+        if (!TextUtils.isEmpty(email)) {
+            mTvUsername.setText(email);
+        }
+    }
+
+    @Override
     public void showLoading(String msg) {
         mProgressDialog = new DialogHelper();
         //TODO 弹出不可取消
@@ -237,7 +243,7 @@ public class HomeFragment extends BaseFragment implements HomeContract.View, Vie
     public void updateShowAvator() {
         String email = Cache.instance().getEmail();
         if (!TextUtils.isEmpty(email)) {
-            String gravatar = getGravatar(email);
+            String gravatar = AppUtils.getGravatar(email);
             System.out.println("-----------" + gravatar);
             Glide.with(getContext())
                     .load(gravatar)
@@ -273,7 +279,7 @@ public class HomeFragment extends BaseFragment implements HomeContract.View, Vie
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void loginEvent(LoginEvent event) {
         mPresenter.loadUserInfo();
-        LogUtil.e(this,"收到事件");
+        LogUtil.e(this, "收到事件");
     }
 
     @Override

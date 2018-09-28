@@ -63,7 +63,6 @@ public class HomePresenter implements HomeContract.Presenter {
                     if (userWrapper.getCode() == 1) {
                         Cache.instance().setUser(userWrapper.getData());
 
-                        //mView.signedInPage();
                         mView.userInfoSucceed(userWrapper.getData());
                     } else if (userWrapper.getCode() == 3) {
                         mView.noSignInPage();
@@ -77,13 +76,6 @@ public class HomePresenter implements HomeContract.Presenter {
                 LogUtil.e(this, errMsg);
             }
         });
-    }
-
-    public static String getGravatar(String email) {
-        String emailMd5 = AppUtils.md5Hex(email);        //设置图片大小32px
-        String avatar = "http://www.gravatar.com/avatar/" + emailMd5 + "?s=64";
-        System.out.println(avatar);
-        return avatar;
     }
 
 

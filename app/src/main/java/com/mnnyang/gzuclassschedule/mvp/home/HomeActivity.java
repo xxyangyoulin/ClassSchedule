@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.ContentFrameLayout;
+import android.text.TextUtils;
 import android.view.MenuItem;
 
 import com.mnnyang.gzuclassschedule.BaseActivity;
@@ -27,7 +28,11 @@ public class HomeActivity extends BaseActivity {
 
     @Override
     protected boolean canInitTheme() {
-        return false;
+        if (TextUtils.isEmpty(Cache.instance().getEmail())) {
+            return false;
+        } else {
+            return true;
+        }
     }
 
     @Override

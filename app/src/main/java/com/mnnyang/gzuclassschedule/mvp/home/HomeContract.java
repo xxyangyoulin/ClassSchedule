@@ -24,6 +24,9 @@ public interface HomeContract {
     }
 
     interface View extends BaseView<HomeContract.Presenter> {
+
+        void showCacheData();
+
         void showLoading(String msg);
 
         void stopLoading();

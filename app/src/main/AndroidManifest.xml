@@ -36,6 +36,7 @@
         <activity android:name=".mvp.school.SchoolActivity"></activity>
         <activity
             android:name=".mvp.home.HomeActivity"
+            android:theme="@style/NoLoginTheme"
             android:launchMode="singleTask">
 
         </activity>
