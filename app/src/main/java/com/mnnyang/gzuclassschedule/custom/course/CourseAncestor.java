@@ -5,6 +5,7 @@ import java.io.Serializable;
 public class CourseAncestor implements Serializable {
 
     //所有
+
     public static final int SHOW_ALL = 0;
     //双
     public static final int SHOW_DOUBLE = 1;

@@ -39,6 +39,9 @@ public class app extends Application {
         mContext = getApplicationContext();
         initOkHttp();
         initUtils();
+
+        //TODO 不该在这里
+        AppUtils.copyOldData(this);
     }
 
     private void initOkHttp() {
