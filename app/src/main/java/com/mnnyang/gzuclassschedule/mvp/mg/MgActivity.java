@@ -275,4 +275,10 @@ public class MgActivity extends BaseActivity implements MgContract.View, View.On
     public void setPresenter(MgContract.Presenter presenter) {
         mPresenter = presenter;
     }
+
+    @Override
+    protected void onDestroy() {
+        mPresenter.onDestroy();
+        super.onDestroy();
+    }
 }

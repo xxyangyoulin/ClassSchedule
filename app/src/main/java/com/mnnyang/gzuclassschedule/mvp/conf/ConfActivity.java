@@ -165,4 +165,10 @@ public class ConfActivity extends BaseActivity implements ConfContract.View, Set
     public void setPresenter(ConfContract.Presenter presenter) {
         mPresenter = presenter;
     }
+
+    @Override
+    protected void onDestroy() {
+        mPresenter.onDestroy();
+        super.onDestroy();
+    }
 }

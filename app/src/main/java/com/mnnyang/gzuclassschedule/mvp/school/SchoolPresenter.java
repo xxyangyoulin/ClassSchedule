@@ -36,6 +36,10 @@ public class SchoolPresenter implements SchoolContract.Presenter {
         HttpUtils.newInstance().testUrl(url, new HttpCallback<String>() {
             @Override
             public void onSuccess(String s) {
+                if (mView == null) {
+                    //检查到view已经被销毁
+                    return;
+                }
                 testing = false;
                 mView.testingUrl(false);
                 mView.testUrlSucceed(url);
@@ -43,11 +47,21 @@ public class SchoolPresenter implements SchoolContract.Presenter {
 
             @Override
             public void onFail(String errMsg) {
+                if (mView == null) {
+                    //检查到view已经被销毁
+                    return;
+                }
                 testing = false;
                 mView.testingUrl(false);
                 mView.testUrlFailed(url);
 
             }
         });
+    }
+
+    @Override
+    public void onDestroy() {
+        mView = null;
+        System.gc();
     }
 }

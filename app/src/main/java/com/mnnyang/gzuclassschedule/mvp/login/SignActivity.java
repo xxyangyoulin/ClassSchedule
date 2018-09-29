@@ -1,9 +1,9 @@
 package com.mnnyang.gzuclassschedule.mvp.login;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TextInputEditText;
+import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
@@ -13,15 +13,14 @@ import com.mnnyang.gzuclassschedule.BaseActivity;
 import com.mnnyang.gzuclassschedule.R;
 import com.mnnyang.gzuclassschedule.app.Cache;
 import com.mnnyang.gzuclassschedule.data.beanv2.BaseBean;
-import com.mnnyang.gzuclassschedule.mvp.home.HomeActivity;
 import com.mnnyang.gzuclassschedule.utils.DialogHelper;
-import com.mnnyang.gzuclassschedule.utils.event.LoginEvent;
+import com.mnnyang.gzuclassschedule.utils.event.SignEvent;
 
 import org.greenrobot.eventbus.EventBus;
 
-public class LoginActivity extends BaseActivity implements LoginContact.View {
+public class SignActivity extends BaseActivity implements SignContact.View {
 
-    private LoginContact.Presenter mPresenter;
+    private SignContact.Presenter mPresenter;
     private boolean isLogin = false;
     private TextView mTvBigTitle;
     private TextView mTvSwitch;
@@ -34,16 +33,16 @@ public class LoginActivity extends BaseActivity implements LoginContact.View {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_login);
+        setContentView(R.layout.activity_sign);
 
         initView();
         initListener();
-        initBackToolbar("");
 
         initToSignUp();
 
-        new LoginPresenter(this).start();
+        new SignPresenter(this).start();
     }
+
 
     @Override
     protected boolean canInitTheme() {
@@ -58,6 +57,19 @@ public class LoginActivity extends BaseActivity implements LoginContact.View {
 
         mEtEmail = findViewById(R.id.tiet_email);
         mEtPassword = findViewById(R.id.tiet_password);
+
+        initToolbar();
+    }
+
+    private void initToolbar() {
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        toolbar.setNavigationIcon(R.drawable.ic_close_black_24dp);
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
     }
 
     private void initListener() {
@@ -103,21 +115,27 @@ public class LoginActivity extends BaseActivity implements LoginContact.View {
 
     private void initToSignIn() {
         isLogin = true;
-        mTvBigTitle.setText("Sign in");
+        mTvBigTitle.setText("登 入");
         mTvTip.setText("还没有加入？");
         mTvSwitch.setText("去注册");
     }
 
     private void initToSignUp() {
         isLogin = false;
-        mTvBigTitle.setText("Sign up");
+        mTvBigTitle.setText("注 册");
         mTvTip.setText("已有账号？");
-        mTvSwitch.setText("去登录");
+        mTvSwitch.setText("去登入");
     }
 
     @Override
-    public void setPresenter(LoginContact.Presenter presenter) {
+    public void setPresenter(SignContact.Presenter presenter) {
         mPresenter = presenter;
+    }
+
+
+    @Override
+    public void showMassage(String msg) {
+        toast(msg);
     }
 
     @Override
@@ -140,7 +158,7 @@ public class LoginActivity extends BaseActivity implements LoginContact.View {
         String email = mEtEmail.getText().toString();
         Cache.instance().setEmail(email);
 
-        EventBus.getDefault().post(new LoginEvent());
+        EventBus.getDefault().post(new SignEvent());
         finish();
     }
 
@@ -158,5 +176,11 @@ public class LoginActivity extends BaseActivity implements LoginContact.View {
     @Override
     public void signUpFailed(String msg) {
         toast(msg);
+    }
+
+    @Override
+    protected void onDestroy() {
+        mPresenter.onDestroy();
+        super.onDestroy();
     }
 }

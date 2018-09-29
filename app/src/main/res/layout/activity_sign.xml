@@ -31,7 +31,7 @@
                 android:id="@+id/tv_big_title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Sign up"
+                android:text="登 录"
                 android:textColor="@color/primary_dark_green"
                 android:textSize="32dp" />
 
@@ -49,7 +49,8 @@
                     android:hint="E-mail"
                     android:inputType="textEmailAddress"
                     android:textColor="@color/primary_green"
-                    android:textColorHint="#a04CAF50" />
+                    android:textColorHint="#a04CAF50"
+                    android:typeface="monospace" />
             </android.support.design.widget.TextInputLayout>
 
 
@@ -65,17 +66,18 @@
                     android:hint="Password"
                     android:inputType="textPassword"
                     android:textColor="@color/primary_green"
-                    android:textColorHint="#a04CAF50" />
+                    android:textColorHint="#a04CAF50"
+                    android:typeface="monospace" />
             </android.support.design.widget.TextInputLayout>
 
 
             <Button
+                android:id="@+id/btn_go"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/margin_16dp"
                 android:backgroundTint="@color/primary_green"
                 android:text="Go"
-                android:id="@+id/btn_go"
                 android:textColor="@color/white_f1" />
 
             <LinearLayout

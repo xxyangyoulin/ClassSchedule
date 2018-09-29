@@ -60,4 +60,10 @@ public class SettingPresenter implements SettingContract.Presenter {
         }
         return false;
     }
+
+    @Override
+    public void onDestroy() {
+        mView = null;
+        System.gc();
+    }
 }

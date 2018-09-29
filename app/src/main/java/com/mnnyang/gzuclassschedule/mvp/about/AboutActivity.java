@@ -79,7 +79,6 @@ public class AboutActivity extends BaseActivity implements AboutContract.View {
 
     @Override
     public void showUpdateVersionInfo(Version version) {
-
         DialogHelper dialogHelper = new DialogHelper();
         dialogHelper.showNormalDialog(this, getString(R.string.now_version), version.getMsg(), new DialogListener() {
             @Override
@@ -104,5 +103,11 @@ public class AboutActivity extends BaseActivity implements AboutContract.View {
     @Override
     public void setPresenter(AboutContract.Presenter presenter) {
         mPresenter = presenter;
+    }
+
+    @Override
+    protected void onDestroy() {
+        mPresenter.onDestroy();
+        super.onDestroy();
     }
 }

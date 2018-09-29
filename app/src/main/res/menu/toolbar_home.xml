@@ -8,7 +8,7 @@
         app:showAsAction="ifRoom" />
 
     <item
-        android:id="@+id/action_logout"
+        android:id="@+id/action_sign_out"
         android:title="退出登录"
         app:showAsAction="never" />
 

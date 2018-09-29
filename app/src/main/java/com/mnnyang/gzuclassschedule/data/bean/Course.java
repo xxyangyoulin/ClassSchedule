@@ -273,7 +273,7 @@ public class Course extends CourseAncestor implements Comparable<Course> {
 
     @Override
     public String toString() {
-        return super.toString() + "Course{" +
+        return super.toString() + "DownCourse{" +
                 "courseId=" + courseId +
                 ", name='" + name + '\'' +
                 ", classRoom='" + classRoom + '\'' +
@@ -291,7 +291,7 @@ public class Course extends CourseAncestor implements Comparable<Course> {
     }
 
     public String toSelfString() {
-        return "Course{" +
+        return "DownCourse{" +
                 "courseId=" + courseId +
                 ", name='" + name + '\'' +
                 ", classRoom='" + classRoom + '\'' +

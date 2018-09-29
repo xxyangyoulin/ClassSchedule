@@ -253,6 +253,7 @@ public class AddActivity extends BaseActivity implements AddContract.View, View.
                 mSelectedStartWeek, mSelectedEndWeek));
     }
 
+
     @Override
     public void showAddFail(String msg) {
         toast(msg);
@@ -285,5 +286,11 @@ public class AddActivity extends BaseActivity implements AddContract.View, View.
     @Override
     public void setPresenter(AddContract.Presenter presenter) {
         mPresenter = presenter;
+    }
+
+    @Override
+    protected void onDestroy() {
+        mPresenter.onDestroy();
+        super.onDestroy();
     }
 }

@@ -7,7 +7,11 @@ import android.content.Intent;
 import java.io.UnsupportedEncodingException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.regex.Pattern;
 
+/**
+ *
+ */
 public class AppUtils {
     public static String getGravatar(String email) {
         String emailMd5 = AppUtils.md5Hex(email);        //设置图片大小32px
@@ -27,17 +31,27 @@ public class AppUtils {
         StringBuffer sb = new StringBuffer();
         for (int i = 0; i < array.length; ++i) {
             sb.append(Integer.toHexString((array[i]
-                    & 0xFF) | 0x100).substring(1,3));
+                    & 0xFF) | 0x100).substring(1, 3));
         }
         return sb.toString();
     }
-    public static String md5Hex (String message) {
+
+    public static String md5Hex(String message) {
         try {
             MessageDigest md =
                     MessageDigest.getInstance("MD5");
-            return hex (md.digest(message.getBytes("CP1252")));
+            return hex(md.digest(message.getBytes("CP1252")));
         } catch (NoSuchAlgorithmException | UnsupportedEncodingException e) {
         }
         return null;
+    }
+
+    /**
+     * 粗略判断邮箱
+     */
+    public static boolean isEmail(String content) {
+        String pattern = "[a-zA-Z0-9._]+@[a-zA-Z0-9.]+\\.[a-zA-Z0-9.]+";
+
+        return Pattern.matches(pattern, content);
     }
 }

@@ -41,8 +41,9 @@
 
         </activity>
         <activity
-            android:name=".mvp.login.LoginActivity"
+            android:name=".mvp.login.SignActivity"
             android:launchMode="singleInstance"
+            android:windowSoftInputMode="stateHidden"
             android:theme="@style/LoginTheme">
 
         </activity>

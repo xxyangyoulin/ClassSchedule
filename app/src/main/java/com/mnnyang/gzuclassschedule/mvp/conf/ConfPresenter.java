@@ -17,4 +17,9 @@ public class ConfPresenter implements ConfContract.Presenter {
         //nothing
     }
 
+    @Override
+    public void onDestroy() {
+        mView = null;
+        System.gc();
+    }
 }

@@ -1,17 +1,17 @@
 package com.mnnyang.gzuclassschedule.mvp.home;
 
 import android.graphics.Bitmap;
-import android.widget.ImageView;
+import android.support.annotation.NonNull;
 
 import com.mnnyang.gzuclassschedule.BasePresenter;
 import com.mnnyang.gzuclassschedule.BaseView;
+import com.mnnyang.gzuclassschedule.data.beanv2.DownCourseWrapper;
 import com.mnnyang.gzuclassschedule.data.beanv2.UserWrapper;
-import com.mnnyang.gzuclassschedule.mvp.mg.MgContract;
+
+import java.util.List;
 
 public interface HomeContract {
     interface Presenter extends BasePresenter {
-        void loadAvator(ImageView iv);
-
         void loadUserInfo();
 
         void createQRCode();
@@ -20,10 +20,15 @@ public interface HomeContract {
 
         void uploadLocalCourse();
 
-        void cloudOverWriteLocal();
+        void downCourse();
+
+        void cloudOverWriteLocal(List<DownCourseWrapper.DownCourse> downCourses);
     }
 
     interface View extends BaseView<HomeContract.Presenter> {
+        boolean isActive();
+
+        void showMassage(String msg);
 
         void showCacheData();
 
@@ -31,18 +36,22 @@ public interface HomeContract {
 
         void stopLoading();
 
+        /**
+         * 未登录状态页面
+         */
         void noSignInPage();
 
-        void signedInPage();
+        /**
+         * 登录状态页面
+         */
+        void signInPage(UserWrapper.User user);
 
-        void userInfoSucceed(UserWrapper.User user);
+        void pleaseLoginIn();
 
-        void updateShowAvator();
+        void updateShowAvator(@NonNull String email);
 
         void createQRCodeSucceed(Bitmap bitmap);
 
         void createQRCodeFailed(String msg);
-
-        //void showCourseGroup(String[] title,int[] id);
     }
 }

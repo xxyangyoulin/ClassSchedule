@@ -89,37 +89,6 @@ public class CoursePresenter implements CourseContract.Presenter {
 
                     }
                 });
-                /*Observable.create(new Observable.OnSubscribe<Bitmap>() {
-                    @Override
-                    public void call(Subscriber<? super Bitmap> subscriber) {
-                        Bitmap bitmap = ImageResizer.decodeSampledBitmapFromFile(path,
-                                ScreenUtils.getSWidth(), 0);
-                        if (bitmap == null) {
-                            subscriber.onError(new FileNotFoundException());
-                        } else {
-                            subscriber.onNext(bitmap);
-                        }
-                        subscriber.onCompleted();
-                    }
-                }).subscribeOn(Schedulers.io())
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .subscribe(new Observer<Bitmap>() {
-                            @Override
-                            public void onCompleted() {
-
-                            }
-
-                            @Override
-                            public void onError(Throwable e) {
-                                e.printStackTrace();
-                            }
-
-                            @Override
-                            public void onNext(Bitmap bitmap) {
-                                mCourseView.setBackground(bitmap);
-                            }
-                        });*/
-
     }
 
     @Override
@@ -142,6 +111,10 @@ public class CoursePresenter implements CourseContract.Presenter {
 
                     @Override
                     public void onNext(ArrayList<Course> courses) {
+                        if(mView == null){
+                            //view被销毁
+                            return;
+                        }
                         mView.setCourseData(courses);
                     }
 
@@ -155,39 +128,17 @@ public class CoursePresenter implements CourseContract.Presenter {
 
                     }
                 });
-
-        /*Observable.create(new Observable.OnSubscribe<ArrayList<Course>>() {
-            @Override
-            public void call(Subscriber<? super ArrayList<Course>> subscriber) {
-                CourseDbDao dao = CourseDbDao.instance();
-                final ArrayList<Course> courses = dao.loadCourses(csNameId);
-                subscriber.onNext(courses);
-                subscriber.onCompleted();
-            }
-        }).subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Observer<ArrayList<Course>>() {
-
-                    @Override
-                    public void onCompleted() {
-
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-                        e.printStackTrace();
-                    }
-
-                    @Override
-                    public void onNext(ArrayList<Course> courses) {
-                        mCourseView.setCourseData(courses);
-                    }
-                });*/
     }
 
     @Override
     public void deleteCourse(int courseId) {
         CourseDbDao.instance().removeCourse(courseId);
         mView.updateCoursePreference(); //must be main thread
+    }
+
+    @Override
+    public void onDestroy() {
+        mView = null;
+        System.gc();
     }
 }

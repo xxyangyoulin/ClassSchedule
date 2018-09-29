@@ -8,6 +8,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -20,14 +21,13 @@ import com.mnnyang.gzuclassschedule.R;
 import com.mnnyang.gzuclassschedule.app.AppUtils;
 import com.mnnyang.gzuclassschedule.app.Cache;
 import com.mnnyang.gzuclassschedule.data.beanv2.UserWrapper;
-import com.mnnyang.gzuclassschedule.mvp.login.LoginActivity;
+import com.mnnyang.gzuclassschedule.mvp.login.SignActivity;
 import com.mnnyang.gzuclassschedule.mvp.mg.MgActivity;
 import com.mnnyang.gzuclassschedule.mvp.setting.SettingActivity;
 import com.mnnyang.gzuclassschedule.utils.DialogHelper;
-import com.mnnyang.gzuclassschedule.utils.LogUtil;
 import com.mnnyang.gzuclassschedule.utils.RequestPermission;
 import com.mnnyang.gzuclassschedule.utils.ScreenUtils;
-import com.mnnyang.gzuclassschedule.utils.event.LoginEvent;
+import com.mnnyang.gzuclassschedule.utils.event.SignEvent;
 import com.yzq.zxinglibrary.android.CaptureActivity;
 import com.yzq.zxinglibrary.common.Constant;
 
@@ -41,7 +41,8 @@ import de.hdodenhof.circleimageview.CircleImageView;
 
 import static android.app.Activity.RESULT_OK;
 
-public class HomeFragment extends BaseFragment implements HomeContract.View, View.OnClickListener {
+public class HomeFragment extends BaseFragment implements HomeContract.View,
+        View.OnClickListener, Toolbar.OnMenuItemClickListener {
 
     HomeContract.Presenter mPresenter;
     private int REQUEST_CODE_SCAN = 1;
@@ -54,6 +55,16 @@ public class HomeFragment extends BaseFragment implements HomeContract.View, Vie
     private View mLayoutSetting;
     private View mLayoutCourseMg;
     private TextView mTvUsername;
+
+    @Override
+    public boolean isActive() {
+        return isAdded();
+    }
+
+    @Override
+    public void showMassage(String msg) {
+        toast(msg);
+    }
 
     @Override
     protected int getLayout() {
@@ -84,6 +95,7 @@ public class HomeFragment extends BaseFragment implements HomeContract.View, Vie
     private void initToolbar() {
         backToolbar(mToolbar);
         mToolbar.inflateMenu(R.menu.toolbar_home);
+        mToolbar.setOnMenuItemClickListener(this);
     }
 
     @Override
@@ -108,7 +120,7 @@ public class HomeFragment extends BaseFragment implements HomeContract.View, Vie
                 showShareDialog();
                 break;
             case R.id.layout_overwrite_local:
-                mPresenter.cloudOverWriteLocal();
+                mPresenter.downCourse();
                 break;
             case R.id.layout_upload:
                 mPresenter.uploadLocalCourse();
@@ -119,7 +131,8 @@ public class HomeFragment extends BaseFragment implements HomeContract.View, Vie
             case R.id.layout_course_mg:
                 courseManage();
                 break;
-
+            default:
+                break;
         }
     }
 
@@ -131,6 +144,144 @@ public class HomeFragment extends BaseFragment implements HomeContract.View, Vie
         startActivity(new Intent(activity, SettingActivity.class));
     }
 
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        // 扫描二维码/条码回传
+        if (requestCode == REQUEST_CODE_SCAN && resultCode == RESULT_OK) {
+            if (data != null) {
+                String content = data.getStringExtra(Constant.CODED_CONTENT);
+                Toast.makeText(activity, content, Toast.LENGTH_SHORT).show();
+            }
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
+                                           @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        RequestPermission.onRequestPermissionsResult(requestCode, permissions, grantResults);
+    }
+
+
+    @Override
+    public void showCacheData() {
+        String email = Cache.instance().getEmail();
+        if (!TextUtils.isEmpty(email)) {
+            UserWrapper.User user = new UserWrapper.User();
+            user.setEmail(email);
+
+            signInPage(user);
+        }
+    }
+
+    @Override
+    public void showLoading(String msg) {
+        mProgressDialog = new DialogHelper();
+        //TODO 弹出不可取消
+        mProgressDialog.showProgressDialog(getContext(), "稍后", msg, false);
+    }
+
+    @Override
+    public void stopLoading() {
+        mProgressDialog.hideProgressDialog();
+    }
+
+    @Override
+    public void noSignInPage() {
+        if (!isActive()) {
+            return;
+        }
+        hideSignOutMenu(false);
+        mTvUsername.setText("未登录");
+        mTvUsername.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(activity, SignActivity.class));
+            }
+        });
+
+        // default avator
+        mCivAvator.setImageResource(R.drawable.ic_avator_black_24dp);
+    }
+
+    @Override
+    public void signInPage(UserWrapper.User user) {
+        if (!isActive()) {
+            return;
+        }
+        hideSignOutMenu(true);
+        mTvUsername.setOnClickListener(null);
+        mTvUsername.setText(user.getEmail());
+
+        updateShowAvator(user.getEmail());
+    }
+
+    @Override
+    public void pleaseLoginIn() {
+        if (!isActive()) {
+            return;
+        }
+        toast("请登录");
+        startActivity(new Intent(activity, SignActivity.class));
+    }
+
+    @Override
+    public void updateShowAvator(@NonNull String email) {
+        if (!isActive()) {
+            return;
+        }
+        String grAvatar = AppUtils.getGravatar(email);
+        Glide.with(Objects.requireNonNull(getContext()))
+                .load(grAvatar)
+                .into(mCivAvator);
+    }
+
+    @Override
+    public void createQRCodeSucceed(Bitmap bitmap) {
+        if (!isActive()) {
+            return;
+        }
+
+        DialogHelper dialogHelper = new DialogHelper();
+        View dialogView = View.inflate(getContext(), R.layout.dialog_qr_code, null);
+
+        ((ImageView) dialogView.findViewById(R.id.iv_qr_code)).setImageBitmap(bitmap);
+
+        dialogHelper.showCustomDialog(Objects.requireNonNull(getContext()),
+                dialogView, null, ScreenUtils.dp2px(180), null);
+    }
+
+    @Override
+    public void createQRCodeFailed(String msg) {
+        toast(msg);
+    }
+
+    public static HomeFragment newInstance() {
+
+        Bundle args = new Bundle();
+
+        HomeFragment fragment = new HomeFragment();
+        fragment.setArguments(args);
+        return fragment;
+    }
+
+    //登录事件
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void loginEvent(SignEvent event) {
+        activity.recreate();
+    }
+
+    @Override
+    public void setPresenter(HomeContract.Presenter presenter) {
+        mPresenter = presenter;
+    }
+
+    /**
+     * 显示分享弹窗
+     */
     private void showShareDialog() {
         final DialogHelper dialogHelper = new DialogHelper();
         View dialogView = View.inflate(getContext(), R.layout.dialog, null);
@@ -174,117 +325,10 @@ public class HomeFragment extends BaseFragment implements HomeContract.View, Vie
                 });
     }
 
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-
-        // 扫描二维码/条码回传
-        if (requestCode == REQUEST_CODE_SCAN && resultCode == RESULT_OK) {
-            if (data != null) {
-                String content = data.getStringExtra(Constant.CODED_CONTENT);
-                Toast.makeText(activity, content, Toast.LENGTH_SHORT).show();
-            }
+    private void hideSignOutMenu(boolean hide) {
+        if (TextUtils.isEmpty(Cache.instance().getEmail())) {
+            mToolbar.getMenu().findItem(R.id.action_sign_out).setVisible(hide);
         }
-    }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
-                                           @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        RequestPermission.onRequestPermissionsResult(requestCode, permissions, grantResults);
-    }
-
-
-    @Override
-    public void showCacheData() {
-        String email = Cache.instance().getEmail();
-        if (!TextUtils.isEmpty(email)) {
-            mTvUsername.setText(email);
-        }
-    }
-
-    @Override
-    public void showLoading(String msg) {
-        mProgressDialog = new DialogHelper();
-        //TODO 弹出不可取消
-        mProgressDialog.showProgressDialog(getContext(), "稍后", msg, false);
-    }
-
-    @Override
-    public void stopLoading() {
-        mProgressDialog.hideProgressDialog();
-    }
-
-    @Override
-    public void noSignInPage() {
-        mTvUsername.setText("未登录");
-        mTvUsername.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startActivity(new Intent(activity, LoginActivity.class));
-            }
-        });
-        //mCivAvator
-    }
-
-    @Override
-    public void signedInPage() {
-        mTvUsername.setOnClickListener(null);
-    }
-
-    @Override
-    public void userInfoSucceed(UserWrapper.User user) {
-        mTvUsername.setText(user.getEmail());
-        updateShowAvator();
-        Toast.makeText(activity, user.toString(), Toast.LENGTH_SHORT).show();
-    }
-
-    @Override
-    public void updateShowAvator() {
-        String email = Cache.instance().getEmail();
-        if (!TextUtils.isEmpty(email)) {
-            String gravatar = AppUtils.getGravatar(email);
-            System.out.println("-----------" + gravatar);
-            Glide.with(getContext())
-                    .load(gravatar)
-                    .into(mCivAvator);
-        }
-    }
-
-    @Override
-    public void createQRCodeSucceed(Bitmap bitmap) {
-        DialogHelper dialogHelper = new DialogHelper();
-        View dialogView = View.inflate(getContext(), R.layout.dialog_qr_code, null);
-
-        ((ImageView) dialogView.findViewById(R.id.iv_qr_code)).setImageBitmap(bitmap);
-
-        dialogHelper.showCustomDialog(Objects.requireNonNull(getContext()),
-                dialogView, null, ScreenUtils.dp2px(180), null);
-    }
-
-    @Override
-    public void createQRCodeFailed(String msg) {
-        toast(msg);
-    }
-
-    public static HomeFragment newInstance() {
-
-        Bundle args = new Bundle();
-
-        HomeFragment fragment = new HomeFragment();
-        fragment.setArguments(args);
-        return fragment;
-    }
-
-    @Subscribe(threadMode = ThreadMode.MAIN)
-    public void loginEvent(LoginEvent event) {
-        mPresenter.loadUserInfo();
-        LogUtil.e(this, "收到事件");
-    }
-
-    @Override
-    public void setPresenter(HomeContract.Presenter presenter) {
-        mPresenter = presenter;
     }
 
     @Override
@@ -295,10 +339,28 @@ public class HomeFragment extends BaseFragment implements HomeContract.View, Vie
 
     @Override
     public void onDestroy() {
+        mPresenter.onDestroy();
         super.onDestroy();
         //EvenBus
         if (EventBus.getDefault().isRegistered(this)) {
             EventBus.getDefault().unregister(this);
         }
+    }
+
+    @Override
+    public boolean onMenuItemClick(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.action_sign_out:
+                signOut();
+                break;
+        }
+        return false;
+    }
+
+    private void signOut() {
+        Cache.instance().clearCookie().setEmail(null);
+
+        SignEvent event = new SignEvent().setSignOut(true);
+        EventBus.getDefault().post(event);
     }
 }

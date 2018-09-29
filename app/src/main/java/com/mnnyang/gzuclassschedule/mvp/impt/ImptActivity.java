@@ -52,7 +52,7 @@ public class ImptActivity extends BaseActivity implements
         initBackToolbar("导入课程表");
         initView();
 
-        new ImptPresenter(this,initSchoolUrl());
+        new ImptPresenter(this, initSchoolUrl());
     }
 
     private String initSchoolUrl() {
@@ -61,8 +61,8 @@ public class ImptActivity extends BaseActivity implements
         if (TextUtils.isEmpty(schoolUrl)) {
             schoolUrl = Url.URL_GZU_HOST;
         }
-        schoolUrl = schoolUrl.replace(Url.default2,"");
-       return schoolUrl;
+        schoolUrl = schoolUrl.replace(Url.default2, "");
+        return schoolUrl;
     }
 
     private void initView() {
@@ -224,4 +224,11 @@ public class ImptActivity extends BaseActivity implements
     public void setPresenter(ImptContract.Presenter presenter) {
         mPresenter = presenter;
     }
+
+    @Override
+    protected void onDestroy() {
+        mPresenter.onDestroy();
+        super.onDestroy();
+    }
+
 }

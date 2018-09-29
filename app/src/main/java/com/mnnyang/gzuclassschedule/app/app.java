@@ -32,13 +32,11 @@ import okhttp3.OkHttpClient;
 
 public class app extends Application {
     public static Context mContext;
-    public static Handler mHandler;
 
     @Override
     public void onCreate() {
         super.onCreate();
         mContext = getApplicationContext();
-        mHandler = new Handler(Looper.getMainLooper());
         initOkHttp();
         initUtils();
     }
@@ -46,6 +44,8 @@ public class app extends Application {
     private void initOkHttp() {
         ClearableCookieJar cookieJar =
                 new PersistentCookieJar(new SetCookieCache(), new SharedPrefsCookiePersistor(getApplicationContext()));
+
+        Cache.instance().setCookieJar(cookieJar);
 
         OkHttpClient okHttpClient = new OkHttpClient.Builder()
 //                .followRedirects(false)  //禁制OkHttp的重定向操作，我们自己处理重定向
@@ -60,26 +60,26 @@ public class app extends Application {
         OkHttpUtils.initClient(okHttpClient);
     }
 
-    static class LocalCookieJar implements CookieJar {
-        List<Cookie> cookies;
-
-        @Override
-        public List<Cookie> loadForRequest(HttpUrl arg0) {
-            if (cookies != null)
-                return cookies;
-            return new ArrayList<Cookie>();
-        }
-
-        @Override
-        public void saveFromResponse(HttpUrl arg0, List<Cookie> cookies) {
-            System.out.println("----------------saveFromResponse");
-            for (Cookie cookie : cookies) {
-                System.out.println(cookie);
-            }
-            this.cookies = cookies;
-        }
-
-    }
+    //static class LocalCookieJar implements CookieJar {
+    //    List<Cookie> cookies;
+    //
+    //    @Override
+    //    public List<Cookie> loadForRequest(HttpUrl arg0) {
+    //        if (cookies != null)
+    //            return cookies;
+    //        return new ArrayList<Cookie>();
+    //    }
+    //
+    //    @Override
+    //    public void saveFromResponse(HttpUrl arg0, List<Cookie> cookies) {
+    //        System.out.println("----------------saveFromResponse");
+    //        for (Cookie cookie : cookies) {
+    //            System.out.println(cookie);
+    //        }
+    //        this.cookies = cookies;
+    //    }
+    //
+    //}
 
     private void initUtils() {
         ToastUtils.init(mContext);

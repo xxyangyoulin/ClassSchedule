@@ -44,6 +44,7 @@ public abstract class BaseFragment extends Fragment {
         initListener();
     }
 
+
     protected abstract int getLayout();
 
     public void initView() {

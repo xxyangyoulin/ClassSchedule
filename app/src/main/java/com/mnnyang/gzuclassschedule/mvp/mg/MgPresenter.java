@@ -62,6 +62,10 @@ public class MgPresenter implements MgContract.Presenter {
 
                     @Override
                     public void onNext(ArrayList<CsItem> csItems) {
+                        if (mView == null) {
+                            //检查到view已经被销毁
+                            return;
+                        }
                         mCsItems.clear();
                         mCsItems.addAll(csItems);
                         mView.showList(mCsItems);
@@ -78,39 +82,14 @@ public class MgPresenter implements MgContract.Presenter {
 
                     }
                 });
-
-        /*Observable.create(new Observable.OnSubscribe<ArrayList<CsItem>>() {
-            @Override
-            public void call(Subscriber<? super ArrayList<CsItem>> subscriber) {
-                ArrayList<CsItem> data = mModel.getCsItemData();
-                subscriber.onNext(data);
-                subscriber.onCompleted();
-            }
-        }).subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Observer<ArrayList<CsItem>>() {
-
-                    @Override
-                    public void onCompleted() {
-
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-                        e.printStackTrace();
-                    }
-
-                    @Override
-                    public void onNext(ArrayList<CsItem> items) {
-                        mCsItems.clear();
-                        mCsItems.addAll(items);
-                        mView.showList(mCsItems);
-                    }
-                });*/
     }
 
     @Override
     public void addCsName(String csName) {
+        if (mView == null) {
+            //检查到view已经被销毁
+            return;
+        }
         if (TextUtils.isEmpty(csName)) {
             mView.showNotice(app.mContext.getString(R.string.course_name_can_not_be_empty));
         } else {
@@ -131,6 +110,10 @@ public class MgPresenter implements MgContract.Presenter {
     public void editCsName(int id, String newCsName) {
 
         int update = CourseDbDao.instance().updateCsName(id, newCsName);
+        if (mView == null) {
+            //检查到view已经被销毁
+            return;
+        }
         if (update == 0) {
             mView.showNotice(app.mContext.getString(R.string.course_name_already_exists));
         } else {
@@ -159,12 +142,20 @@ public class MgPresenter implements MgContract.Presenter {
 
                     @Override
                     public void onNext(String s) {
+                        if (mView == null) {
+                            //检查到view已经被销毁
+                            return;
+                        }
                         dh.hideProgressDialog();
                         mView.deleteFinish();
                     }
 
                     @Override
                     public void onError(Throwable e) {
+                        if (mView == null) {
+                            //检查到view已经被销毁
+                            return;
+                        }
                         e.printStackTrace();
                         dh.hideProgressDialog();
                     }
@@ -174,35 +165,6 @@ public class MgPresenter implements MgContract.Presenter {
 
                     }
                 });
-
-        /*Observable.create(new Observable.OnSubscribe<String>() {
-
-            @Override
-            public void call(Subscriber<? super String> subscriber) {
-                CourseDbDao dao = CourseDbDao.instance();
-                dao.removeByCsNameId(csNameId);
-                subscriber.onNext("ok");
-            }
-        }).subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Observer<String>() {
-
-                    @Override
-                    public void onCompleted() {
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-                        e.printStackTrace();
-                        dh.hideProgressDialog();
-                    }
-
-                    @Override
-                    public void onNext(String s) {
-                        dh.hideProgressDialog();
-                        mView.deleteFinish();
-                    }
-                });*/
     }
 
     @Override
@@ -210,7 +172,17 @@ public class MgPresenter implements MgContract.Presenter {
         Preferences.putInt(app.mContext.getString(
                 R.string.app_preference_current_cs_name_id), csNameId);
 
+        if (mView == null) {
+            //检查到view已经被销毁
+            return;
+        }
         mView.showNotice("切换成功");
         mView.gotoCourseActivity();
+    }
+
+    @Override
+    public void onDestroy() {
+        mView = null;
+        System.gc();
     }
 }

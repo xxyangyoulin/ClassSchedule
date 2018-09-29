@@ -3,14 +3,14 @@ package com.mnnyang.gzuclassschedule.mvp.home;
 
 import android.graphics.Bitmap;
 import android.support.annotation.NonNull;
-import android.widget.ImageView;
+import android.text.TextUtils;
 
-import com.mnnyang.gzuclassschedule.app.AppUtils;
 import com.mnnyang.gzuclassschedule.app.Cache;
 import com.mnnyang.gzuclassschedule.data.bean.Course;
 import com.mnnyang.gzuclassschedule.data.bean.CsItem;
 import com.mnnyang.gzuclassschedule.data.bean.CsName;
 import com.mnnyang.gzuclassschedule.data.beanv2.BaseBean;
+import com.mnnyang.gzuclassschedule.data.beanv2.DownCourseWrapper;
 import com.mnnyang.gzuclassschedule.data.beanv2.UserWrapper;
 import com.mnnyang.gzuclassschedule.data.db.CourseDbDao;
 import com.mnnyang.gzuclassschedule.data.http.HttpCallback;
@@ -46,24 +46,32 @@ public class HomePresenter implements HomeContract.Presenter {
     @Override
     public void start() {
         loadUserInfo();
-        mView.updateShowAvator();
-    }
-
-    @Override
-    public void loadAvator(ImageView iv) {
-
     }
 
     @Override
     public void loadUserInfo() {
+
+        if (TextUtils.isEmpty(Cache.instance().getEmail())) {
+            if (mView == null) {
+                //检查到view已经被销毁
+                return;
+            }
+            mView.noSignInPage();
+            return;
+        }
+
         new MyHttpUtils().userInfo(new HttpCallback<UserWrapper>() {
             @Override
             public void onSuccess(UserWrapper userWrapper) {
+                if (mView == null) {
+                    //view被销毁
+                    return;
+                }
                 if (userWrapper != null) {
                     if (userWrapper.getCode() == 1) {
                         Cache.instance().setUser(userWrapper.getData());
 
-                        mView.userInfoSucceed(userWrapper.getData());
+                        mView.signInPage(userWrapper.getData());
                     } else if (userWrapper.getCode() == 3) {
                         mView.noSignInPage();
                         LogUtil.e(this, userWrapper.toString());
@@ -73,6 +81,10 @@ public class HomePresenter implements HomeContract.Presenter {
 
             @Override
             public void onFail(String errMsg) {
+                if (mView == null) {
+                    //view被销毁
+                    return;
+                }
                 LogUtil.e(this, errMsg);
             }
         });
@@ -103,12 +115,20 @@ public class HomePresenter implements HomeContract.Presenter {
                 .subscribe(new Consumer<Bitmap>() {
                     @Override
                     public void accept(Bitmap bitmap) throws Exception {
+                        if (mView == null) {
+                            //view被销毁
+                            return;
+                        }
                         mView.stopLoading();
                         mView.createQRCodeSucceed(bitmap);
                     }
                 }, new Consumer<Throwable>() {
                     @Override
                     public void accept(Throwable throwable) throws Exception {
+                        if (mView == null) {
+                            //view被销毁
+                            return;
+                        }
                         mView.stopLoading();
                         mView.createQRCodeFailed(throwable.getMessage());
                     }
@@ -122,18 +142,46 @@ public class HomePresenter implements HomeContract.Presenter {
 
     @Override
     public void uploadLocalCourse() {
+        if (TextUtils.isEmpty(Cache.instance().getEmail())) {
+            mView.pleaseLoginIn();
+            return;
+        }
+
+        mView.showLoading("同步中");
+
         JSONObject result = buildJsonOfAllCourse();
         System.out.println(result.toString());
         MyHttpUtils utils = new MyHttpUtils();
         utils.uploadCourse(result.toString(), new HttpCallback<BaseBean>() {
             @Override
             public void onSuccess(BaseBean baseBean) {
+                if (mView == null) {
+                    //view被销毁
+                    return;
+                }
+                mView.stopLoading();
 
+                if (baseBean != null) {
+                    if (baseBean.getCode() == 1) {
+                        mView.showMassage("同步成功");
+                        //TODO 第一次上传的时候，如果成功，就废弃旧数据库的所有操作
+
+                    } else {
+                        mView.showMassage("同步失败：" + baseBean.getMsg());
+                    }
+                } else {
+                    mView.showMassage("同步失败");
+                }
             }
 
             @Override
             public void onFail(String errMsg) {
-
+                if (mView == null) {
+                    //view被销毁
+                    return;
+                }
+                mView.stopLoading();
+                mView.showMassage(errMsg);
             }
         });
     }
@@ -185,7 +233,57 @@ public class HomePresenter implements HomeContract.Presenter {
     }
 
     @Override
-    public void cloudOverWriteLocal() {
+    public void downCourse() {
+        if (TextUtils.isEmpty(Cache.instance().getEmail())) {
+            mView.pleaseLoginIn();
+            return;
+        }
+        mView.showLoading("同步中");
+        new MyHttpUtils().downCourse(new HttpCallback<DownCourseWrapper>() {
+            @Override
+            public void onSuccess(DownCourseWrapper bean) {
+                if (mView == null) {
+                    //view被销毁
+                    return;
+                }
+                mView.stopLoading();
+                if (bean != null) {
+                    if (bean.getCode() == 1) {
+                        //mView.showMassage("同步成功");
+                        cloudOverWriteLocal(bean.getData());
+                    } else {
+                        mView.showMassage("同步失败：" + bean.getMsg());
+                    }
+                } else {
+                    mView.showMassage("同步失败");
+                }
+            }
 
+            @Override
+            public void onFail(String errMsg) {
+                if (mView == null) {
+                    //view被销毁
+                    return;
+                }
+                mView.stopLoading();
+                mView.showMassage(errMsg);
+            }
+        });
+    }
+
+    @Override
+    public void cloudOverWriteLocal(List<DownCourseWrapper.DownCourse> downCourses) {
+        if (downCourses != null) {
+            for (DownCourseWrapper.DownCourse downCourse : downCourses) {
+                //TODO 保存到新的数据库，
+
+            }
+        }
+    }
+
+    @Override
+    public void onDestroy() {
+        mView = null;
+        System.gc();
     }
 }

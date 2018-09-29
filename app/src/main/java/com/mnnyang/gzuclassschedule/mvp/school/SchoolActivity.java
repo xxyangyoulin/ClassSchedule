@@ -155,4 +155,10 @@ public class SchoolActivity extends BaseActivity implements SchoolContract.View,
     public void setPresenter(SchoolContract.Presenter presenter) {
         mPresenter = presenter;
     }
+
+    @Override
+    protected void onDestroy() {
+        mPresenter.onDestroy();
+        super.onDestroy();
+    }
 }

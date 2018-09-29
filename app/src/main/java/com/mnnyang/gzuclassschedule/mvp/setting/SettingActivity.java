@@ -193,8 +193,6 @@ public class SettingActivity extends BaseActivity implements SettingContract.Vie
     }
 
     private void importCourseTable() {
-
-
         gotoActivity(SchoolActivity.class);
     }
 
@@ -222,5 +220,11 @@ public class SettingActivity extends BaseActivity implements SettingContract.Vie
     @Override
     public void setPresenter(SettingContract.Presenter presenter) {
         mPresenter = presenter;
+    }
+
+    @Override
+    protected void onDestroy() {
+        mPresenter.onDestroy();
+        super.onDestroy();
     }
 }

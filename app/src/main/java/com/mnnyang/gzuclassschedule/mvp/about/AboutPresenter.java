@@ -27,12 +27,20 @@ public class AboutPresenter implements AboutContract.Presenter {
 
     @Override
     public void checkUpdate() {
+        if(mView == null){
+            //view被销毁
+            return;
+        }
         mView.showNotice(app.mContext.getString(R.string.checking_for_updates));
 
         final VersionUpdate versionUpdate = new VersionUpdate();
         versionUpdate.checkUpdate(new HttpCallback<Version>() {
             @Override
             public void onSuccess(Version version) {
+                if(mView == null){
+                    //view被销毁
+                    return;
+                }
                 if (version == null) {
                     LogUtil.e(this, "version object is null");
                     return;
@@ -40,6 +48,7 @@ public class AboutPresenter implements AboutContract.Presenter {
                 int localVersion = versionUpdate.getLocalVersion(app.mContext);
 
                 LogUtil.d(this, String.valueOf(version.getCode()));
+
                 if (version.getVersion() > localVersion) {
                     mView.showUpdateVersionInfo(version);
                 } else {
@@ -49,9 +58,19 @@ public class AboutPresenter implements AboutContract.Presenter {
 
             @Override
             public void onFail(String errMsg) {
+                if(mView == null){
+                    //view被销毁
+                    return;
+                }
                 LogUtil.e(this, errMsg);
                 ToastUtils.show(app.mContext.getString(R.string.access_err));
             }
         });
+    }
+
+    @Override
+    public void onDestroy() {
+        mView = null;
+        System.gc();
     }
 }

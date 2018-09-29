@@ -530,6 +530,7 @@ public class CourseActivity extends BaseActivity implements CourseContract.View,
 
     @Override
     protected void onDestroy() {
+        mPresenter.onDestroy();
         super.onDestroy();
         //EvenBus
         if (EventBus.getDefault().isRegistered(this)) {
@@ -541,4 +542,5 @@ public class CourseActivity extends BaseActivity implements CourseContract.View,
     public void setPresenter(CourseContract.Presenter presenter) {
         mPresenter = presenter;
     }
+
 }

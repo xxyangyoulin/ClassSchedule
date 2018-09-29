@@ -30,8 +30,9 @@ public class UserWrapper extends BaseBean {
             return email;
         }
 
-        public void setEmail(String email) {
+        public User setEmail(String email) {
             this.email = email;
+            return this;
         }
 
         @Override

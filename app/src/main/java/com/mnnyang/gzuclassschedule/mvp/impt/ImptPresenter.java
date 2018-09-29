@@ -67,11 +67,19 @@ public class ImptPresenter implements ImptContract.Presenter {
         HttpUtils.newInstance().toImpt(mSchoolUrl, xh, year, term, new HttpCallback<String>() {
             @Override
             public void onSuccess(String s) {
+                if(mImptView == null){
+                    //view被销毁
+                    return;
+                }
                 parseCoursesHtmlToDb(s, year + "-" + term);
             }
 
             @Override
             public void onFail(String errMsg) {
+                if(mImptView == null){
+                    //view被销毁
+                    return;
+                }
                 mImptView.hideImpting();
                 mImptView.showErrToast(errMsg, true);
             }
@@ -88,12 +96,17 @@ public class ImptPresenter implements ImptContract.Presenter {
     @Override
     public void loadCourseTimeAndTerm(final String xh, String pwd, String captcha) {
         if (!verify(xh, pwd, captcha)) return;
+
         mImptView.showImpting();
         HttpUtils.newInstance().login(mSchoolUrl, xh, pwd, captcha, null, null,
                 new HttpCallback<String>() {
 
                     @Override
                     public void onSuccess(String s) {
+                        if(mImptView == null){
+                            //view被销毁
+                            return;
+                        }
                         ImptPresenter.this.xh = xh;
                         mNormalCourseHtml = s;
                         mImptView.hideImpting();
@@ -102,6 +115,10 @@ public class ImptPresenter implements ImptContract.Presenter {
 
                     @Override
                     public void onFail(String errMsg) {
+                        if(mImptView == null){
+                            //view被销毁
+                            return;
+                        }
                         mImptView.hideImpting();
                         mImptView.showErrToast(errMsg, true);
                     }
@@ -150,6 +167,10 @@ public class ImptPresenter implements ImptContract.Presenter {
 
                         @Override
                         public void onNext(String s) {
+                            if(mImptView == null){
+                                //view被销毁
+                                return;
+                            }
                             LogUtil.i(this, "导入成功:" + courseTimeTerm);
 
                             Preferences.putInt(app.mContext.getString(
@@ -162,62 +183,18 @@ public class ImptPresenter implements ImptContract.Presenter {
 
                         @Override
                         public void onError(Throwable e) {
+                            if(mImptView == null){
+                                //view被销毁
+                                return;
+                            }
                             mImptView.hideImpting();
                             mImptView.showErrToast("插入数据库失败", true);
                         }
 
                         @Override
                         public void onComplete() {
-                            LogUtil.d(this, "完成");
                         }
                     });
-
-            /*Observable.create(new Observable.OnSubscribe<String>() {
-
-                @Override
-                public void call(Subscriber<? super String> subscriber) {
-                    final ArrayList<Course> courses = ParseCourse.parse(html);
-
-                    //删除旧数据
-                    CourseDbDao.instance().removeByCsName(courseTimeTerm);
-
-                    //添加新数据
-                    for (Course c : courses) {
-                        c.setCsName(courseTimeTerm);
-                        CourseDbDao.instance().addCourse(c);
-                    }
-
-                    subscriber.onNext("导入成功");
-                    subscriber.onCompleted();
-                }
-            }).subscribeOn(Schedulers.io())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(new Observer<String>() {
-
-                        @Override
-                        public void onCompleted() {
-                            LogUtil.d(this, "完成");
-                        }
-
-                        @Override
-                        public void onError(Throwable e) {
-                            mImptView.hideImpting();
-                            mImptView.showErrToast("插入数据库失败", true);
-                        }
-
-                        @Override
-                        public void onNext(String s) {
-
-                            LogUtil.i(this, "导入成功:" + courseTimeTerm);
-
-                            Preferences.putInt(app.mContext.getString(
-                                    R.string.app_preference_current_cs_name_id),
-                                    CourseDbDao.instance().getCsNameId(courseTimeTerm));
-
-                            mImptView.hideImpting();
-                            mImptView.showSucceed();
-                        }
-                    });*/
         } catch (Exception e) {
             e.printStackTrace();
             mImptView.hideImpting();
@@ -227,6 +204,10 @@ public class ImptPresenter implements ImptContract.Presenter {
 
 
     private boolean verify(String xh, String pwd, String captcha) {
+        if(mImptView == null){
+            //view被销毁
+            return false;
+        }
         if (xh.isEmpty()) {
             mImptView.showErrToast("请填写学号", false);
             return false;
@@ -261,6 +242,10 @@ public class ImptPresenter implements ImptContract.Presenter {
                 new HttpCallback<Bitmap>() {
                     @Override
                     public void onSuccess(Bitmap bitmap) {
+                        if(mImptView == null){
+                            //view被销毁
+                            return;
+                        }
                         mImptView.getCaptchaIV().setImageBitmap(bitmap);
                         captchaIsLoading = false;
                         mImptView.captchaIsLoading(false);
@@ -268,11 +253,21 @@ public class ImptPresenter implements ImptContract.Presenter {
 
                     @Override
                     public void onFail(String errMsg) {
+                        if(mImptView == null){
+                            //view被销毁
+                            return;
+                        }
                         ToastUtils.show(errMsg);
                         mImptView.getCaptchaIV().setImageResource(R.drawable.ic_svg_refresh);
                         captchaIsLoading = false;
                         mImptView.captchaIsLoading(false);
                     }
                 });
+    }
+
+    @Override
+    public void onDestroy() {
+        mImptView = null;
+        System.gc();
     }
 }

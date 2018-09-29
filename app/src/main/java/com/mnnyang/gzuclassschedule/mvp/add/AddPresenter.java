@@ -25,6 +25,10 @@ public class AddPresenter implements AddContract.Presenter {
 
     @Override
     public void addCourse(Course course) {
+        if(mView == null){
+            //view被销毁
+            return;
+        }
         LogUtil.d(this, course.toString());
 
         if (TextUtils.isEmpty(course.getName())) {
@@ -55,12 +59,20 @@ public class AddPresenter implements AddContract.Presenter {
 
     @Override
     public void removeCourse(int courseId) {
+        if(mView == null){
+            //view被销毁
+            return;
+        }
         CourseDbDao.instance().removeCourse(courseId);
         mView.onDelSucceed();
     }
 
     @Override
     public void updateCourse(Course course) {
+        if(mView == null){
+            //view被销毁
+            return;
+        }
         LogUtil.d(this, course.toString());
 
         if (TextUtils.isEmpty(course.getName())) {
@@ -87,5 +99,11 @@ public class AddPresenter implements AddContract.Presenter {
             return;
         }
         mView.onUpdateSucceed(course);
+    }
+
+    @Override
+    public void onDestroy() {
+        mView = null;
+        System.gc();
     }
 }
