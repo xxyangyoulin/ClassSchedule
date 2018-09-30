@@ -1,6 +1,9 @@
 package com.mnnyang.gzuclassschedule.data.beanv2;
 
+import android.text.TextUtils;
+
 import com.mnnyang.gzuclassschedule.custom.course.CourseAncestor;
+import com.mnnyang.gzuclassschedule.utils.LogUtil;
 
 import org.greenrobot.greendao.annotation.Entity;
 import org.greenrobot.greendao.annotation.Id;
@@ -11,7 +14,7 @@ public class CourseV2 extends CourseAncestor {
     @Id(autoincrement = true)
     private Long couId;
 
-    private String cgName;
+    private String couName;
     private String couLocation;
     private String couTeacher;
 
@@ -26,13 +29,13 @@ public class CourseV2 extends CourseAncestor {
 
     private Long couCgId;
 
-    @Generated(hash = 1598859975)
-    public CourseV2(Long couId, String cgName, String couLocation,
-            String couTeacher, Integer couWeek, Integer couStartNode,
-            Integer couNodeCount, String couAllWeek, Integer couColor,
-            Long couCgId) {
+    @Generated(hash = 1410596089)
+    public CourseV2(Long couId, String couName, String couLocation,
+                    String couTeacher, Integer couWeek, Integer couStartNode,
+                    Integer couNodeCount, String couAllWeek, Integer couColor,
+                    Long couCgId) {
         this.couId = couId;
-        this.cgName = cgName;
+        this.couName = couName;
         this.couLocation = couLocation;
         this.couTeacher = couTeacher;
         this.couWeek = couWeek;
@@ -47,83 +50,138 @@ public class CourseV2 extends CourseAncestor {
     public CourseV2() {
     }
 
+    public void init() {
+        setRow(getCouWeek());
+        //setStartIndex(getStartWeek());
+        //setEndIndex(getEndWeek());
+        //setShowType(getWeekType());
+
+        try {
+            String[] split = couAllWeek.split(",");
+            for (String s : split) {
+                addIndex(Integer.parseInt(s));
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        if (getCouNodeCount() != 0) {
+            setCol(getCouStartNode());
+            setRowNum(getCouNodeCount());
+        } else {
+            LogUtil.e(this, "Node count is zero-->" + this.toString());
+        }
+
+        if (TextUtils.isEmpty(getCouLocation())) {
+            setText(getCouName());
+        } else {
+            setText(getCouName() + "\n@" + getCouLocation());
+        }
+    }
+
     public Long getCouId() {
-        return this.couId;
+        return couId;
     }
 
-    public void setCouId(Long couId) {
+    public CourseV2 setCouId(Long couId) {
         this.couId = couId;
+        return this;
     }
 
-    public String getCgName() {
-        return this.cgName;
+    public String getCouName() {
+        return couName;
     }
 
-    public void setCgName(String cgName) {
-        this.cgName = cgName;
+    public CourseV2 setCouName(String couName) {
+        this.couName = couName;
+        return this;
     }
 
     public String getCouLocation() {
-        return this.couLocation;
+        return couLocation;
     }
 
-    public void setCouLocation(String couLocation) {
+    public CourseV2 setCouLocation(String couLocation) {
         this.couLocation = couLocation;
+        return this;
     }
 
     public String getCouTeacher() {
-        return this.couTeacher;
+        return couTeacher;
     }
 
-    public void setCouTeacher(String couTeacher) {
+    public CourseV2 setCouTeacher(String couTeacher) {
         this.couTeacher = couTeacher;
+        return this;
     }
 
     public Integer getCouWeek() {
-        return this.couWeek;
+        return couWeek;
     }
 
-    public void setCouWeek(Integer couWeek) {
+    public CourseV2 setCouWeek(Integer couWeek) {
         this.couWeek = couWeek;
+        return this;
     }
 
     public Integer getCouStartNode() {
-        return this.couStartNode;
+        return couStartNode;
     }
 
-    public void setCouStartNode(Integer couStartNode) {
+    public CourseV2 setCouStartNode(Integer couStartNode) {
         this.couStartNode = couStartNode;
+        return this;
     }
 
     public Integer getCouNodeCount() {
-        return this.couNodeCount;
+        return couNodeCount;
     }
 
-    public void setCouNodeCount(Integer couNodeCount) {
+    public CourseV2 setCouNodeCount(Integer couNodeCount) {
         this.couNodeCount = couNodeCount;
+        return this;
     }
 
     public String getCouAllWeek() {
-        return this.couAllWeek;
+        return couAllWeek;
     }
 
-    public void setCouAllWeek(String couAllWeek) {
+    public CourseV2 setCouAllWeek(String couAllWeek) {
         this.couAllWeek = couAllWeek;
+        return this;
     }
 
     public Integer getCouColor() {
-        return this.couColor;
+        return couColor;
     }
 
-    public void setCouColor(Integer couColor) {
+    public CourseV2 setCouColor(Integer couColor) {
         this.couColor = couColor;
+        return this;
     }
 
     public Long getCouCgId() {
-        return this.couCgId;
+        return couCgId;
     }
 
-    public void setCouCgId(Long couCgId) {
+    public CourseV2 setCouCgId(Long couCgId) {
         this.couCgId = couCgId;
+        return this;
+    }
+
+    @Override
+    public String toString() {
+        return "CourseV2{" +
+                "couId=" + couId +
+                ", couName='" + couName + '\'' +
+                ", couLocation='" + couLocation + '\'' +
+                ", couTeacher='" + couTeacher + '\'' +
+                ", couWeek=" + couWeek +
+                ", couStartNode=" + couStartNode +
+                ", couNodeCount=" + couNodeCount +
+                ", couAllWeek='" + couAllWeek + '\'' +
+                ", couColor=" + couColor +
+                ", couCgId=" + couCgId +
+                '}';
     }
 }

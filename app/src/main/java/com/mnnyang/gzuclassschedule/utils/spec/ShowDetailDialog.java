@@ -1,5 +1,6 @@
 package com.mnnyang.gzuclassschedule.utils.spec;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.drawable.ColorDrawable;
@@ -13,9 +14,9 @@ import android.widget.PopupWindow;
 import android.widget.TextView;
 
 import com.mnnyang.gzuclassschedule.R;
+import com.mnnyang.gzuclassschedule.data.beanv2.CourseV2;
 import com.mnnyang.gzuclassschedule.mvp.add.AddActivity;
 import com.mnnyang.gzuclassschedule.app.Constant;
-import com.mnnyang.gzuclassschedule.data.bean.Course;
 import com.mnnyang.gzuclassschedule.utils.LogUtil;
 
 /**
@@ -32,7 +33,8 @@ public class ShowDetailDialog {
      * @param course          时间信息必须完整
      * @param dismissListener
      */
-    public void show(final Activity activity, final Course course,
+    @SuppressLint("SetTextI18n")
+    public void show(final Activity activity, final CourseV2 course,
                      final PopupWindow.OnDismissListener dismissListener) {
         if (null == course) {
             LogUtil.e(this, "show()--> course is null");
@@ -58,11 +60,12 @@ public class ShowDetailDialog {
         StringBuilder nodeInfo = getNodeInfo(course);
         tvNode.setText(nodeInfo);
 
-        tvTitle.setText(course.getName());
-        tvClassroom.setText(course.getClassRoom());
-        tvTeacher.setText(course.getTeacher());
+        tvTitle.setText(course.getCouName());
+        tvClassroom.setText(course.getCouLocation());
+        tvTeacher.setText(course.getCouTeacher());
 
-        tvWeekRange.setText(course.getStartWeek() + "-" + course.getEndWeek() + "周");
+        tvWeekRange.setText(course.getShowIndexes().get(0) + "-" +
+                course.getShowIndexes().get(course.getShowIndexes().size() - 1) + "周");
 
         View close = popupView.findViewById(R.id.iv_close);
         close.setOnClickListener(new View.OnClickListener() {
@@ -109,13 +112,13 @@ public class ShowDetailDialog {
     }
 
     @NonNull
-    private StringBuilder getNodeInfo(Course course) {
+    private StringBuilder getNodeInfo(CourseV2 course) {
         StringBuilder nodeInfo = new StringBuilder();
-        if (course.getNodes().size() != 0) {
-            nodeInfo = new StringBuilder(String.valueOf(course.getNodes().get(0)));
+        if (course.getCouNodeCount() != 0) {
+            nodeInfo = new StringBuilder(String.valueOf(course.getCouStartNode()));
         }
-        for (int i = 1; i < course.getNodes().size(); i++) {
-            nodeInfo.append("-").append(course.getNodes().get(i));
+        for (int i = 1; i < course.getCouNodeCount(); i++) {
+            nodeInfo.append("-").append(course.getShowIndexes().get(i));
         }
         nodeInfo.append("节");
         return nodeInfo;

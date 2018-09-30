@@ -28,7 +28,7 @@ public class CourseV2Dao extends AbstractDao<CourseV2, Long> {
      */
     public static class Properties {
         public final static Property CouId = new Property(0, Long.class, "couId", true, "_id");
-        public final static Property CgName = new Property(1, String.class, "cgName", false, "CG_NAME");
+        public final static Property CouName = new Property(1, String.class, "couName", false, "COU_NAME");
         public final static Property CouLocation = new Property(2, String.class, "couLocation", false, "COU_LOCATION");
         public final static Property CouTeacher = new Property(3, String.class, "couTeacher", false, "COU_TEACHER");
         public final static Property CouWeek = new Property(4, Integer.class, "couWeek", false, "COU_WEEK");
@@ -54,7 +54,7 @@ public class CourseV2Dao extends AbstractDao<CourseV2, Long> {
         String constraint = ifNotExists? "IF NOT EXISTS ": "";
         db.execSQL("CREATE TABLE " + constraint + "\"COURSE_V2\" (" + //
                 "\"_id\" INTEGER PRIMARY KEY AUTOINCREMENT ," + // 0: couId
-                "\"CG_NAME\" TEXT," + // 1: cgName
+                "\"COU_NAME\" TEXT," + // 1: couName
                 "\"COU_LOCATION\" TEXT," + // 2: couLocation
                 "\"COU_TEACHER\" TEXT," + // 3: couTeacher
                 "\"COU_WEEK\" INTEGER," + // 4: couWeek
@@ -80,9 +80,9 @@ public class CourseV2Dao extends AbstractDao<CourseV2, Long> {
             stmt.bindLong(1, couId);
         }
  
-        String cgName = entity.getCgName();
-        if (cgName != null) {
-            stmt.bindString(2, cgName);
+        String couName = entity.getCouName();
+        if (couName != null) {
+            stmt.bindString(2, couName);
         }
  
         String couLocation = entity.getCouLocation();
@@ -135,9 +135,9 @@ public class CourseV2Dao extends AbstractDao<CourseV2, Long> {
             stmt.bindLong(1, couId);
         }
  
-        String cgName = entity.getCgName();
-        if (cgName != null) {
-            stmt.bindString(2, cgName);
+        String couName = entity.getCouName();
+        if (couName != null) {
+            stmt.bindString(2, couName);
         }
  
         String couLocation = entity.getCouLocation();
@@ -190,7 +190,7 @@ public class CourseV2Dao extends AbstractDao<CourseV2, Long> {
     public CourseV2 readEntity(Cursor cursor, int offset) {
         CourseV2 entity = new CourseV2( //
             cursor.isNull(offset + 0) ? null : cursor.getLong(offset + 0), // couId
-            cursor.isNull(offset + 1) ? null : cursor.getString(offset + 1), // cgName
+            cursor.isNull(offset + 1) ? null : cursor.getString(offset + 1), // couName
             cursor.isNull(offset + 2) ? null : cursor.getString(offset + 2), // couLocation
             cursor.isNull(offset + 3) ? null : cursor.getString(offset + 3), // couTeacher
             cursor.isNull(offset + 4) ? null : cursor.getInt(offset + 4), // couWeek
@@ -206,7 +206,7 @@ public class CourseV2Dao extends AbstractDao<CourseV2, Long> {
     @Override
     public void readEntity(Cursor cursor, CourseV2 entity, int offset) {
         entity.setCouId(cursor.isNull(offset + 0) ? null : cursor.getLong(offset + 0));
-        entity.setCgName(cursor.isNull(offset + 1) ? null : cursor.getString(offset + 1));
+        entity.setCouName(cursor.isNull(offset + 1) ? null : cursor.getString(offset + 1));
         entity.setCouLocation(cursor.isNull(offset + 2) ? null : cursor.getString(offset + 2));
         entity.setCouTeacher(cursor.isNull(offset + 3) ? null : cursor.getString(offset + 3));
         entity.setCouWeek(cursor.isNull(offset + 4) ? null : cursor.getInt(offset + 4));

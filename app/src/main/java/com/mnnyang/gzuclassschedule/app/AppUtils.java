@@ -107,7 +107,7 @@ public class AppUtils {
 
                 CourseV2 courseV2 = new CourseV2();
 
-                courseV2.setCgName(course.getName());
+                courseV2.setCouName(course.getName());
                 courseV2.setCouTeacher(course.getTeacher());
                 courseV2.setCouLocation(course.getClassRoom());
 

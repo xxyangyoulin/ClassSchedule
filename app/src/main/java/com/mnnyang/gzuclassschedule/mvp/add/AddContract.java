@@ -2,7 +2,7 @@ package com.mnnyang.gzuclassschedule.mvp.add;
 
 import com.mnnyang.gzuclassschedule.BasePresenter;
 import com.mnnyang.gzuclassschedule.BaseView;
-import com.mnnyang.gzuclassschedule.data.bean.Course;
+import com.mnnyang.gzuclassschedule.data.beanv2.CourseV2;
 
 /**
  * Created by mnnyang on 17-11-3.
@@ -10,15 +10,15 @@ import com.mnnyang.gzuclassschedule.data.bean.Course;
 
 public interface AddContract {
     interface Presenter extends BasePresenter {
-        void addCourse(Course course);
-        void removeCourse(int courseId);
-        void updateCourse(Course course);
+        void addCourse(CourseV2 courseV2);
+        void removeCourse(long courseId);
+        void updateCourse(CourseV2 courseV2);
     }
 
     interface View extends BaseView<AddContract.Presenter> {
         void showAddFail(String msg);
-        void onAddSucceed(Course course);
+        void onAddSucceed(CourseV2 courseV2);
         void onDelSucceed();
-        void onUpdateSucceed(Course course);
+        void onUpdateSucceed(CourseV2 courseV2);
     }
 }

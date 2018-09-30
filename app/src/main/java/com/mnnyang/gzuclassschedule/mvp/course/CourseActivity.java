@@ -31,12 +31,14 @@ import android.widget.TextView;
 import com.mnnyang.gzuclassschedule.BaseActivity;
 import com.mnnyang.gzuclassschedule.R;
 import com.mnnyang.gzuclassschedule.RecyclerBaseAdapter;
+import com.mnnyang.gzuclassschedule.app.Cache;
 import com.mnnyang.gzuclassschedule.app.Constant;
 import com.mnnyang.gzuclassschedule.custom.course.CourseAncestor;
 import com.mnnyang.gzuclassschedule.custom.course.CourseView;
 import com.mnnyang.gzuclassschedule.custom.util.Utils;
-import com.mnnyang.gzuclassschedule.data.bean.Course;
-import com.mnnyang.gzuclassschedule.data.db.CourseDbDao;
+import com.mnnyang.gzuclassschedule.data.beanv2.CourseGroup;
+import com.mnnyang.gzuclassschedule.data.beanv2.CourseV2;
+import com.mnnyang.gzuclassschedule.data.greendao.CourseGroupDao;
 import com.mnnyang.gzuclassschedule.mvp.add.AddActivity;
 import com.mnnyang.gzuclassschedule.mvp.home.HomeActivity;
 import com.mnnyang.gzuclassschedule.utils.DialogHelper;
@@ -91,8 +93,6 @@ public class CourseActivity extends BaseActivity implements CourseContract.View,
 
         //EvenBus
         EventBus.getDefault().register(this);
-
-        ParseCourse.main(new String[]{});
 
         mLayoutWeekGroup = findViewById(R.id.layout_week_group);
         mLayoutNodeGroup = findViewById(R.id.layout_node_group);
@@ -279,7 +279,7 @@ public class CourseActivity extends BaseActivity implements CourseContract.View,
             @Override
             public void onClick(List<CourseAncestor> course, View itemView) {
                 mDialog = new ShowDetailDialog();
-                mDialog.show(CourseActivity.this, (Course) course.get(0), new PopupWindow.OnDismissListener() {
+                mDialog.show(CourseActivity.this, (CourseV2) course.get(0), new PopupWindow.OnDismissListener() {
                     @Override
                     public void onDismiss() {
                         mDialog = null;
@@ -289,17 +289,17 @@ public class CourseActivity extends BaseActivity implements CourseContract.View,
 
             @Override
             public void onLongClick(List<CourseAncestor> courses, View itemView) {
-                final Course course = (Course) courses.get(0);
+                final CourseV2 course = (CourseV2) courses.get(0);
                 DialogHelper dialogHelper = new DialogHelper();
                 dialogHelper.showNormalDialog(CourseActivity.this, getString(R.string.confirm_to_delete),
-                        "课程 【" + course.getName() + "】" + Constant.WEEK[course.getWeek()]
-                                + "第" + course.getNodes().get(0) + "节 " + "",
+                        "课程 【" + course.getCouName() + "】" + Constant.WEEK[course.getCouWeek()]
+                                + "第" + course.getCouStartNode() + "节 " + "",
                         new DialogListener() {
                             @Override
                             public void onPositive(DialogInterface dialog, int which) {
                                 super.onPositive(dialog, which);
                                 //delete
-                                mPresenter.deleteCourse(course.getCourseId());
+                                mPresenter.deleteCourse(course.getCouId());
                             }
                         });
             }
@@ -326,8 +326,8 @@ public class CourseActivity extends BaseActivity implements CourseContract.View,
         mMMonthTextView.setText(mCurrentMonth + "\n月");
 
         //get id
-        int currentCsNameId = Preferences.getInt(
-                getString(R.string.app_preference_current_cs_name_id), 0);
+        long currentCsNameId = Preferences.getLong(
+                getString(R.string.app_preference_current_cs_name_id), 0L);
 
         LogUtil.i(this, "当前课表-->" + currentCsNameId);
         mPresenter.updateCourseViewData(currentCsNameId);
@@ -376,16 +376,32 @@ public class CourseActivity extends BaseActivity implements CourseContract.View,
 
     @Override
     public void initFirstStart() {
+        //TODO 重复使用
         boolean isFirst = Preferences.getBoolean(getString(R.string.app_preference_app_is_first_start), true);
         if (!isFirst) {
             return;
         }
 
-        int csNameId = CourseDbDao.instance().getCsNameId(getString(R.string.default_course_name));
+        CourseGroupDao groupDao = Cache.instance().getCourseGroupDao();
+        CourseGroup defaultGroup = groupDao
+                .queryBuilder()
+                .where(CourseGroupDao.Properties.CgName.eq("默认"))
+                .unique();
+        long insert;
+        if (defaultGroup == null) {
+            insert = groupDao.insert(new CourseGroup(0L, "默认", ""));
+        } else {
+            insert = defaultGroup.getCgId();
+        }
 
-        Preferences.putInt(getString(R.string.app_preference_current_cs_name_id), csNameId);
+        Preferences.putLong(getString(R.string.app_preference_current_cs_name_id), insert);
 
         Preferences.putBoolean(getString(R.string.app_preference_app_is_first_start), false);
+
+        Cache.instance().getCourseV2Dao()
+                .insertOrReplaceInTx(new CourseV2().setCouWeek(1).setCouAllWeek("1,2,3,4,5,6").setCouStartNode(1).setCouNodeCount(2).setCouName("第一").setCouCgId(insert)
+                        , new CourseV2().setCouWeek(1).setCouAllWeek("1,2,3,4,5,6").setCouStartNode(3).setCouNodeCount(3).setCouName("第二").setCouCgId(insert)
+                        , new CourseV2().setCouWeek(2).setCouAllWeek("1,2,3,4,7").setCouStartNode(8).setCouNodeCount(2).setCouName("第三").setCouCgId(insert));
     }
 
     @Override
@@ -393,20 +409,22 @@ public class CourseActivity extends BaseActivity implements CourseContract.View,
     }
 
     @Override
-    public void setCourseData(ArrayList<Course> courses) {
+    public void setCourseData(List<CourseV2> courses) {
         mCourseViewV2.clear();
 
         int i = 0;
-        for (Course course : courses) {
+        for (CourseV2 course : courses) {
             course.init();
+
+            LogUtil.e(this,course.toString());
             if (course.getColor() == -1) {
                 course.setColor(Utils.getRandomColor(i++));
             }
 
-            LogUtil.w(this, course.toString());
             mCourseViewV2.addCourse(course);
         }
     }
+
 
     @Override
     public void onClick(View v) {

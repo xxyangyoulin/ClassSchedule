@@ -1,6 +1,8 @@
 package com.mnnyang.gzuclassschedule.custom.course;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
 public class CourseAncestor implements Serializable {
 
@@ -35,6 +37,8 @@ public class CourseAncestor implements Serializable {
     protected int endIndex;
     /** 单双显示 */
     protected int showIndex = SHOW_ALL;
+
+    protected List<Integer> showIndexes = new ArrayList<>();
 
     public CourseAncestor(int row, int rowNum, int col, int color) {
         this.row = row;
@@ -141,6 +145,21 @@ public class CourseAncestor implements Serializable {
     public CourseAncestor setShowType(int showIndex) {
         this.showIndex = showIndex;
         return this;
+    }
+
+    public List<Integer> getShowIndexes() {
+        return showIndexes;
+    }
+
+    public CourseAncestor addIndex(int index) {
+        if (!showIndexes.contains(index)) {
+            showIndexes.add(index);
+        }
+        return this;
+    }
+
+    public boolean shouldShow(int index) {
+        return showIndexes.contains(index);
     }
 
     @Override

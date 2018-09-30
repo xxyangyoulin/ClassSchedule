@@ -9,6 +9,10 @@ import com.franmontiel.persistentcookiejar.ClearableCookieJar;
 import com.franmontiel.persistentcookiejar.PersistentCookieJar;
 import com.franmontiel.persistentcookiejar.cache.SetCookieCache;
 import com.franmontiel.persistentcookiejar.persistence.SharedPrefsCookiePersistor;
+import com.mnnyang.gzuclassschedule.data.greendao.CourseGroupDao;
+import com.mnnyang.gzuclassschedule.data.greendao.CourseV2Dao;
+import com.mnnyang.gzuclassschedule.data.greendao.DaoMaster;
+import com.mnnyang.gzuclassschedule.data.greendao.DaoSession;
 import com.mnnyang.gzuclassschedule.utils.Preferences;
 import com.mnnyang.gzuclassschedule.utils.ScreenUtils;
 import com.mnnyang.gzuclassschedule.utils.ToastUtils;
@@ -40,9 +44,12 @@ public class app extends Application {
         initOkHttp();
         initUtils();
 
+
+        Cache.instance().init(mContext);
         //TODO 不该在这里
-        AppUtils.copyOldData(this);
+        //AppUtils.copyOldData(this);
     }
+
 
     private void initOkHttp() {
         ClearableCookieJar cookieJar =
@@ -51,7 +58,7 @@ public class app extends Application {
         Cache.instance().setCookieJar(cookieJar);
 
         OkHttpClient okHttpClient = new OkHttpClient.Builder()
-//                .followRedirects(false)  //禁制OkHttp的重定向操作，我们自己处理重定向
+                //.followRedirects(false)  //禁制OkHttp的重定向操作，我们自己处理重定向
                 .followSslRedirects(false)
                 //.cookieJar(new LocalCookieJar())   //为OkHttp设置自动携带Cookie的功能
                 .addInterceptor(new LoggerInterceptor("TAG"))
