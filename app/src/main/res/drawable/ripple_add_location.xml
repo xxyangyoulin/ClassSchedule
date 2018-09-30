@@ -1,0 +1,16 @@
+<ripple xmlns:android="http://schemas.android.com/apk/res/android"
+    android:color="#666666">
+
+    <item>
+        <selector>
+            <!--<item
+                android:drawable="@color/blue2"
+                android:state_selected="true" />-->
+
+            <item
+                android:drawable="@drawable/shape_add_location"
+                android:state_pressed="false" />
+
+        </selector>
+    </item>
+</ripple>

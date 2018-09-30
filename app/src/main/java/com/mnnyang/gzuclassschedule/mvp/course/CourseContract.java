@@ -25,7 +25,6 @@ public interface CourseContract {
     interface View extends BaseView<Presenter> {
         void initFirstStart();
         void setBackground(Bitmap background);
-        //void setCourseData(ArrayList<Course> courses);
         void setCourseData(List<CourseV2> courses);
         void updateCoursePreference();
         void updateOtherPreference();

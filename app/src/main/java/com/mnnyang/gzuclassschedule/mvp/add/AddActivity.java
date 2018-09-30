@@ -1,23 +1,92 @@
 package com.mnnyang.gzuclassschedule.mvp.add;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.Toast;
 
 import com.mnnyang.gzuclassschedule.BaseActivity;
 import com.mnnyang.gzuclassschedule.R;
+import com.mnnyang.gzuclassschedule.app.Constant;
+import com.mnnyang.gzuclassschedule.custom.EditTextLayout;
+import com.mnnyang.gzuclassschedule.custom.course.CourseAncestor;
 import com.mnnyang.gzuclassschedule.data.beanv2.CourseV2;
+import com.mnnyang.gzuclassschedule.utils.ScreenUtils;
 
 public class AddActivity extends BaseActivity implements AddContract.View, View.OnClickListener {
+
+    private AddContract.Presenter mPresenter;
+    private CourseAncestor intentAncestor;
+    private ImageView mIvAddLocation;
+    private LinearLayout mLayoutLocationContainer;
+
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add);
+
+        initView();
+        handleIntent();
+
+        new AddPresenter(this).start();
+        initListener();
+    }
+
+    private void initView() {
+        mIvAddLocation = findViewById(R.id.iv_add_location);
+        mLayoutLocationContainer = findViewById(R.id.layout_location_container);
+
+        initBackToolbar("新增");
+        addLocation();
+    }
+
+
+    private void initListener() {
+        mIvAddLocation.setOnClickListener(this);
+    }
+
+
+    private void handleIntent() {
+        Intent intent = getIntent();
+        intentAncestor = (CourseAncestor) intent.getSerializableExtra(Constant.INTENT_COURSE_ANCESTOR);
     }
 
     @Override
     public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.iv_add_location:
+                addLocation();
+                break;
+        }
+    }
 
+    private void addLocation() {
+        EditTextLayout locationItem = (EditTextLayout) View.inflate(this,
+                R.layout.layout_location_item, null);
+
+        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        params.topMargin = ScreenUtils.dp2px(8);
+        mLayoutLocationContainer.addView(locationItem, params);
+
+        locationItem.setCloseListener(new EditTextLayout.CloseListener() {
+            @Override
+            public void onClose() {
+                Toast.makeText(AddActivity.this, "fuck", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        locationItem.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                System.out.println("click");
+            }
+        });
     }
 
     @Override
@@ -42,8 +111,25 @@ public class AddActivity extends BaseActivity implements AddContract.View, View.
 
     @Override
     public void setPresenter(AddContract.Presenter presenter) {
-
+        mPresenter = presenter;
     }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                finish();
+                break;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    protected void onDestroy() {
+        mPresenter.onDestroy();
+        super.onDestroy();
+    }
+
     //
     //private AddContract.Presenter mPresenter;
     //

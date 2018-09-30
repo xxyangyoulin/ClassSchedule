@@ -168,20 +168,6 @@ public class CourseView extends FrameLayout {
 
     private void updateItemStatus(CourseAncestor course) {
         /*更新course的活跃状态*/
-        //if (mCurrentIndex >= course.getStartIndex()
-        //        && mCurrentIndex <= course.getEndIndex()) {
-        //
-        //    if (mCurrentIndex % 2 == 1 && course.getShowType() == CourseAncestor.SHOW_DOUBLE) {
-        //        course.setActiveStatus(false);
-        //    } else if (mCurrentIndex % 2 == 0 && course.getShowType() == CourseAncestor.SHOW_SINGLE) {
-        //        course.setActiveStatus(false);
-        //    } else {
-        //        course.setActiveStatus(true);
-        //    }
-        //} else {
-        //    course.setActiveStatus(false);
-        //}
-
         course.setActiveStatus(course.shouldShow(mCurrentIndex));
     }
 

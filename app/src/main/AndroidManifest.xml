@@ -29,22 +29,29 @@
 
         </activity>
         <activity android:name=".mvp.impt.ImptActivity"></activity>
-        <activity android:name=".mvp.add.AddActivity"></activity>
+        <activity
+            android:name=".mvp.add.AddActivity"
+            android:windowSoftInputMode="stateHidden">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
         <activity android:name=".mvp.mg.MgActivity"></activity>
         <activity android:name=".mvp.about.AboutActivity"></activity>
         <activity android:name=".mvp.conf.ConfActivity"></activity>
         <activity android:name=".mvp.school.SchoolActivity"></activity>
         <activity
             android:name=".mvp.home.HomeActivity"
-            android:theme="@style/NoLoginTheme"
-            android:launchMode="singleTask">
+            android:launchMode="singleTask"
+            android:theme="@style/NoLoginTheme">
 
         </activity>
         <activity
             android:name=".mvp.login.SignActivity"
             android:launchMode="singleInstance"
-            android:windowSoftInputMode="stateHidden"
-            android:theme="@style/LoginTheme">
+            android:theme="@style/LoginTheme"
+            android:windowSoftInputMode="stateHidden">
 
         </activity>
 

@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<com.mnnyang.gzuclassschedule.custom.EditTextLayout
+    android:padding="@dimen/margin_8dp"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:background="@color/white"
+    android:layout_height="wrap_content"
+    app:hint="时间教室"
+    app:hintColor="@color/color_gary_40"
+    app:icon="@drawable/ic_location_on_black_24dp"
+    app:input_enabled="false"
+    app:text="博学楼302 # 1-16周 周五 3-4节"
+    app:textColor="@color/secondary_text" />

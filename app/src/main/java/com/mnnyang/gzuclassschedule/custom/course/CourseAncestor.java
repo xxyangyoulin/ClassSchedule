@@ -7,12 +7,17 @@ import java.util.List;
 public class CourseAncestor implements Serializable {
 
     //所有
-
     public static final int SHOW_ALL = 0;
     //双
     public static final int SHOW_DOUBLE = 1;
     //单
     public static final int SHOW_SINGLE = 2;
+    protected int startIndex;
+    protected int endIndex;
+    /** 单双显示 */
+    protected int showIndex = SHOW_ALL;
+
+    /*历史原因设置了上面的属性 已经废弃*/
 
     /** 行号 */
     protected int row;
@@ -33,10 +38,6 @@ public class CourseAncestor implements Serializable {
     /** 是否显示 */
     protected boolean displayable = true;
 
-    protected int startIndex;
-    protected int endIndex;
-    /** 单双显示 */
-    protected int showIndex = SHOW_ALL;
 
     protected List<Integer> showIndexes = new ArrayList<>();
 

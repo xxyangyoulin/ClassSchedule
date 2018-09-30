@@ -78,6 +78,10 @@ public class EditTextLayout extends LinearLayout {
         mIvClear.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
+                if (mCloseListener != null) {
+                    mCloseListener.onClose();
+                    return;
+                }
                 mEtText.setText("");
             }
         });
@@ -86,16 +90,15 @@ public class EditTextLayout extends LinearLayout {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
                 mIvClear.setVisibility(hasFocus ? VISIBLE : INVISIBLE);
-                mEtText.setHint(hasFocus?"":mHint);
+                mEtText.setHint(hasFocus ? "" : mHint);
             }
         });
     }
 
     /**
-     *
      * @param inputType definition of EditorInfo class
      */
-    public EditTextLayout setInputType(int inputType){
+    public EditTextLayout setInputType(int inputType) {
         mEtText.setInputType(inputType);
         return this;
     }
@@ -138,5 +141,25 @@ public class EditTextLayout extends LinearLayout {
                 }
             }
         });
+    }
+
+    private CloseListener mCloseListener;
+
+    public interface CloseListener {
+        void onClose();
+    }
+
+    public void disEditTextEvent() {
+        mEtText.setClickable(false);
+        mEtText.setFocusable(false);
+        this.setClickable(true);
+        this.setFocusable(true);
+    }
+
+    public EditTextLayout setCloseListener(CloseListener closeListener) {
+        mCloseListener = closeListener;
+
+        mIvClear.setVisibility(VISIBLE);
+        return this;
     }
 }

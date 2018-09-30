@@ -20,12 +20,6 @@ public class AddPresenter implements AddContract.Presenter {
     }
 
     @Override
-    public void onDestroy() {
-        mView = null;
-        System.gc();
-    }
-
-    @Override
     public void addCourse(CourseV2 courseV2) {
 
     }
@@ -38,5 +32,11 @@ public class AddPresenter implements AddContract.Presenter {
     @Override
     public void updateCourse(CourseV2 courseV2) {
 
+    }
+
+    @Override
+    public void onDestroy() {
+        mView = null;
+        System.gc();
     }
 }

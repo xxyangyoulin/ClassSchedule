@@ -21,19 +21,7 @@
             app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
             tools:targetApi="lollipop" />
 
-        <EditText
-            android:id="@+id/et_course_name"
-            android:layout_width="match_parent"
-            android:layout_height="100dp"
-            android:background="@null"
-            android:hint="@string/course_name"
-            android:paddingLeft="18dp"
-            android:paddingRight="18dp"
-            android:singleLine="true"
-            android:textColor="@color/white_f1"
-            android:textColorHint="?android:attr/colorPrimaryDark"
-            android:textSize="32sp"
-            tools:targetApi="lollipop" />
+
     </android.support.design.widget.AppBarLayout>
 
 
@@ -49,18 +37,15 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="8dp"
-                android:layout_marginRight="8dp"
-                android:layout_marginTop="8dp"
-                android:background="@drawable/shape_shadow_bg"
+                android:background="@color/white"
                 android:orientation="vertical"
                 android:padding="8dp">
 
                 <com.mnnyang.gzuclassschedule.custom.EditTextLayout
-                    android:id="@+id/etl_classroom"
+                    android:id="@+id/etl_name"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    app:hint="输入上课教室"
+                    app:hint="课程名称"
                     app:hintColor="@color/color_gary_40"
                     app:icon="@drawable/ic_svg_classroom"
                     app:textColor="@color/secondary_text" />
@@ -74,43 +59,37 @@
                     android:id="@+id/etl_teacher"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    app:hint="输入上课教师"
+                    app:hint="上课老师"
                     app:hintColor="@color/color_gary_40"
-                    app:icon="@drawable/ic_svg_teacher"
-                    app:textColor="@color/secondary_text" />
-
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="1px"
-                    android:background="#20000000" />
-
-                <com.mnnyang.gzuclassschedule.custom.EditTextLayout
-                    android:id="@+id/etl_week_range"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    app:hint="选择周数始末"
-                    app:hintColor="@color/color_gary_40"
-                    app:icon="@drawable/ic_svg_node"
-                    app:input_enabled="false"
+                    app:icon="@drawable/ic_person_black_24dp"
                     app:textColor="@color/secondary_text" />
             </LinearLayout>
 
-            <include layout="@layout/layout_add_time_item" />
-
-            <Button
-                android:id="@+id/btn_remove"
+            <LinearLayout
+                android:id="@+id/layout_location_container"
                 android:layout_width="match_parent"
-                android:layout_height="50dp"
-                android:layout_marginLeft="8dp"
-                android:layout_marginRight="8dp"
-                android:layout_marginTop="16dp"
-                android:background="@drawable/selector_btn_cancel"
-                android:text="@string/delete"
-                android:textColor="@color/white_f1"
-                android:textSize="16sp"
-                android:visibility="gone"
-                tools:visibility="visible" />
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
 
+                <!--<include layout="@layout/layout_location_item" />-->
+
+            </LinearLayout>
+
+            <ImageView
+                android:id="@+id/iv_add_location"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_marginBottom="@dimen/margin_8dp"
+                android:layout_marginLeft="@dimen/margin_8dp"
+                android:layout_marginRight="@dimen/margin_8dp"
+                android:layout_marginTop="@dimen/margin_16dp"
+                android:background="@drawable/ripple_add_location"
+                android:clickable="true"
+                android:elevation="3dp"
+                android:focusable="true"
+                android:padding="@dimen/margin_8dp"
+                android:src="@drawable/ic_add_location_black_24dp"
+                android:translationZ="3dp" />
         </LinearLayout>
     </ScrollView>
 </LinearLayout>
