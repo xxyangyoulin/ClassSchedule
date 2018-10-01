@@ -1,29 +1,388 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              android:layout_width="match_parent"
-              android:layout_height="140dp"
-              android:gravity="center_vertical"
-              android:orientation="horizontal">
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:gravity="center"
+    android:orientation="vertical">
 
-    <com.mnnyang.gzuclassschedule.custom.WheelView
-        android:id="@+id/wv_week"
-        android:layout_width="wrap_content"
-        android:layout_height="140dp"/>
+    <LinearLayout
+        android:layout_width="260dp"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:paddingTop="@dimen/margin_16dp">
 
-    <com.mnnyang.gzuclassschedule.custom.WheelView
-        android:id="@+id/wv_start_node"
-        android:layout_width="wrap_content"
-        android:layout_height="140dp"
-        android:layout_weight="1"/>
 
-    <View
-        android:layout_width="16dp"
-        android:layout_height="2dp"
-        android:background="?android:attr/colorPrimary"/>
+        <android.support.design.widget.TextInputEditText
+            android:id="@+id/et_location"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="2dp"
+            android:layout_marginRight="2dp"
+            android:hint="教室" />
 
-    <com.mnnyang.gzuclassschedule.custom.WheelView
-        android:id="@+id/wv_end_node"
-        android:layout_width="wrap_content"
-        android:layout_height="140dp"
-        android:layout_weight="1"/>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:orientation="horizontal"
+            android:paddingLeft="7dp"
+            android:paddingRight="7dp">
+
+            <Button
+                android:id="@+id/btn_week_all"
+                android:layout_width="0dp"
+                android:layout_height="32dp"
+                android:layout_weight="1"
+                android:background="@drawable/selector_select_week"
+                android:padding="0dp"
+                android:text="所有"
+                android:textColor="@color/selector_select_week_text"
+                android:textSize="12sp" />
+
+            <Button
+                android:id="@+id/btn_week_single"
+                android:layout_width="0dp"
+                android:layout_height="32dp"
+                android:layout_marginLeft="4dp"
+                android:layout_marginRight="4dp"
+                android:layout_weight="1"
+                android:background="@drawable/selector_select_week"
+                android:padding="0dp"
+                android:text="单周"
+                android:textColor="@color/selector_select_week_text"
+                android:textSize="12sp" />
+
+            <Button
+                android:id="@+id/btn_week_double"
+                android:layout_width="0dp"
+                android:layout_height="32dp"
+                android:layout_weight="1"
+                android:background="@drawable/selector_select_week"
+                android:padding="0dp"
+                android:text="双周"
+                android:textColor="@color/selector_select_week_text"
+                android:textSize="12sp" />
+
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/layout_week_container"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:paddingBottom="@dimen/margin_8dp"
+            android:paddingTop="@dimen/margin_8dp">
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="start"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="32dp"
+                    android:layout_height="32dp"
+                    android:layout_margin="2dp"
+                    android:background="@drawable/selector_week_text"
+                    android:gravity="center"
+                    android:text="1"
+                    android:textColor="@color/selector_select_week_text"
+                    android:textSize="14sp" />
+
+                <TextView
+                    android:layout_width="32dp"
+                    android:layout_height="32dp"
+                    android:layout_margin="2dp"
+                    android:background="@drawable/selector_week_text"
+                    android:gravity="center"
+                    android:text="2"
+                    android:textColor="@color/selector_select_week_text"
+                    android:textSize="14sp" />
+
+                <TextView
+                    android:layout_width="32dp"
+                    android:layout_height="32dp"
+                    android:layout_margin="2dp"
+                    android:background="@drawable/selector_week_text"
+                    android:gravity="center"
+                    android:text="3"
+                    android:textColor="@color/selector_select_week_text"
+                    android:textSize="14sp" />
+
+                <TextView
+                    android:layout_width="32dp"
+                    android:layout_height="32dp"
+                    android:layout_margin="2dp"
+                    android:background="@drawable/selector_week_text"
+                    android:gravity="center"
+                    android:text="4"
+                    android:textColor="@color/selector_select_week_text"
+                    android:textSize="14sp" />
+
+                <TextView
+                    android:layout_width="32dp"
+                    android:layout_height="32dp"
+                    android:layout_margin="2dp"
+                    android:background="@drawable/selector_week_text"
+                    android:gravity="center"
+                    android:text="5"
+                    android:textColor="@color/selector_select_week_text"
+                    android:textSize="14sp" />
+
+                <TextView
+                    android:layout_width="32dp"
+                    android:layout_height="32dp"
+                    android:layout_margin="2dp"
+                    android:background="@drawable/selector_week_text"
+                    android:gravity="center"
+                    android:text="6"
+                    android:textColor="@color/selector_select_week_text"
+                    android:textSize="14sp" />
+
+                <TextView
+                    android:layout_width="32dp"
+                    android:layout_height="32dp"
+                    android:layout_margin="2dp"
+                    android:background="@drawable/selector_week_text"
+                    android:gravity="center"
+                    android:text="7"
+                    android:textColor="@color/selector_select_week_text"
+                    android:textSize="14sp" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="252dp"
+                android:layout_height="wrap_content"
+                android:gravity="start"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="32dp"
+                    android:layout_height="32dp"
+                    android:layout_margin="2dp"
+                    android:background="@drawable/selector_week_text"
+                    android:gravity="center"
+                    android:text="8"
+                    android:textColor="@color/selector_select_week_text"
+                    android:textSize="14sp" />
+
+                <TextView
+                    android:layout_width="32dp"
+                    android:layout_height="32dp"
+                    android:layout_margin="2dp"
+                    android:background="@drawable/selector_week_text"
+                    android:gravity="center"
+                    android:text="9"
+                    android:textColor="@color/selector_select_week_text"
+                    android:textSize="14sp" />
+
+                <TextView
+                    android:layout_width="32dp"
+                    android:layout_height="32dp"
+                    android:layout_margin="2dp"
+                    android:background="@drawable/selector_week_text"
+                    android:gravity="center"
+                    android:text="10"
+                    android:textColor="@color/selector_select_week_text"
+                    android:textSize="14sp" />
+
+                <TextView
+                    android:layout_width="32dp"
+                    android:layout_height="32dp"
+                    android:layout_margin="2dp"
+                    android:background="@drawable/selector_week_text"
+                    android:gravity="center"
+                    android:text="11"
+                    android:textColor="@color/selector_select_week_text"
+                    android:textSize="14sp" />
+
+                <TextView
+                    android:layout_width="32dp"
+                    android:layout_height="32dp"
+                    android:layout_margin="2dp"
+                    android:background="@drawable/selector_week_text"
+                    android:gravity="center"
+                    android:text="12"
+                    android:textColor="@color/selector_select_week_text"
+                    android:textSize="14sp" />
+
+                <TextView
+                    android:layout_width="32dp"
+                    android:layout_height="32dp"
+                    android:layout_margin="2dp"
+                    android:background="@drawable/selector_week_text"
+                    android:gravity="center"
+                    android:text="13"
+                    android:textColor="@color/selector_select_week_text"
+                    android:textSize="14sp" />
+
+                <TextView
+                    android:layout_width="32dp"
+                    android:layout_height="32dp"
+                    android:layout_margin="2dp"
+                    android:background="@drawable/selector_week_text"
+                    android:gravity="center"
+                    android:text="14"
+                    android:textColor="@color/selector_select_week_text"
+                    android:textSize="14sp" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="252dp"
+                android:layout_height="wrap_content"
+                android:gravity="start"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="32dp"
+                    android:layout_height="32dp"
+                    android:layout_margin="2dp"
+                    android:background="@drawable/selector_week_text"
+                    android:gravity="center"
+                    android:text="15"
+                    android:textColor="@color/selector_select_week_text"
+                    android:textSize="14sp" />
+
+                <TextView
+                    android:layout_width="32dp"
+                    android:layout_height="32dp"
+                    android:layout_margin="2dp"
+                    android:background="@drawable/selector_week_text"
+                    android:gravity="center"
+                    android:text="16"
+                    android:textColor="@color/selector_select_week_text"
+                    android:textSize="14sp" />
+
+                <TextView
+                    android:layout_width="32dp"
+                    android:layout_height="32dp"
+                    android:layout_margin="2dp"
+                    android:background="@drawable/selector_week_text"
+                    android:gravity="center"
+                    android:text="17"
+                    android:textColor="@color/selector_select_week_text"
+                    android:textSize="14sp" />
+
+                <TextView
+                    android:layout_width="32dp"
+                    android:layout_height="32dp"
+                    android:layout_margin="2dp"
+                    android:background="@drawable/selector_week_text"
+                    android:gravity="center"
+                    android:text="18"
+                    android:textColor="@color/selector_select_week_text"
+                    android:textSize="14sp" />
+
+                <TextView
+                    android:layout_width="32dp"
+                    android:layout_height="32dp"
+                    android:layout_margin="2dp"
+                    android:background="@drawable/selector_week_text"
+                    android:gravity="center"
+                    android:text="19"
+                    android:textColor="@color/selector_select_week_text"
+                    android:textSize="14sp" />
+
+                <TextView
+                    android:layout_width="32dp"
+                    android:layout_height="32dp"
+                    android:layout_margin="2dp"
+                    android:background="@drawable/selector_week_text"
+                    android:gravity="center"
+                    android:text="20"
+                    android:textColor="@color/selector_select_week_text"
+                    android:textSize="14sp" />
+
+                <TextView
+                    android:layout_width="32dp"
+                    android:layout_height="32dp"
+                    android:layout_margin="2dp"
+                    android:background="@drawable/selector_week_text"
+                    android:gravity="center"
+                    android:text="21"
+                    android:textColor="@color/selector_select_week_text"
+                    android:textSize="14sp" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="252dp"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="32dp"
+                    android:layout_height="32dp"
+                    android:layout_margin="2dp"
+                    android:background="@drawable/selector_week_text"
+                    android:gravity="center"
+                    android:text="22"
+                    android:textColor="@color/selector_select_week_text"
+                    android:textSize="14sp" />
+
+                <TextView
+                    android:layout_width="32dp"
+                    android:layout_height="32dp"
+                    android:layout_margin="2dp"
+                    android:background="@drawable/selector_week_text"
+                    android:gravity="center"
+                    android:text="23"
+                    android:textColor="@color/selector_select_week_text"
+                    android:textSize="14sp" />
+
+                <TextView
+                    android:layout_width="32dp"
+                    android:layout_height="32dp"
+                    android:layout_margin="2dp"
+                    android:background="@drawable/selector_week_text"
+                    android:gravity="center"
+                    android:text="24"
+                    android:textColor="@color/selector_select_week_text"
+                    android:textSize="14sp" />
+
+                <TextView
+                    android:layout_width="32dp"
+                    android:layout_height="32dp"
+                    android:layout_margin="2dp"
+                    android:background="@drawable/selector_week_text"
+                    android:gravity="center"
+                    android:text="25"
+                    android:textColor="@color/selector_select_week_text"
+                    android:textSize="14sp" />
+            </LinearLayout>
+        </LinearLayout>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:orientation="horizontal">
+
+        <com.mnnyang.gzuclassschedule.custom.WheelView
+            android:id="@+id/wv_week"
+            android:layout_width="wrap_content"
+            android:layout_height="140dp" />
+
+        <com.mnnyang.gzuclassschedule.custom.WheelView
+            android:id="@+id/wv_start_node"
+            android:layout_width="wrap_content"
+            android:layout_height="140dp"
+            android:layout_weight="1" />
+
+        <View
+            android:layout_width="16dp"
+            android:layout_height="2dp"
+            android:background="?android:attr/colorPrimary" />
+
+        <com.mnnyang.gzuclassschedule.custom.WheelView
+            android:id="@+id/wv_end_node"
+            android:layout_width="wrap_content"
+            android:layout_height="140dp"
+            android:layout_weight="1" />
+    </LinearLayout>
 </LinearLayout>

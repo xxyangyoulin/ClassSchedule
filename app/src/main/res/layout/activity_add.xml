@@ -75,21 +75,42 @@
 
             </LinearLayout>
 
-            <ImageView
-                android:id="@+id/iv_add_location"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
-                android:layout_marginBottom="@dimen/margin_8dp"
-                android:layout_marginLeft="@dimen/margin_8dp"
-                android:layout_marginRight="@dimen/margin_8dp"
-                android:layout_marginTop="@dimen/margin_16dp"
-                android:background="@drawable/ripple_add_location"
-                android:clickable="true"
-                android:elevation="3dp"
-                android:focusable="true"
-                android:padding="@dimen/margin_8dp"
-                android:src="@drawable/ic_add_location_black_24dp"
-                android:translationZ="3dp" />
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:orientation="horizontal"
+                android:layout_height="wrap_content">
+                <ImageView
+                    android:id="@+id/iv_add_location"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_marginBottom="@dimen/margin_8dp"
+                    android:layout_marginLeft="@dimen/margin_8dp"
+                    android:layout_marginRight="@dimen/margin_8dp"
+                    android:layout_marginTop="@dimen/margin_16dp"
+                    android:background="@drawable/ripple_add_location"
+                    android:clickable="true"
+                    android:elevation="3dp"
+                    android:focusable="true"
+                    android:padding="@dimen/margin_8dp"
+                    android:src="@drawable/ic_add_location_black_24dp"
+                    android:translationZ="3dp" />
+
+                <ImageView
+                    android:id="@+id/iv_submit"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_marginBottom="@dimen/margin_8dp"
+                    android:layout_marginLeft="@dimen/margin_8dp"
+                    android:layout_marginRight="@dimen/margin_8dp"
+                    android:layout_marginTop="@dimen/margin_16dp"
+                    android:background="@drawable/ripple_add_location"
+                    android:clickable="true"
+                    android:elevation="3dp"
+                    android:focusable="true"
+                    android:padding="@dimen/margin_8dp"
+                    android:src="@drawable/ic_add_black_24dp"
+                    android:translationZ="3dp" />
+            </LinearLayout>
         </LinearLayout>
     </ScrollView>
 </LinearLayout>

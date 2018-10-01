@@ -13,11 +13,7 @@
     <string name="default_course_name">默认课表</string>
 
     <string name="app_preference_app_is_first_start">app_is_first_start</string>
-    <string name="app_preference_hide_fab">hide_fab</string>
     <string name="app_preference_start_week_begin_millis">start_week_begin_date</string>
-    <string name="app_preference_max_node">max_node</string>
-    <string name="app_preference_noon_node">noon_node</string>
-    <string name="app_preference_show_noon">show_noon</string>
     <!--<string name="app_preference_current_sd_name">current_sd_name</string>-->
     <string name="app_preference_theme">theme</string>
     <string name="app_preference_bg_iamge_path">bg_image_path</string>

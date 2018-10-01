@@ -76,6 +76,7 @@ public class ColorImageView extends ImageView {
     public void setBgColor(int color) {
         bgColor = color | 0xFF000000;
         bgPaint.setColor(bgColor);
+        invalidate();
     }
 
     public int getBgColor() {

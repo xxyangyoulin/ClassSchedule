@@ -36,17 +36,6 @@
             android:summary=""
             android:title="@string/theme_preference"/>
 
-        <CheckBoxPreference
-            android:key="@string/app_preference_show_noon"
-            android:layout="@layout/preference_item"
-            android:summary="@string/show_noon_course_summary"
-            android:title="@string/show_noon_course"/>
-
-        <CheckBoxPreference
-            android:key="@string/app_preference_hide_fab"
-            android:layout="@layout/preference_item"
-            android:summary="@string/hide_fab_summary"
-            android:title="@string/hide_fab"/>
         <Preference
             android:layout="@layout/preference_item"
             android:summary=""

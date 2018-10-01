@@ -306,7 +306,7 @@ public class CourseActivity extends BaseActivity implements CourseContract.View,
 
             public void onAdd(CourseAncestor course, View addView) {
                 Intent intent = new Intent(CourseActivity.this, AddActivity.class);
-                intent.putExtra(Constant.INTENT_COURSE_ANCESTOR, course);
+                intent.putExtra(Constant.INTENT_ADD_COURSE_ANCESTOR, course);
                 intent.putExtra(Constant.INTENT_ADD, true);
                 startActivity(intent);
             }

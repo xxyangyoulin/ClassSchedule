@@ -24,6 +24,8 @@ public class EditTextLayout extends LinearLayout {
     private ImageView mIvIcon;
     private ImageView mIvClear;
     private String mHint;
+    private Boolean mCloseAuto;
+    private boolean mCloseShow;
 
     public EditTextLayout(Context context) {
         super(context);
@@ -47,6 +49,8 @@ public class EditTextLayout extends LinearLayout {
         String text = typedArray.getString(R.styleable.EditTextLayout_text);
         Drawable icon = typedArray.getDrawable(R.styleable.EditTextLayout_icon);
         Boolean inputEnabled = typedArray.getBoolean(R.styleable.EditTextLayout_input_enabled, true);
+        mCloseAuto = typedArray.getBoolean(R.styleable.EditTextLayout_close_auto, true);
+        mCloseShow = typedArray.getBoolean(R.styleable.EditTextLayout_close_show, false);
         int textColor = typedArray.getColor(R.styleable.EditTextLayout_textColor, Color.BLACK);
         int hintColor = typedArray.getColor(R.styleable.EditTextLayout_hintColor, Color.GRAY);
 
@@ -86,13 +90,17 @@ public class EditTextLayout extends LinearLayout {
             }
         });
 
-        mEtText.setOnFocusChangeListener(new OnFocusChangeListener() {
-            @Override
-            public void onFocusChange(View v, boolean hasFocus) {
-                mIvClear.setVisibility(hasFocus ? VISIBLE : INVISIBLE);
-                mEtText.setHint(hasFocus ? "" : mHint);
-            }
-        });
+        if (mCloseAuto) {
+            mEtText.setOnFocusChangeListener(new OnFocusChangeListener() {
+                @Override
+                public void onFocusChange(View v, boolean hasFocus) {
+                    mIvClear.setVisibility(hasFocus ? VISIBLE : INVISIBLE);
+                    mEtText.setHint(hasFocus ? "" : mHint);
+                }
+            });
+        } else {
+            mIvIcon.setVisibility(mCloseShow ? VISIBLE : INVISIBLE);
+        }
     }
 
     /**
@@ -158,8 +166,6 @@ public class EditTextLayout extends LinearLayout {
 
     public EditTextLayout setCloseListener(CloseListener closeListener) {
         mCloseListener = closeListener;
-
-        mIvClear.setVisibility(VISIBLE);
         return this;
     }
 }

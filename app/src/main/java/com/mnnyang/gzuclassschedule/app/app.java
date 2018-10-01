@@ -32,6 +32,7 @@ import okhttp3.OkHttpClient;
 
 /**
  * Created by mnnyang on 17-11-1.
+ * TODO 登录页面细节intent
  */
 
 public class app extends Application {

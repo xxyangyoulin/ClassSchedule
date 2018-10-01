@@ -1,15 +1,42 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<com.mnnyang.gzuclassschedule.custom.EditTextLayout
-    android:padding="@dimen/margin_8dp"
+<LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
+    android:layout_height="48dp"
+    android:layout_marginTop="@dimen/margin_16dp"
+    android:gravity="center_vertical"
+    android:orientation="horizontal"
     android:background="@color/white"
-    android:layout_height="wrap_content"
-    app:hint="时间教室"
-    app:hintColor="@color/color_gary_40"
-    app:icon="@drawable/ic_location_on_black_24dp"
-    app:input_enabled="false"
-    app:text="博学楼302 # 1-16周 周五 3-4节"
-    app:textColor="@color/secondary_text" />
+    android:padding="@dimen/margin_8dp">
+
+    <ImageView
+        android:id="@+id/iv_icon"
+        android:src="@drawable/ic_location_on_black_24dp"
+        android:layout_width="wrap_content"
+        android:layout_marginLeft="8dp"
+        android:layout_height="wrap_content"/>
+    <TextView
+        android:id="@+id/tv_text"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="8dp"
+        android:layout_weight="1"
+        android:background="@null"
+        android:singleLine="true"
+        android:textColor="@color/primary_text"
+        android:textSize="16sp"
+        android:hint="编辑时间教室"/>
+
+    <ImageView
+        android:id="@+id/iv_clear"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:clickable="true"
+        android:focusable="true"
+        android:background="?attr/selectableItemBackgroundBorderless"
+        android:scaleType="center"
+        android:src="@drawable/iv_svg_clear"
+        android:visibility="visible"/>
+</LinearLayout>

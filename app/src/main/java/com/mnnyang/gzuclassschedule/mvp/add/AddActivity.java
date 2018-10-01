@@ -3,90 +3,217 @@ package com.mnnyang.gzuclassschedule.mvp.add;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.text.TextUtils;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.Toast;
+import android.widget.TextView;
 
 import com.mnnyang.gzuclassschedule.BaseActivity;
 import com.mnnyang.gzuclassschedule.R;
+import com.mnnyang.gzuclassschedule.app.Cache;
 import com.mnnyang.gzuclassschedule.app.Constant;
 import com.mnnyang.gzuclassschedule.custom.EditTextLayout;
 import com.mnnyang.gzuclassschedule.custom.course.CourseAncestor;
 import com.mnnyang.gzuclassschedule.data.beanv2.CourseV2;
+import com.mnnyang.gzuclassschedule.utils.LogUtil;
+import com.mnnyang.gzuclassschedule.utils.Preferences;
 import com.mnnyang.gzuclassschedule.utils.ScreenUtils;
+import com.mnnyang.gzuclassschedule.utils.event.CourseDataChangeEvent;
+import com.mnnyang.gzuclassschedule.utils.spec.PopupWindowDialog;
+
+import org.greenrobot.eventbus.EventBus;
+
+import java.util.List;
 
 public class AddActivity extends BaseActivity implements AddContract.View, View.OnClickListener {
 
+    private boolean mAddMode = true;
     private AddContract.Presenter mPresenter;
     private CourseAncestor intentAncestor;
+    private int mDefaultWeek = 1;
+    private int mDefaultStartNode = 1;
+    private int mDefaultEndNode = 2;
+
+
     private ImageView mIvAddLocation;
     private LinearLayout mLayoutLocationContainer;
+    private ImageView mIvSubmit;
+    private EditTextLayout mEtlName;
+    private EditTextLayout mEtlTeacher;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add);
 
-        initView();
         handleIntent();
+        initView();
 
         new AddPresenter(this).start();
         initListener();
     }
 
     private void initView() {
+        mEtlName = findViewById(R.id.etl_name);
+        mEtlTeacher = findViewById(R.id.etl_teacher);
+
         mIvAddLocation = findViewById(R.id.iv_add_location);
         mLayoutLocationContainer = findViewById(R.id.layout_location_container);
+        mIvSubmit = findViewById(R.id.iv_submit);
 
         initBackToolbar("新增");
-        addLocation();
+        addLocation(false);
     }
-
 
     private void initListener() {
         mIvAddLocation.setOnClickListener(this);
+        mIvSubmit.setOnClickListener(this);
     }
-
 
     private void handleIntent() {
         Intent intent = getIntent();
-        intentAncestor = (CourseAncestor) intent.getSerializableExtra(Constant.INTENT_COURSE_ANCESTOR);
+        intentAncestor = (CourseAncestor) intent.getSerializableExtra(Constant.INTENT_ADD_COURSE_ANCESTOR);
+        if (intentAncestor != null) {
+            mAddMode = true;
+            mDefaultWeek = intentAncestor.getRow();
+            mDefaultStartNode = intentAncestor.getCol();
+            mDefaultEndNode = mDefaultStartNode + intentAncestor.getRowNum();
+        }
     }
 
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.iv_add_location:
-                addLocation();
+                addLocation(true);
+                break;
+            case R.id.iv_submit:
+                submit();
                 break;
         }
     }
 
-    private void addLocation() {
-        EditTextLayout locationItem = (EditTextLayout) View.inflate(this,
+    private void submit() {
+        String name = mEtlName.getText().trim();
+        if (TextUtils.isEmpty(name)) {
+            toast("课程名称不能为空！");
+            return;
+        }
+
+        String teacher = mEtlTeacher.getText().trim();
+
+        int childCount = mLayoutLocationContainer.getChildCount();
+
+        boolean hasLocation = false;
+        for (int i = 0; i < childCount; i++) {
+            View locationItem = mLayoutLocationContainer.getChildAt(i);
+            Object obj = locationItem.getTag();
+
+            if (obj != null) {
+                hasLocation = true;
+                CourseV2 courseV2 = (CourseV2) obj;
+                courseV2.setCouName(name);
+                courseV2.setCouTeacher(teacher);
+
+                //TODO save
+                LogUtil.e(this, "add---" + courseV2);
+                Cache.instance().getCourseV2Dao().insert(courseV2);
+                EventBus.getDefault().post(new CourseDataChangeEvent());
+                finish();
+            }
+        }
+
+        if (!hasLocation) {
+            toast("没有设置课程时间！");
+        }
+    }
+
+    private void addLocation(boolean closeable) {
+        final LinearLayout locationItem = (LinearLayout) View.inflate(this,
                 R.layout.layout_location_item, null);
 
         LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         params.topMargin = ScreenUtils.dp2px(8);
-        mLayoutLocationContainer.addView(locationItem, params);
 
-        locationItem.setCloseListener(new EditTextLayout.CloseListener() {
-            @Override
-            public void onClose() {
-                Toast.makeText(AddActivity.this, "fuck", Toast.LENGTH_SHORT).show();
-            }
-        });
+        if (closeable) {
+            locationItem.findViewById(R.id.iv_clear).setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    mLayoutLocationContainer.removeView(locationItem);
+                }
+            });
+        } else {
+            locationItem.findViewById(R.id.iv_clear).setVisibility(View.INVISIBLE);
+        }
+
+        if (intentAncestor != null) {
+            TextView tvText = locationItem.findViewById(R.id.tv_text);
+            String builder = "周" + Constant.WEEK_SINGLE[mDefaultWeek - 1] +
+                    " 第" + mDefaultStartNode + "-" +
+                    mDefaultEndNode + "节";
+            tvText.setText(builder);
+
+            locationItem.setTag(new CourseV2()
+                    .setCouWeek(mDefaultWeek)
+                    .setCouAllWeek(Constant.DEFAULT_ALL_WEEK)
+                    .setCouStartNode(mDefaultStartNode)
+                    .setCouNodeCount(mDefaultEndNode - mDefaultStartNode + 1));
+        }
 
         locationItem.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                System.out.println("click");
+                clickLocationItem(locationItem);
             }
         });
+
+        mLayoutLocationContainer.addView(locationItem, params);
+    }
+
+    private void clickLocationItem(final LinearLayout locationItem) {
+        PopupWindowDialog dialog = new PopupWindowDialog();
+        dialog.showSelectTimeDialog(this, "博学楼235", null,
+                mDefaultWeek, mDefaultStartNode, mDefaultEndNode, new PopupWindowDialog.SelectTimeCallback() {
+                    @Override
+                    public void onSelected(String location, List<Integer> selectWeeks, int week, int nodeStart, int nodeEnd) {
+                        StringBuilder builder = new StringBuilder();
+                        builder.append("周").append(Constant.WEEK_SINGLE[week - 1])
+                                .append(" 第").append(nodeStart).append("-")
+                                .append(nodeEnd).append("节");
+                        if (!TextUtils.isEmpty(location)) {
+                            builder.append("【").append(location).append("】");
+                        }
+
+                        ((TextView) locationItem.findViewById(R.id.tv_text))
+                                .setText(builder.toString());
+
+
+                        builder = new StringBuilder();
+                        for (Integer selectWeek : selectWeeks) {
+                            builder.append(selectWeek).append(",");
+                        }
+                        String allWeek = builder.toString();
+                        if (allWeek.length() > 0) {
+                            allWeek = allWeek.substring(0, allWeek.length() - 1);
+                        }
+
+                        long couCgId = Preferences.getLong(getString(R.string.app_preference_current_cs_name_id), 0);
+
+                        CourseV2 courseV2 = new CourseV2()
+                                .setCouLocation(location)
+                                .setCouWeek(week)
+                                .setCouAllWeek(allWeek)
+                                .setCouStartNode(nodeStart)
+                                .setCouNodeCount(nodeEnd - nodeStart + 1)
+                                .setCouCgId(couCgId);
+
+                        locationItem.setTag(courseV2);
+                    }
+                });
     }
 
     @Override

@@ -21,9 +21,9 @@ public class MgAdapter extends RecyclerBaseAdapter<CsItem> {
         void onDelClick(View view, int csNameId, RecyclerBaseAdapter.ViewHolder holder);
     }
 
-    private int currentCsNameIdTag;
+    private long currentCsNameIdTag;
 
-    public void setCurrentCsNameIdTag(int csNameId) {
+    public void setCurrentCsNameIdTag(long csNameId) {
         this.currentCsNameIdTag = csNameId;
 
         //只存在一个课表的时候, 默认就为该课表

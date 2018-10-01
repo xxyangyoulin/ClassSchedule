@@ -177,7 +177,7 @@ public class MgActivity extends BaseActivity implements MgContract.View, View.On
 
     @Override
     public void showList(ArrayList<CsItem> csNames) {
-        int curNameId = Preferences.getInt(getString(R.string.app_preference_current_cs_name_id), 0);
+        long curNameId = Preferences.getLong(getString(R.string.app_preference_current_cs_name_id), 0);
         mAdapter.setCurrentCsNameIdTag(curNameId);
         mAdapter.notifyDataSetChanged();
     }

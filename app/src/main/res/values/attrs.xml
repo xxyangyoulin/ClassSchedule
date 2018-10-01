@@ -7,6 +7,8 @@
         <attr name="textColor" format="color|reference" />
         <attr name="hintColor" format="color|reference" />
         <attr name="input_enabled" format="boolean" />
+        <attr name="close_auto" format="boolean" />
+        <attr name="close_show" format="boolean" />
     </declare-styleable>
 
 
