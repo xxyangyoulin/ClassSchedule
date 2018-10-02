@@ -12,6 +12,7 @@
         android:background="@android:color/transparent"
         android:text=""
         android:paddingLeft="1dp"
+        android:gravity="center|top"
         android:paddingRight="1dp"
         android:padding="2dp"
         android:textColor="@color/white"

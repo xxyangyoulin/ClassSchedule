@@ -4,7 +4,9 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.support.annotation.NonNull;
+import android.text.TextUtils;
 
+import com.mnnyang.gzuclassschedule.R;
 import com.mnnyang.gzuclassschedule.data.bean.Course;
 import com.mnnyang.gzuclassschedule.data.bean.CsItem;
 import com.mnnyang.gzuclassschedule.data.beanv2.CourseGroup;
@@ -14,18 +16,73 @@ import com.mnnyang.gzuclassschedule.data.greendao.CourseGroupDao;
 import com.mnnyang.gzuclassschedule.data.greendao.CourseV2Dao;
 import com.mnnyang.gzuclassschedule.data.greendao.DaoMaster;
 import com.mnnyang.gzuclassschedule.data.greendao.DaoSession;
+import com.mnnyang.gzuclassschedule.utils.LogUtil;
 import com.mnnyang.gzuclassschedule.utils.Preferences;
+import com.mnnyang.gzuclassschedule.utils.TimeUtils;
 
 import java.io.UnsupportedEncodingException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.regex.Pattern;
 
 /**
  *
  */
 public class AppUtils {
+
+    public static int getCurrentWeek(Context context) {
+        int week = 1;
+
+        //获取开始时间
+        String beginMillis = Preferences.getString(context.getString(
+                R.string.app_preference_start_week_begin_millis), "");
+
+        //获取当前时间
+        long currentMillis = Calendar.getInstance().getTimeInMillis();
+
+        //存在开始时间
+        if (!TextUtils.isEmpty(beginMillis)) {
+            long intBeginMillis = Long.valueOf(beginMillis);
+
+            //获取到的配置是时间大于当前时间 重置为第一周
+            if (intBeginMillis > currentMillis) {
+                LogUtil.e("getCurrentWeek", "intBeginMillis > currentMillis");
+                PreferencesCurrentWeek(context, 1);
+
+            } else {
+                //计算出开始时间到现在时间的周数
+                int weekGap = TimeUtils.getWeekGap(intBeginMillis, currentMillis);
+
+                week += weekGap;
+            }
+
+        } else {
+            //不存在开始时间 初始化为第一周
+            PreferencesCurrentWeek(context, 1);
+        }
+
+        return week;
+    }
+
+    public static void PreferencesCurrentWeek(Context context, int currentWeekCount) {
+        //得到一个当前周 周一的日期
+        Calendar calendar = Calendar.getInstance();
+        Date weekBegin = TimeUtils.getNowWeekBegin();
+        calendar.setTime(weekBegin);
+
+        if (currentWeekCount > 1) {
+            calendar.add(Calendar.DATE, -7 * (currentWeekCount - 1));
+        }
+
+        LogUtil.e("PreferencesCurrentWeek", "preferences date" + (calendar.get(Calendar.MONTH) + 1)
+                + "-" + calendar.get(Calendar.DAY_OF_MONTH));
+        Preferences.putString(context.getString(R.string.app_preference_start_week_begin_millis),
+                calendar.getTimeInMillis() + "");
+    }
+
     public static String getGravatar(String email) {
         String emailMd5 = AppUtils.md5Hex(email);        //设置图片大小32px
         String avatar = "http://www.gravatar.com/avatar/" + emailMd5 + "?s=64";

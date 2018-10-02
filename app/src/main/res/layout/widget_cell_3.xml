@@ -11,6 +11,7 @@
         android:layout_margin="1.0dp"
         android:background="@android:color/transparent"
         android:text=""
+        android:gravity="center|top"
         android:padding="2dp"
         android:paddingLeft="1dp"
         android:paddingRight="1dp"

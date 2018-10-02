@@ -13,6 +13,7 @@
         android:padding="2dp"
         android:paddingLeft="1dp"
         android:paddingRight="1dp"
+        android:gravity="center|top"
         android:text=""
         android:textColor="@color/white"
         android:textSize="12.0sp"

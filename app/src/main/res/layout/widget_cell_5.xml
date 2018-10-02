@@ -11,10 +11,7 @@
         android:layout_margin="1.0dp"
         android:background="@android:color/transparent"
         android:text=""
-        android:padding="2dp"
-        android:paddingLeft="1dp"
-        android:paddingRight="1dp"
-        android:textColor="@color/white"
+        android:gravity="center|top"
         android:textSize="12.0sp"
         android:textStyle="normal" />
 </LinearLayout>

@@ -7,10 +7,12 @@ import android.widget.RemoteViews;
 import android.widget.RemoteViewsService;
 
 import com.mnnyang.gzuclassschedule.R;
+import com.mnnyang.gzuclassschedule.app.AppUtils;
+import com.mnnyang.gzuclassschedule.app.Cache;
 import com.mnnyang.gzuclassschedule.custom.course.CourseAncestor;
 import com.mnnyang.gzuclassschedule.custom.util.Utils;
-import com.mnnyang.gzuclassschedule.data.bean.Course;
-import com.mnnyang.gzuclassschedule.data.db.CourseDbDao;
+import com.mnnyang.gzuclassschedule.data.beanv2.CourseV2;
+import com.mnnyang.gzuclassschedule.data.greendao.CourseV2Dao;
 import com.mnnyang.gzuclassschedule.mvp.course.CourseActivity;
 import com.mnnyang.gzuclassschedule.utils.LogUtil;
 import com.mnnyang.gzuclassschedule.utils.Preferences;
@@ -18,12 +20,15 @@ import com.mnnyang.gzuclassschedule.utils.Preferences;
 import java.util.ArrayList;
 import java.util.List;
 
+//import com.mnnyang.gzuclassschedule.data.bean.Course;
+//import com.mnnyang.gzuclassschedule.data.db.CourseDbDao;
+
 
 public class UpdateService extends RemoteViewsService {
 
     private List<CourseAncestor> mCourses;
     private int maxNodeSize = 16;
-    private int currentWeek = 1;
+    private int mCurrentWeek = 1;
 
     @Override
     public void onCreate() {
@@ -32,18 +37,25 @@ public class UpdateService extends RemoteViewsService {
 
     private void initDemoData() {
         //TODO
-        int currentCsNameId = Preferences.getInt(
+        long group_id = Preferences.getLong(
                 getString(R.string.app_preference_current_cs_name_id), 0);
-        CourseDbDao dao = CourseDbDao.instance();
-        final ArrayList<Course> courses = dao.loadCourses(currentCsNameId);
+        //CourseDbDao dao = CourseDbDao.instance();
+        //final ArrayList<Course> courses = dao.loadCourses(group_id);
+        mCurrentWeek = AppUtils.getCurrentWeek(getBaseContext());
+
+        List<CourseV2> courseV2s = Cache.instance().getCourseV2Dao()
+                .queryBuilder()
+                .where(CourseV2Dao.Properties.CouCgId.eq(group_id))
+                .list();
 
         int i = 0;
         mCourses = new ArrayList<>();
-        for (Course course : courses) {
+        for (CourseV2 course : courseV2s) {
             course.init();
             if (course.getColor() == -1) {
                 course.setColor(Utils.getRandomColor(i++));
             }
+            course.setActiveStatus(course.shouldShow(mCurrentWeek));
             mCourses.add(course);
         }
     }
@@ -200,7 +212,14 @@ public class UpdateService extends RemoteViewsService {
                         if (id != -1) {
                             dayRemoteViews = new RemoteViews(getPackageName(), layout);
                             dayRemoteViews.setTextViewText(id, course.getText());
-                            dayRemoteViews.setInt(id, "setBackgroundColor", course.getColor());
+
+                            if(course.getActiveStatus()){
+                                dayRemoteViews.setInt(id, "setBackgroundColor", course.getColor());
+                                dayRemoteViews.setInt(id, "setTextColor", 0xFFFFFFFF);
+                            }else{
+                                dayRemoteViews.setInt(id, "setBackgroundColor", 0xFFE3EEF5);
+                                dayRemoteViews.setInt(id, "setTextColor", 0xFFbadac9);
+                            }
                         }
                     }
 

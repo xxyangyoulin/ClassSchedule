@@ -31,6 +31,7 @@ import android.widget.TextView;
 import com.mnnyang.gzuclassschedule.BaseActivity;
 import com.mnnyang.gzuclassschedule.R;
 import com.mnnyang.gzuclassschedule.RecyclerBaseAdapter;
+import com.mnnyang.gzuclassschedule.app.AppUtils;
 import com.mnnyang.gzuclassschedule.app.Cache;
 import com.mnnyang.gzuclassschedule.app.Constant;
 import com.mnnyang.gzuclassschedule.custom.course.CourseAncestor;
@@ -48,7 +49,6 @@ import com.mnnyang.gzuclassschedule.utils.Preferences;
 import com.mnnyang.gzuclassschedule.utils.ScreenUtils;
 import com.mnnyang.gzuclassschedule.utils.TimeUtils;
 import com.mnnyang.gzuclassschedule.utils.event.CourseDataChangeEvent;
-import com.mnnyang.gzuclassschedule.utils.spec.ParseCourse;
 import com.mnnyang.gzuclassschedule.utils.spec.ShowDetailDialog;
 
 import org.greenrobot.eventbus.EventBus;
@@ -69,10 +69,8 @@ public class CourseActivity extends BaseActivity implements CourseContract.View,
         View.OnClickListener {
 
     CourseContract.Presenter mPresenter;
-    private LinearLayout mLayoutWeekTitle;
     private TextView mTvWeekCount;
     private int mCurrentWeekCount;
-    private PopupWindow mPopupWindow;
     private int mCurrentMonth;
     private ShowDetailDialog mDialog;
     private CourseView mCourseViewV2;
@@ -141,7 +139,7 @@ public class CourseActivity extends BaseActivity implements CourseContract.View,
             @Override
             public void onItemClick(View view, final RecyclerBaseAdapter.ViewHolder holder) {
                 mCurrentWeekCount = holder.getAdapterPosition() + 1;
-                PreferencesCurrentWeek(mCurrentWeekCount);
+                AppUtils.PreferencesCurrentWeek(getBaseContext(), mCurrentWeekCount);
                 mCourseViewV2.setCurrentIndex(mCurrentWeekCount);
                 mCourseViewV2.resetView();
                 mTvWeekCount.setText("第" + mCurrentWeekCount + "周");
@@ -150,6 +148,7 @@ public class CourseActivity extends BaseActivity implements CourseContract.View,
                     @Override
                     public void run() {
                         animSelectWeek(false);
+                        AppUtils.updateWidget(getApplicationContext());
                     }
                 }, 150);
             }
@@ -192,7 +191,6 @@ public class CourseActivity extends BaseActivity implements CourseContract.View,
 
 
     private void initWeekTitle() {
-        mLayoutWeekTitle = findViewById(R.id.layout_week_title);
         mTvWeekCount = findViewById(R.id.tv_toolbar_subtitle);
         mTvWeekCount.setOnClickListener(this);
         TextView tvTitle = findViewById(R.id.tv_toolbar_title);
@@ -332,37 +330,7 @@ public class CourseActivity extends BaseActivity implements CourseContract.View,
 
     @SuppressLint("SetTextI18n")
     private void updateCurrentWeek() {
-        mCurrentWeekCount = 1;
-
-        //获取开始时间
-        String beginMillis = Preferences.getString(getString(
-                R.string.app_preference_start_week_begin_millis), "");
-
-        //获取当前时间
-        long currentMillis = Calendar.getInstance().getTimeInMillis();
-
-        //存在开始时间
-        if (!TextUtils.isEmpty(beginMillis)) {
-            long intBeginMillis = Long.valueOf(beginMillis);
-
-            //获取到的配置是时间大于当前时间 重置为第一周
-            if (intBeginMillis > currentMillis) {
-                LogUtil.e(this, "intBeginMillis > currentMillis");
-                PreferencesCurrentWeek(1);
-
-            } else {
-                //计算出开始时间到现在时间的周数
-                int weekGap = TimeUtils.getWeekGap(intBeginMillis, currentMillis);
-
-//                LogUtil.e(this, "差距为" + weekGap);
-                System.out.println(intBeginMillis + "----" + currentMillis);
-                mCurrentWeekCount += weekGap;
-            }
-
-        } else {
-            //不存在开始时间 初始化为第一周
-            PreferencesCurrentWeek(1);
-        }
+        mCurrentWeekCount = AppUtils.getCurrentWeek(getBaseContext());
         mTvWeekCount.setText("第" + mCurrentWeekCount + "周");
         mCourseViewV2.setCurrentIndex(mCurrentWeekCount);
     }
@@ -374,7 +342,6 @@ public class CourseActivity extends BaseActivity implements CourseContract.View,
         if (!isFirst) {
             return;
         }
-
         CourseGroupDao groupDao = Cache.instance().getCourseGroupDao();
         CourseGroup defaultGroup = groupDao
                 .queryBuilder()
@@ -388,17 +355,12 @@ public class CourseActivity extends BaseActivity implements CourseContract.View,
         }
 
         Preferences.putLong(getString(R.string.app_preference_current_cs_name_id), insert);
-
         Preferences.putBoolean(getString(R.string.app_preference_app_is_first_start), false);
-
-        Cache.instance().getCourseV2Dao()
-                .insertOrReplaceInTx(new CourseV2().setCouWeek(1).setCouAllWeek("1,2,3,4,5,6").setCouStartNode(1).setCouNodeCount(2).setCouName("第一").setCouCgId(insert)
-                        , new CourseV2().setCouWeek(1).setCouAllWeek("1,2,3,4,5,6").setCouStartNode(3).setCouNodeCount(3).setCouName("第二").setCouCgId(insert)
-                        , new CourseV2().setCouWeek(2).setCouAllWeek("1,2,3,4,7").setCouStartNode(8).setCouNodeCount(2).setCouName("第三").setCouCgId(insert));
     }
 
     @Override
     public void setBackground(Bitmap bitmap) {
+
     }
 
     @Override
@@ -413,7 +375,7 @@ public class CourseActivity extends BaseActivity implements CourseContract.View,
 
             LogUtil.e(this, course.toString());
             if (course.getColor() == -1) {
-                //course.setColor(Utils.getRandomColor(i++));
+                course.setColor(Utils.getRandomColor(i++));
             }
             mCourseViewV2.addCourse(course);
         }
@@ -432,88 +394,6 @@ public class CourseActivity extends BaseActivity implements CourseContract.View,
     private void weekTitle(View v) {
         //popupWindow(v);
         animSelectWeek(!mSelectWeekIsShow);
-    }
-
-    private void popupWindow(View v) {
-        mPopupWindow = new PopupWindow(
-                ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-
-        final HorizontalScrollView popupView = getPopupWindowView();
-        mPopupWindow.setContentView(popupView);
-        mPopupWindow.setBackgroundDrawable(new ColorDrawable(0x00000000));
-        mPopupWindow.setOutsideTouchable(true);
-        mPopupWindow.setAnimationStyle(R.style.animDown);
-        //是否允许popup超出屏幕范围
-        mPopupWindow.setClippingEnabled(true);
-
-        mPopupWindow.getContentView().measure(View.MeasureSpec.UNSPECIFIED,
-                View.MeasureSpec.UNSPECIFIED);
-
-        int xoff = mLayoutWeekTitle.getWidth() - mPopupWindow.getContentView().getMeasuredWidth();
-        int yoff = -mTvWeekCount.getHeight();
-        mPopupWindow.showAsDropDown(v, xoff / 2, yoff);
-
-        if (mCurrentWeekCount <= 3) {
-            return;
-        }
-
-        popupView.getViewTreeObserver().addOnGlobalLayoutListener(
-                new ViewTreeObserver.OnGlobalLayoutListener() {
-                    @Override
-                    public void onGlobalLayout() {
-                        popupView.getViewTreeObserver()
-                                .removeGlobalOnLayoutListener(this);
-                        ViewGroup llView = (ViewGroup) popupView.getChildAt(0);
-                        int width = llView.getChildAt(0).getWidth();
-                        int x = width * (mCurrentWeekCount - 3);
-                        popupView.scrollTo(x, 0);
-                    }
-                });
-    }
-
-    @NonNull
-    private HorizontalScrollView getPopupWindowView() {
-        final HorizontalScrollView popupView = new HorizontalScrollView(getBaseContext());
-        LinearLayout linearLayout = new LinearLayout(getBaseContext());
-        linearLayout.setOrientation(LinearLayout.HORIZONTAL);
-        linearLayout.setBackgroundColor(Color.BLACK);
-
-        for (int i = 1; i <= 25; i++) {
-            TextView tv = (TextView) LayoutInflater.from(getBaseContext())
-                    .inflate(R.layout.layout_week_text_view, null);
-            linearLayout.addView(tv);
-            tv.setText("第" + i + "周");
-            tv.setTag(i);
-            tv.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    System.out.println(v.getTag());
-                    mCurrentWeekCount = (int) v.getTag();
-                    mPopupWindow.dismiss();
-                    PreferencesCurrentWeek((Integer) v.getTag());
-                    mCourseViewV2.setCurrentIndex(mCurrentWeekCount);
-                    mCourseViewV2.resetView();
-                    mTvWeekCount.setText("第" + mCurrentWeekCount + "周");
-                }
-            });
-        }
-        popupView.addView(linearLayout);
-        return popupView;
-    }
-
-    private void PreferencesCurrentWeek(int currentWeekCount) {
-        //得到一个当前周 周一的日期
-        Calendar calendar = Calendar.getInstance();
-        Date weekBegin = TimeUtils.getNowWeekBegin();
-        calendar.setTime(weekBegin);
-
-        if (currentWeekCount > 1) {
-            calendar.add(Calendar.DATE, -7 * (currentWeekCount - 1));
-        }
-
-        LogUtil.e(this, "preferences date" + (calendar.get(Calendar.MONTH) + 1) + "-" + calendar.get(Calendar.DAY_OF_MONTH));
-        Preferences.putString(getString(R.string.app_preference_start_week_begin_millis),
-                calendar.getTimeInMillis() + "");
     }
 
     @Override
@@ -555,4 +435,70 @@ public class CourseActivity extends BaseActivity implements CourseContract.View,
         mPresenter = presenter;
     }
 
+   /*private void popupWindow(View v) {
+        mPopupWindow = new PopupWindow(
+                ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+
+        final HorizontalScrollView popupView = getPopupWindowView();
+        mPopupWindow.setContentView(popupView);
+        mPopupWindow.setBackgroundDrawable(new ColorDrawable(0x00000000));
+        mPopupWindow.setOutsideTouchable(true);
+        mPopupWindow.setAnimationStyle(R.style.animDown);
+        //是否允许popup超出屏幕范围
+        mPopupWindow.setClippingEnabled(true);
+
+        mPopupWindow.getContentView().measure(View.MeasureSpec.UNSPECIFIED,
+                View.MeasureSpec.UNSPECIFIED);
+
+        int xoff = mLayoutWeekTitle.getWidth() - mPopupWindow.getContentView().getMeasuredWidth();
+        int yoff = -mTvWeekCount.getHeight();
+        mPopupWindow.showAsDropDown(v, xoff / 2, yoff);
+
+        if (mCurrentWeekCount <= 3) {
+            return;
+        }
+
+        popupView.getViewTreeObserver().addOnGlobalLayoutListener(
+                new ViewTreeObserver.OnGlobalLayoutListener() {
+                    @Override
+                    public void onGlobalLayout() {
+                        popupView.getViewTreeObserver()
+                                .removeGlobalOnLayoutListener(this);
+                        ViewGroup llView = (ViewGroup) popupView.getChildAt(0);
+                        int width = llView.getChildAt(0).getWidth();
+                        int x = width * (mCurrentWeekCount - 3);
+                        popupView.scrollTo(x, 0);
+                    }
+                });
+    }*/
+
+    /*@NonNull
+    private HorizontalScrollView getPopupWindowView() {
+        final HorizontalScrollView popupView = new HorizontalScrollView(getBaseContext());
+        LinearLayout linearLayout = new LinearLayout(getBaseContext());
+        linearLayout.setOrientation(LinearLayout.HORIZONTAL);
+        linearLayout.setBackgroundColor(Color.BLACK);
+
+        for (int i = 1; i <= 25; i++) {
+            TextView tv = (TextView) LayoutInflater.from(getBaseContext())
+                    .inflate(R.layout.layout_week_text_view, null);
+            linearLayout.addView(tv);
+            tv.setText("第" + i + "周");
+            tv.setTag(i);
+            tv.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    System.out.println(v.getTag());
+                    mCurrentWeekCount = (int) v.getTag();
+                    mPopupWindow.dismiss();
+                    AppUtils.PreferencesCurrentWeek(getBaseContext(),(Integer) v.getTag());
+                    mCourseViewV2.setCurrentIndex(mCurrentWeekCount);
+                    mCourseViewV2.resetView();
+                    mTvWeekCount.setText("第" + mCurrentWeekCount + "周");
+                }
+            });
+        }
+        popupView.addView(linearLayout);
+        return popupView;
+    }*/
 }
