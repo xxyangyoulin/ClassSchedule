@@ -17,9 +17,10 @@ import android.widget.EditText;
 import com.mnnyang.gzuclassschedule.BaseActivity;
 import com.mnnyang.gzuclassschedule.R;
 import com.mnnyang.gzuclassschedule.app.AppUtils;
+import com.mnnyang.gzuclassschedule.app.Cache;
+import com.mnnyang.gzuclassschedule.data.beanv2.CourseGroup;
+import com.mnnyang.gzuclassschedule.data.greendao.CourseGroupDao;
 import com.mnnyang.gzuclassschedule.mvp.course.CourseActivity;
-import com.mnnyang.gzuclassschedule.data.bean.CsItem;
-import com.mnnyang.gzuclassschedule.data.db.CourseDbDao;
 import com.mnnyang.gzuclassschedule.mvp.mg.adapter.MgAdapter;
 import com.mnnyang.gzuclassschedule.utils.DialogHelper;
 import com.mnnyang.gzuclassschedule.utils.DialogListener;
@@ -31,12 +32,13 @@ import com.mnnyang.gzuclassschedule.utils.spec.RecyclerBaseAdapter;
 import org.greenrobot.eventbus.EventBus;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class MgActivity extends BaseActivity implements MgContract.View, View.OnClickListener {
 
     private MgContract.Presenter mPresenter;
     private MgAdapter mAdapter;
-    ArrayList<CsItem> csItems = new ArrayList<>();
+    List<CourseGroup> csItems = new ArrayList<>();
     private DialogHelper mCsNameDialogHelper;
 
     @Override
@@ -61,8 +63,8 @@ public class MgActivity extends BaseActivity implements MgContract.View, View.On
         recyclerView.setLayoutManager(new LinearLayoutManager(getBaseContext()));
         mAdapter = new MgAdapter(R.layout.layout_item_cs, csItems);
 
-//        mAdapter.setFooter(LayoutInflater.from(this).inflate(
-//                R.layout.layout_no_more, recyclerView, false));
+        //mAdapter.setFooter(LayoutInflater.from(this).inflate(
+        //        R.layout.layout_no_more, recyclerView, false));
 
         recyclerView.setAdapter(mAdapter);
 
@@ -73,38 +75,44 @@ public class MgActivity extends BaseActivity implements MgContract.View, View.On
         mAdapter.setItemClickListener(new MgAdapter.MgListener() {
 
             @Override
-            public void onEditClick(View view, int csNameId,
-                                    RecyclerBaseAdapter.ViewHolder holder) {
+            public void onEditClick(View view, Long csNameId, RecyclerBaseAdapter.ViewHolder holder) {
                 toast(csNameId + "");
                 editDialog(csNameId);
             }
 
             @Override
-            public void onDelClick(View view, int csNameId,
+            public void onDelClick(View view, Long csNameId,
                                    RecyclerBaseAdapter.ViewHolder holder) {
                 deleteDialog(csNameId);
             }
 
             @Override
             public void onItemClick(View view, RecyclerBaseAdapter.ViewHolder holder) {
-                switchDialog((Integer) view.getTag());
+                switchDialog((long) view.getTag());
             }
 
             @Override
             public void onItemLongClick(View view, RecyclerBaseAdapter.ViewHolder holder) {
-                deleteDialog((Integer) view.getTag());
+                deleteDialog((long) view.getTag());
             }
         });
     }
 
-    private void editDialog(final int id) {
+    private void editDialog(final long id) {
         mCsNameDialogHelper = new DialogHelper();
         View view = LayoutInflater.from(this).inflate(
                 R.layout.layout_input_course_table_name, null);
 
         final EditText editText = view.findViewById(R.id.et_course_table_name);
         //default value
-        editText.setHint(CourseDbDao.instance().getCsName(id));
+        CourseGroup group = Cache.instance().getCourseGroupDao()
+                .queryBuilder()
+                .where(CourseGroupDao.Properties.CgId.eq(id))
+                .unique();
+
+        if (group != null) {
+            editText.setHint(group.getCgName());
+        }
 
         mCsNameDialogHelper.showCustomDialog(this, view,
                 getString(R.string.please_input_course_table_name), new DialogListener() {
@@ -128,11 +136,11 @@ public class MgActivity extends BaseActivity implements MgContract.View, View.On
                 });
     }
 
-    private void deleteDialog(final int id) {
+    private void deleteDialog(final long id) {
        /* String currentScheduleName = Preferences.getString(
                 getString(R.string.app_preference_current_sd_name),
                 getString(R.string.default_course_name));*/
-        int csNameId = Preferences.getInt(
+        long csNameId = Preferences.getLong(
                 getString(R.string.app_preference_current_cs_name_id), 0);
 
         if (id == csNameId) {
@@ -152,7 +160,7 @@ public class MgActivity extends BaseActivity implements MgContract.View, View.On
                 });
     }
 
-    private void deletingDialog(int id) {
+    private void deletingDialog(long id) {
         DialogHelper dh = new DialogHelper();
         dh.showProgressDialog(this, getString(R.string.deleting),
                 getString(R.string.please_wait_a_moment), false);
@@ -160,7 +168,7 @@ public class MgActivity extends BaseActivity implements MgContract.View, View.On
         mPresenter.deleteCsName(id, dh);
     }
 
-    private void switchDialog(final int tag) {
+    private void switchDialog(final long tag) {
         DialogHelper dh = new DialogHelper();
         dh.showNormalDialog(this, getString(R.string.warning),
                 "确认要切换到该课表吗?",
@@ -176,7 +184,7 @@ public class MgActivity extends BaseActivity implements MgContract.View, View.On
     }
 
     @Override
-    public void showList(ArrayList<CsItem> csNames) {
+    public void showList() {
         long curNameId = Preferences.getLong(getString(R.string.app_preference_current_cs_name_id), 0);
         mAdapter.setCurrentCsNameIdTag(curNameId);
         mAdapter.notifyDataSetChanged();

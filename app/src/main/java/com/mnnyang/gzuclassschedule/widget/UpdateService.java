@@ -31,6 +31,7 @@ public class UpdateService extends RemoteViewsService {
     }
 
     private void initDemoData() {
+        //TODO
         int currentCsNameId = Preferences.getInt(
                 getString(R.string.app_preference_current_cs_name_id), 0);
         CourseDbDao dao = CourseDbDao.instance();

@@ -32,10 +32,6 @@
         <activity
             android:name=".mvp.add.AddActivity"
             android:windowSoftInputMode="stateHidden">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
         </activity>
         <activity android:name=".mvp.mg.MgActivity"></activity>
         <activity android:name=".mvp.about.AboutActivity"></activity>

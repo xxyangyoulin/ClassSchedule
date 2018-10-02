@@ -4,7 +4,7 @@ import android.support.annotation.NonNull;
 import android.view.View;
 
 import com.mnnyang.gzuclassschedule.R;
-import com.mnnyang.gzuclassschedule.data.bean.CsItem;
+import com.mnnyang.gzuclassschedule.data.beanv2.CourseGroup;
 import com.mnnyang.gzuclassschedule.utils.spec.RecyclerBaseAdapter;
 
 import java.util.List;
@@ -13,12 +13,12 @@ import java.util.List;
  * Created by mnnyang on 17-11-4.
  */
 
-public class MgAdapter extends RecyclerBaseAdapter<CsItem> {
+public class MgAdapter extends RecyclerBaseAdapter<CourseGroup> {
 
     public interface MgListener extends RecyclerBaseAdapter.ItemClickListener {
-        void onEditClick(View view, int csNameId, RecyclerBaseAdapter.ViewHolder holder);
+        void onEditClick(View view, Long csNameId, RecyclerBaseAdapter.ViewHolder holder);
 
-        void onDelClick(View view, int csNameId, RecyclerBaseAdapter.ViewHolder holder);
+        void onDelClick(View view, Long csNameId, ViewHolder holder);
     }
 
     private long currentCsNameIdTag;
@@ -33,15 +33,15 @@ public class MgAdapter extends RecyclerBaseAdapter<CsItem> {
     }
 
 
-    public MgAdapter(int itemLayoutId, @NonNull List<CsItem> data) {
+    public MgAdapter(int itemLayoutId, @NonNull List<CourseGroup> data) {
         super(itemLayoutId, data);
     }
 
     @Override
     protected void convert(ViewHolder holder, int position) {
-        String name = getData().get(position).getCsName().getName();
+        String name = getData().get(position).getCgName();
         holder.setText(R.id.tv_title, name);
-        int nameId = getData().get(position).getCsName().getCsNameId();
+        long nameId = getData().get(position).getCgId();
         holder.itemView.setTag(nameId);
 
         //只存在一个课表的时候, 默认就为该课表
@@ -64,7 +64,7 @@ public class MgAdapter extends RecyclerBaseAdapter<CsItem> {
             @Override
             public void onClick(View v) {
                 ((MgListener) itemClickListener).onEditClick(v,
-                        (Integer) holder.itemView.getTag(), holder);
+                        (Long) holder.itemView.getTag(), holder);
             }
         });
 
@@ -72,7 +72,7 @@ public class MgAdapter extends RecyclerBaseAdapter<CsItem> {
             @Override
             public void onClick(View v) {
                 ((MgListener) itemClickListener).onDelClick(v,
-                        (Integer) holder.itemView.getTag(), holder);
+                        (Long) holder.itemView.getTag(), holder);
             }
         });
 

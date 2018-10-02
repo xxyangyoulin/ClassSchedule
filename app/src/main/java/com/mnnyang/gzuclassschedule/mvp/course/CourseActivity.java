@@ -217,7 +217,6 @@ public class CourseActivity extends BaseActivity implements CourseContract.View,
                 textView.setTextSize(NODE_TEXT_SIZE);
                 textView.setText(mCurrentMonth + "\n月");
 
-
                 mMMonthTextView = textView;
             } else {
                 params = new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.MATCH_PARENT);
@@ -229,6 +228,7 @@ public class CourseActivity extends BaseActivity implements CourseContract.View,
             mLayoutWeekGroup.addView(textView, params);
         }
 
+        int nodeItemHeight = Utils.dip2px(getApplicationContext(), 55);
         for (int i = 1; i <= 16; i++) {
             TextView textView = new TextView(getApplicationContext());
             textView.setTextSize(NODE_TEXT_SIZE);
@@ -236,9 +236,7 @@ public class CourseActivity extends BaseActivity implements CourseContract.View,
             textView.setText(String.valueOf(i));
 
             LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
-                    ViewGroup.LayoutParams.MATCH_PARENT, Utils.dip2px(getApplicationContext(), 60));
-
-
+                    ViewGroup.LayoutParams.MATCH_PARENT, nodeItemHeight);
             mLayoutNodeGroup.addView(textView, params);
         }
     }
@@ -316,7 +314,6 @@ public class CourseActivity extends BaseActivity implements CourseContract.View,
 
     private void updateView() {
         updateCoursePreference();
-        updateOtherPreference();
     }
 
     @SuppressLint("SetTextI18n")
@@ -331,10 +328,6 @@ public class CourseActivity extends BaseActivity implements CourseContract.View,
 
         LogUtil.i(this, "当前课表-->" + currentCsNameId);
         mPresenter.updateCourseViewData(currentCsNameId);
-    }
-
-    public void updateOtherPreference() {
-        mPresenter.loadBackground();
     }
 
     @SuppressLint("SetTextI18n")
@@ -412,15 +405,16 @@ public class CourseActivity extends BaseActivity implements CourseContract.View,
     public void setCourseData(List<CourseV2> courses) {
         mCourseViewV2.clear();
 
+        LogUtil.d(this, "当前课程数：" + courses.size());
+
         int i = 0;
         for (CourseV2 course : courses) {
             course.init();
 
-            LogUtil.e(this,course.toString());
+            LogUtil.e(this, course.toString());
             if (course.getColor() == -1) {
                 course.setColor(Utils.getRandomColor(i++));
             }
-
             mCourseViewV2.addCourse(course);
         }
     }

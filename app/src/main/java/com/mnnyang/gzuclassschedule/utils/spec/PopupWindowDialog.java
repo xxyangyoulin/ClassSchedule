@@ -7,10 +7,14 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 
 import com.mnnyang.gzuclassschedule.R;
 import com.mnnyang.gzuclassschedule.app.Constant;
 import com.mnnyang.gzuclassschedule.custom.WheelView;
+import com.mnnyang.gzuclassschedule.custom.course.CourseAncestor;
+import com.mnnyang.gzuclassschedule.data.bean.Course;
+import com.mnnyang.gzuclassschedule.data.beanv2.CourseV2;
 import com.mnnyang.gzuclassschedule.utils.DialogHelper;
 import com.mnnyang.gzuclassschedule.utils.DialogListener;
 import com.mnnyang.gzuclassschedule.utils.LogUtil;
@@ -34,22 +38,19 @@ public class PopupWindowDialog implements View.OnClickListener {
     private View mBtnWeekSingle;
     private View mBtnWeekDouble;
     private static final Integer MAX_WEEK = 25;
+    private TextInputEditText mEtLocation;
 
 
     public interface SelectTimeCallback {
-        void onSelected(String location, List<Integer> selectWeeks, int week, int nodeStart, int nodeEnd);
+        void onSelected(CourseV2 course);
     }
 
-    public void showSelectTimeDialog(Activity activity, String location, final List<Integer> selectWeeks, final int week, int nodeStart,
-                                     int nodeEnd, final SelectTimeCallback callback) {
-        mWeek = week;
-        mNodeStart = nodeStart;
-        mNodeEnd = nodeEnd;
+    public void showSelectTimeDialog(Activity activity, final CourseV2 course, final SelectTimeCallback callback) {
+        mWeek = course.getCouWeek();
+        mNodeStart = course.getCouStartNode();
+        mNodeEnd = course.getCouStartNode() + course.getCouNodeCount() - 1;
 
-        DialogHelper helper = new DialogHelper();
         View view = LayoutInflater.from(activity).inflate(R.layout.dialog_select_week_and_node, null);
-
-        initWeekSelect(view, selectWeeks);
 
         final ArrayList<String> weeks = new ArrayList<>();
         final ArrayList<String> nodes = new ArrayList<>();
@@ -58,11 +59,11 @@ public class PopupWindowDialog implements View.OnClickListener {
         WheelView wvStart = (WheelView) view.findViewById(R.id.wv_start_node);
         final WheelView wvEnd = (WheelView) view.findViewById(R.id.wv_end_node);
 
-        final TextInputEditText etLocation = view.findViewById(R.id.et_location);
+        mEtLocation = view.findViewById(R.id.et_location);
+        mEtLocation.setText(course.getCouLocation());
 
-        if (location != null) {
-            etLocation.setText(location);
-        }
+
+        initWeekSelect(view, course.getShowIndexes());
 
         for (int i = 1; i <= 7; i++) {
             weeks.add(Constant.WEEK[i]);
@@ -110,22 +111,34 @@ public class PopupWindowDialog implements View.OnClickListener {
             }
         });
 
+        show(activity, course, callback, view);
+    }
+
+    private void show(Activity activity, final CourseV2 course, final SelectTimeCallback callback, View view) {
+        DialogHelper helper = new DialogHelper();
         helper.showCustomDialog(activity, view, null, new DialogListener() {
             @Override
             public void onPositive(DialogInterface dialog, int which) {
                 super.onPositive(dialog, which);
                 dialog.dismiss();
 
-                List<Integer> selectWeeks = new ArrayList<>();
-
+                StringBuilder builder = new StringBuilder();
                 for (int i = 0; i < mAllWeekTextView.size(); i++) {
                     if (mAllWeekTextView.get(i).isSelected()) {
-                        selectWeeks.add(i + 1);
+                        builder.append(i + 1).append(",");
                     }
                 }
-
-                callback.onSelected(etLocation.getText().toString().trim(), selectWeeks,
-                        mWeek, mNodeStart, mNodeEnd);
+                String allWeeks = builder.toString();
+                if (allWeeks.length() > 0) {
+                    allWeeks = allWeeks.substring(0, allWeeks.length() - 1);
+                }
+                course.setCouLocation(mEtLocation.getText().toString().trim());
+                course.setCouAllWeek(allWeeks);
+                course.setCouWeek(mWeek);
+                course.setCouStartNode(mNodeStart);
+                course.setCouNodeCount(mNodeEnd - mNodeStart + 1);
+                course.init();
+                callback.onSelected(course);
             }
         });
     }
@@ -139,7 +152,6 @@ public class PopupWindowDialog implements View.OnClickListener {
             }
         };
 
-
         mBtnWeekAll = view.findViewById(R.id.btn_week_all);
         mBtnWeekSingle = view.findViewById(R.id.btn_week_single);
         mBtnWeekDouble = view.findViewById(R.id.btn_week_double);
@@ -150,10 +162,9 @@ public class PopupWindowDialog implements View.OnClickListener {
         mBtnWeekSingle.setOnClickListener(this);
         mBtnWeekDouble.setOnClickListener(this);
 
-
         mAllWeekTextView = getAllChildViews(layoutWeekContainer);
 
-        if (selectWeeks == null) {
+        if (selectWeeks == null || selectWeeks.isEmpty()) {
             for (View view1 : mAllWeekTextView) {
                 view1.setSelected(true);
                 view1.setOnClickListener(weekTextViewCLickListener);

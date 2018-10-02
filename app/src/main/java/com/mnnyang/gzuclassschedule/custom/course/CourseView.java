@@ -24,6 +24,7 @@ import android.widget.TextView;
 
 import com.mnnyang.gzuclassschedule.R;
 import com.mnnyang.gzuclassschedule.custom.util.Utils;
+import com.mnnyang.gzuclassschedule.utils.LogUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -37,7 +38,7 @@ public class CourseView extends FrameLayout {
     private int mColCount = 16;
 
     private int mRowItemWidth = dip2px(50);
-    private int mColItemHeight = dip2px(60);
+    private int mColItemHeight = dip2px(55);
 
     private int mCurrentIndex = 1;
     private String mNotCurrentPrefix = "[非本周]";
@@ -123,6 +124,7 @@ public class CourseView extends FrameLayout {
 
     /** 把数组中的数据全部添加到界面 */
     private void initCourseItemView() {
+        removeAllViews();
         l("调用initCourseItemView");
 
         for (CourseAncestor course : mCourseList) {
@@ -144,6 +146,8 @@ public class CourseView extends FrameLayout {
 
     private void realAddCourseItemView(CourseAncestor course) {
         updateItemStatus(course);
+
+        LogUtil.e(this, "正式添加+" + course.getText() + "--" + getChildCount());
 
         View itemView = createItemView(course);
 
@@ -169,6 +173,7 @@ public class CourseView extends FrameLayout {
     private void updateItemStatus(CourseAncestor course) {
         /*更新course的活跃状态*/
         course.setActiveStatus(course.shouldShow(mCurrentIndex));
+        LogUtil.e(this,"更新状态--》"+course.getText()+"--+"+course.getActiveStatus());
     }
 
     private void setItemViewBackground(CourseAncestor course, TextView tv) {
@@ -296,7 +301,6 @@ public class CourseView extends FrameLayout {
     }
 
     public void resetView() {
-        removeAllViews();
         initCourseItemView();
     }
 

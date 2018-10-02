@@ -79,7 +79,7 @@ public class ShowDetailDialog {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(activity, AddActivity.class);
-                intent.putExtra(Constant.INTENT_COURSE, course);
+                intent.putExtra(Constant.INTENT_EDIT_COURSE, course);
                 activity.startActivity(intent);
                 dismiss();
             }

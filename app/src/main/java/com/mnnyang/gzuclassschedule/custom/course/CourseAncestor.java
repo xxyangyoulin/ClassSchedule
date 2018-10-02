@@ -1,5 +1,7 @@
 package com.mnnyang.gzuclassschedule.custom.course;
 
+import com.mnnyang.gzuclassschedule.utils.LogUtil;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -160,6 +162,8 @@ public class CourseAncestor implements Serializable {
     }
 
     public boolean shouldShow(int index) {
+        LogUtil.e(this, "index:" + index);
+        LogUtil.e(this, "indexs:" + showIndexes);
         return showIndexes.contains(index);
     }
 

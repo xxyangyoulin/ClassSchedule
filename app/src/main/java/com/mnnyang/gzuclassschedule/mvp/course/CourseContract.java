@@ -27,7 +27,6 @@ public interface CourseContract {
         void setBackground(Bitmap background);
         void setCourseData(List<CourseV2> courses);
         void updateCoursePreference();
-        void updateOtherPreference();
     }
 
 

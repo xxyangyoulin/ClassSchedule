@@ -3,9 +3,11 @@ package com.mnnyang.gzuclassschedule.mvp.mg;
 import com.mnnyang.gzuclassschedule.BasePresenter;
 import com.mnnyang.gzuclassschedule.BaseView;
 import com.mnnyang.gzuclassschedule.data.bean.CsItem;
+import com.mnnyang.gzuclassschedule.data.beanv2.CourseGroup;
 import com.mnnyang.gzuclassschedule.utils.DialogHelper;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by mnnyang on 17-11-4.
@@ -13,15 +15,15 @@ import java.util.ArrayList;
 
 public interface MgContract {
     interface Presenter extends BasePresenter {
-        void deleteCsName(int csNameId, DialogHelper dh);
-        void switchCsName(int csNameId);
+        void deleteCsName(long csNameId, DialogHelper dh);
+        void switchCsName(long csNameId);
         void reloadCsNameList();
         void addCsName(String csName);
-        void editCsName(int id, String newCsName);
+        void editCsName(long id, String newCsName);
     }
 
     interface View extends BaseView<Presenter> {
-        void showList(ArrayList<CsItem> csNames);
+        void showList();
         void showNotice(String notice);
         void gotoCourseActivity();
         void deleteFinish();
@@ -29,7 +31,4 @@ public interface MgContract {
         void editCsNameSucceed();
     }
 
-    interface Model{
-        ArrayList<CsItem> getCsItemData();
-    }
 }

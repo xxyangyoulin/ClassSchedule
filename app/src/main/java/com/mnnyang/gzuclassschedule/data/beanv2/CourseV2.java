@@ -50,12 +50,9 @@ public class CourseV2 extends CourseAncestor {
     public CourseV2() {
     }
 
-    public void init() {
+    public CourseV2 init() {
         setRow(getCouWeek());
-        //setStartIndex(getStartWeek());
-        //setEndIndex(getEndWeek());
-        //setShowType(getWeekType());
-
+        getShowIndexes().clear();
         try {
             String[] split = couAllWeek.split(",");
             for (String s : split) {
@@ -77,6 +74,9 @@ public class CourseV2 extends CourseAncestor {
         } else {
             setText(getCouName() + "\n@" + getCouLocation());
         }
+
+        LogUtil.e(this,"init--"+super.showIndexes);
+        return this;
     }
 
     public Long getCouId() {
@@ -147,6 +147,7 @@ public class CourseV2 extends CourseAncestor {
     }
 
     public CourseV2 setCouAllWeek(String couAllWeek) {
+        System.out.println(this.hashCode()+"被更改："+couAllWeek);
         this.couAllWeek = couAllWeek;
         return this;
     }
@@ -183,5 +184,9 @@ public class CourseV2 extends CourseAncestor {
                 ", couColor=" + couColor +
                 ", couCgId=" + couCgId +
                 '}';
+    }
+
+    public String toSuperString() {
+        return super.toString();
     }
 }
