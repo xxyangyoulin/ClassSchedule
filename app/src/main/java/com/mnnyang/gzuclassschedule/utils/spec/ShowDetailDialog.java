@@ -118,7 +118,7 @@ public class ShowDetailDialog {
             nodeInfo = new StringBuilder(String.valueOf(course.getCouStartNode()));
         }
         for (int i = 1; i < course.getCouNodeCount(); i++) {
-            nodeInfo.append("-").append(course.getShowIndexes().get(i));
+            nodeInfo.append("-").append(course.getShowIndexes().get(i-1));
         }
         nodeInfo.append("节");
         return nodeInfo;

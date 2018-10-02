@@ -1,13 +1,14 @@
 package com.mnnyang.gzuclassschedule.utils.spec;
 
-import android.util.Log;
-
+import android.support.annotation.NonNull;
 
 import com.mnnyang.gzuclassschedule.app.Constant;
 import com.mnnyang.gzuclassschedule.app.Url;
+import com.mnnyang.gzuclassschedule.custom.course.CourseAncestor;
+import com.mnnyang.gzuclassschedule.custom.util.Utils;
 import com.mnnyang.gzuclassschedule.data.bean.Course;
 import com.mnnyang.gzuclassschedule.data.bean.CourseTime;
-import com.mnnyang.gzuclassschedule.data.db.CoursesPsc;
+import com.mnnyang.gzuclassschedule.data.beanv2.CourseV2;
 import com.mnnyang.gzuclassschedule.utils.LogUtil;
 
 import org.jsoup.nodes.Document;
@@ -22,6 +23,8 @@ import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+//import com.mnnyang.gzuclassschedule.data.bean.Course;
 
 /**
  * GZU课程解析
@@ -41,9 +44,9 @@ public class ParseCourse {
         Elements inputs = doc.getElementsByAttributeValue("name", Url.__VIEWSTATE);
         if (inputs.size() > 0) {
             code = inputs.get(0).attr("value");
-            LogUtil.d(CoursesPsc.class, "finded __VIEWSTATE code=" + code);
+            System.out.println("finded __VIEWSTATE code=" + code);
         } else {
-            LogUtil.d(CoursesPsc.class, "Not find __VIEWSTATE code");
+            System.out.println("Not find __VIEWSTATE code");
         }
 
         return code;
@@ -92,14 +95,14 @@ public class ParseCourse {
      * @param html
      * @return 解析失败返回空
      */
-    public static ArrayList<Course> parse(String html) {
+    public static ArrayList<CourseV2> parse(String html) {
 
         Document doc = org.jsoup.Jsoup.parse(html);
 
         Element table1 = doc.getElementById("Table1");
         Elements trs = table1.getElementsByTag("tr");
 
-        ArrayList<Course> courses = new ArrayList<>();
+        ArrayList<CourseV2> courses = new ArrayList<>();
 
         int node = 0;
         for (Element tr : trs) {
@@ -130,7 +133,54 @@ public class ParseCourse {
             }
         }
 
-        return courses;
+        return mergeSameClass(courses);
+    }
+
+    /**
+     * 合并同一门课
+     */
+    private static ArrayList<CourseV2> mergeSameClass(ArrayList<CourseV2> courses) throws NumberFormatException {
+        ArrayList<CourseV2> result = new ArrayList<>();
+        int i = 0;
+        for (CourseV2 cours : courses) {
+            boolean find = false;
+            for (CourseV2 courseV2 : result) {
+                //同一门课
+                if (cours.isSameClass(courseV2)) {
+                    find = true;
+                    String oneAllWeek = courseV2.getCouAllWeek();
+                    String twoAllWeek = cours.getCouAllWeek();
+                    if (oneAllWeek.length() > 0 && twoAllWeek.length() > 0) {
+                        if (Integer.decode(oneAllWeek.substring(0, 1))
+                                < Integer.decode(twoAllWeek.substring(0, 1))) {
+                            courseV2.setCouAllWeek(oneAllWeek + "," + twoAllWeek);
+                        } else {
+                            courseV2.setCouAllWeek(twoAllWeek + "," + oneAllWeek);
+                        }
+                    } else if (twoAllWeek.length() > 0) {
+                        courseV2.setCouAllWeek(twoAllWeek);
+                    }
+                }
+            }
+
+            if (!find) {
+                result.add(cours);
+            }
+        }
+
+        for (int i1 = 0; i1 < result.size(); i1++) {
+            CourseV2 left = result.get(i1);
+            if (left.getCouColor() == null) {
+                int color = Utils.getRandomColor(i1);
+                left.setCouColor(color);
+                for (CourseV2 courseV2 : result) {
+                    if(courseV2.isSameClassWithoutLocation(left)){
+                        courseV2.setCouColor(color);
+                    }
+                }
+            }
+        }
+        return result;
     }
 
     public static void main(String[] args) {
@@ -301,10 +351,10 @@ public class ParseCourse {
                 "    </tbody>\n" +
                 "</table>";
 
-        final ArrayList<Course> courses = ParseCourse.parse(s);
-
-        for (Course course : courses) {
-            System.out.println("TEST"+course.toSelfString());
+        ArrayList<CourseV2> courses = ParseCourse.parse(s);
+        courses = mergeSameClass(courses);
+        for (CourseV2 course : courses) {
+            System.out.println("TEST  " + course.getCouName() + "--" + course.getCouColor());
         }
     }
 
@@ -331,45 +381,57 @@ public class ParseCourse {
         }
     }
 
-    private static ArrayList<Course> parseTextInfo(String source, int node) {
+    private static ArrayList<CourseV2> parseTextInfo(String source, int node) {
 
-        System.out.println("---->"+source+"]]]");
+        System.out.println("---->" + source + "");
 
-        ArrayList<Course> courses = new ArrayList<>();
+        ArrayList<CourseV2> courses = new ArrayList<>();
         String[] split = source.split(" ");
         if (split.length / 4 > 0 && split.length % 4 == 0) {
             for (int i = 0; i < split.length / 4; i++) {
-                Course course = new Course();
+                CourseV2 course = new CourseV2();
                 courses.add(course);
 
-                course.setSource(source);
-                course.setName(split[i * 4]);
+                //course.setSource(source);
+                //course.setName(split[i * 4]);
+                course.setCouName(split[i * 4]);
                 String time = split[1 + i * 4];
                 parseTime(course, time, node);
-                course.setTeacher(split[2 + i * 4]);
-                course.setClassRoom(split[3 + i * 4]);
+                //course.setTeacher(split[2 + i * 4]);
+                //course.setClassRoom(split[3 + i * 4]);
+                course.setCouTeacher(split[2 + i * 4]);
+                course.setCouLocation(split[3 + i * 4]);
+            }
+
+        } else if (split.length / 5 > 0 && split.length % 5 == 0) {
+            for (int i = 0; i < split.length / 5; i++) {
+                CourseV2 course = new CourseV2();
+                courses.add(course);
+
+                course.setCouName(split[i * 5]);
+                String time = split[2 + i * 5];
+                parseTime(course, time, node);
+
+                course.setCouTeacher(split[3 + i * 5]);
+                course.setCouLocation(split[4 + i * 5]);
             }
 
         } else if (split.length > 2) {
-            Course course = new Course();
+            CourseV2 course = new CourseV2();
             courses.add(course);
 
-            course.setSource(source);
-            course.setName(split[0]);
+            //course.setSource(source);
+            //course.setName(split[0]);
+            course.setCouName(split[0]);
             String time = split[1];
             parseTime(course, time, node);
-            course.setTeacher(split[2]);
+            course.setCouTeacher(split[2]);
             if (split.length > 3) {
-                course.setClassRoom(split[3]);
+                course.setCouLocation(split[3]);
             }
         } else {
             //TODO other type
-            Course course = new Course();
-            courses.add(course);
-            course.setSource(source);
-            course.setName(source);
-
-            //Log.e("ParseCourse", "parseTextInfo omit:" + source);
+            LogUtil.e("ParseCourse", "解析爆炸:" + source);
         }
 
         return courses;
@@ -381,19 +443,20 @@ public class ParseCourse {
      * <p>
      * TODO 周一第1,2节{第1-15周|2节/周} //次格式未解决 数据不足
      */
-    private static void parseTime(Course course, String time, int htmlNode) {
+    private static void parseTime(CourseV2 course, String time, int htmlNode) {
         //week
         if (time.charAt(0) == '周') {
             String weekStr = time.substring(0, 2);
             int week = getIntWeek(weekStr);
-            course.setWeek(week);
+            course.setCouWeek(week);
         }
 
         //单双周
         if (time.contains("|单周")) {
-            course.setWeekType(Course.SHOW_SINGLE);
+            course.setShowType(Course.SHOW_SINGLE);
         } else if (time.contains("|双周")) {
-            course.setWeekType(Course.SHOW_DOUBLE);
+            course.setShowType(Course.SHOW_DOUBLE);
+
         }
 
         //节数
@@ -402,16 +465,21 @@ public class ParseCourse {
         if (matcher.find()) {
             String nodeInfo = matcher.group(0);
             String[] nodes = nodeInfo.substring(1, nodeInfo.length() - 1).split(",");
-          /*  for (String node : nodes) {
-                System.out.print(node);
-            }*/
 
-            course.setNodes(nodes);
+            //course.setNodes(nodes);
+            int[] intNodes = getIntNodes(nodes);
+            if (intNodes.length > 0) {
+                course.setCouStartNode(intNodes[0]);
+                course.setCouNodeCount(intNodes.length);
+            }
         } else if (htmlNode != 0) {
-            course.addNode(htmlNode);
+            //course.addNode(htmlNode);
+            course.setCouStartNode(htmlNode).setCouNodeCount(1);
+            System.out.println("use htmlNode");
         } else {
             //周一第1,2节{第1-15周|2节/周}
             //TODO 上传无法解析的数据
+            System.out.println("无法解析的时间：" + time);
         }
 
         //周数
@@ -425,13 +493,43 @@ public class ParseCourse {
 
             if (weeks.length > 0) {
                 int startWeek = Integer.decode(weeks[0]);
-                course.setStartWeek(startWeek);
+                //course.setStartWeek(startWeek);
+                course.setStartIndex(startWeek);
             }
             if (weeks.length > 1) {
                 int endWeek = Integer.decode(weeks[1]);
-                course.setEndWeek(endWeek);
+                //course.setEndWeek(endWeek);
+                course.setEndIndex(endWeek);
+            }
+
+            String allWeek = getStringTypeOfAllWeek(course);
+
+            course.setCouAllWeek(allWeek);
+        }
+    }
+
+    @NonNull
+    private static String getStringTypeOfAllWeek(CourseV2 course) {
+        StringBuilder builder = new StringBuilder();
+        for (int i = course.getStartIndex(); i <= course.getEndIndex(); i++) {
+            if (course.getShowType() == CourseAncestor.SHOW_SINGLE) {
+                if (i % 2 == 1) {
+                    builder.append(i).append(",");
+                }
+            } else if (course.getShowType() == CourseAncestor.SHOW_DOUBLE) {
+                if (i % 2 == 0) {
+                    builder.append(i).append(",");
+                }
+            } else if (course.getShowType() == CourseAncestor.SHOW_ALL) {
+                builder.append(i).append(",");
             }
         }
+
+        String allWeek = builder.toString();
+        if (allWeek.length() > 0) {
+            allWeek = allWeek.substring(0, allWeek.length() - 1);
+        }
+        return allWeek;
     }
 
     /**
@@ -452,6 +550,25 @@ public class ParseCourse {
                 return true;
         }
         return false;
+    }
 
+    /**
+     * 设置课程节数
+     * *必须升序排列 例如:3 4 节课
+     * *错位部分将会被抛弃 例如:2 4节课程将会抛弃4
+     */
+    public static int[] getIntNodes(String[] nodes) {
+        int intNodes[] = new int[nodes.length];
+
+        try {
+            for (int i = 0; i < nodes.length; i++) {
+                intNodes[i] = Integer.decode(nodes[i]);
+            }
+            return intNodes;
+        } catch (Exception e) {
+            System.out.println("setNodes(String[] nodes) Integer.decode(nodes[i]); err");
+            e.printStackTrace();
+        }
+        return intNodes;
     }
 }

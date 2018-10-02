@@ -18,8 +18,8 @@ import java.util.List;
  */
 
 public class MgPresenter implements MgContract.Presenter {
-    MgContract.View mView;
-    List<CourseGroup> mCsItems;
+    private MgContract.View mView;
+    private List<CourseGroup> mCsItems;
 
     public MgPresenter(MgContract.View view, List<CourseGroup> csItems) {
         mView = view;
@@ -87,7 +87,7 @@ public class MgPresenter implements MgContract.Presenter {
     }
 
     @Override
-    public void deleteCsName(final long csNameId, final DialogHelper dh) {
+    public void deleteCsName(final long csNameId) {
         CourseGroupDao groupDao = Cache.instance().getCourseGroupDao();
         groupDao.deleteByKey(csNameId);
         if (mView == null) {

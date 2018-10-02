@@ -15,7 +15,7 @@ import java.util.List;
 
 public interface MgContract {
     interface Presenter extends BasePresenter {
-        void deleteCsName(long csNameId, DialogHelper dh);
+        void deleteCsName(long csNameId);
         void switchCsName(long csNameId);
         void reloadCsNameList();
         void addCsName(String csName);

@@ -3,10 +3,14 @@ package com.mnnyang.gzuclassschedule.mvp.impt;
 import android.graphics.Bitmap;
 
 import com.mnnyang.gzuclassschedule.R;
+import com.mnnyang.gzuclassschedule.app.Cache;
 import com.mnnyang.gzuclassschedule.app.app;
-import com.mnnyang.gzuclassschedule.data.bean.Course;
 import com.mnnyang.gzuclassschedule.data.bean.CourseTime;
+import com.mnnyang.gzuclassschedule.data.beanv2.CourseGroup;
+import com.mnnyang.gzuclassschedule.data.beanv2.CourseV2;
 import com.mnnyang.gzuclassschedule.data.db.CourseDbDao;
+import com.mnnyang.gzuclassschedule.data.greendao.CourseGroupDao;
+import com.mnnyang.gzuclassschedule.data.greendao.CourseV2Dao;
 import com.mnnyang.gzuclassschedule.data.http.HttpCallback;
 import com.mnnyang.gzuclassschedule.data.http.HttpUtils;
 import com.mnnyang.gzuclassschedule.utils.LogUtil;
@@ -32,7 +36,6 @@ import io.reactivex.schedulers.Schedulers;
 public class ImptPresenter implements ImptContract.Presenter {
 
     private ImptContract.View mImptView;
-    private ImptContract.Model mModel;
     private String mSchoolUrl;
 
     private String xh;
@@ -45,7 +48,6 @@ public class ImptPresenter implements ImptContract.Presenter {
         mImptView.setPresenter(this);
 
         mSchoolUrl = schoolUrl;
-        mModel = new ImptModel();
     }
 
     @Override
@@ -67,7 +69,7 @@ public class ImptPresenter implements ImptContract.Presenter {
         HttpUtils.newInstance().toImpt(mSchoolUrl, xh, year, term, new HttpCallback<String>() {
             @Override
             public void onSuccess(String s) {
-                if(mImptView == null){
+                if (mImptView == null) {
                     //view被销毁
                     return;
                 }
@@ -76,7 +78,7 @@ public class ImptPresenter implements ImptContract.Presenter {
 
             @Override
             public void onFail(String errMsg) {
-                if(mImptView == null){
+                if (mImptView == null) {
                     //view被销毁
                     return;
                 }
@@ -103,7 +105,7 @@ public class ImptPresenter implements ImptContract.Presenter {
 
                     @Override
                     public void onSuccess(String s) {
-                        if(mImptView == null){
+                        if (mImptView == null) {
                             //view被销毁
                             return;
                         }
@@ -115,7 +117,7 @@ public class ImptPresenter implements ImptContract.Presenter {
 
                     @Override
                     public void onFail(String errMsg) {
-                        if(mImptView == null){
+                        if (mImptView == null) {
                             //view被销毁
                             return;
                         }
@@ -143,15 +145,34 @@ public class ImptPresenter implements ImptContract.Presenter {
             Observable.create(new ObservableOnSubscribe<String>() {
                 @Override
                 public void subscribe(ObservableEmitter<String> emitter) throws Exception {
-                    final ArrayList<Course> courses = ParseCourse.parse(html);
-
+                    //final ArrayList<Course> courses = ParseCourse.parse(html);
+                    ArrayList<CourseV2> courseV2s = ParseCourse.parse(html);
+                    for (CourseV2 cours : courseV2s) {
+                        System.out.println("TEST IMP  " + cours.getCouName()+"--"+cours.getCouColor());
+                    }
                     //删除旧数据
-                    CourseDbDao.instance().removeByCsName(courseTimeTerm);
+                    //CourseDbDao.instance().removeByCsName(courseTimeTerm);
+                    CourseGroup group = Cache.instance().getCourseGroupDao()
+                            .queryBuilder()
+                            .where(CourseGroupDao.Properties.CgName.eq(courseTimeTerm))
+                            .unique();
 
-                    //添加新数据
-                    for (Course c : courses) {
-                        c.setCsName(courseTimeTerm);
-                        CourseDbDao.instance().addCourse(c);
+                    CourseV2Dao courseV2Dao = Cache.instance().getCourseV2Dao();
+                    if (null != group) {
+                        courseV2Dao
+                                .queryBuilder()
+                                .where(CourseV2Dao.Properties.CouCgId.eq(group.getCgId()))
+                                .buildDelete()
+                                .executeDeleteWithoutDetachingEntities();
+                    } else {
+                        group = new CourseGroup();
+                        group.setCgName(courseTimeTerm);
+                        Cache.instance().getCourseGroupDao().insert(group);
+                    }
+
+                    for (CourseV2 courseV2 : courseV2s) {
+                        courseV2.setCouCgId(group.getCgId());
+                        courseV2Dao.insert(courseV2);
                     }
 
                     emitter.onNext("导入成功");
@@ -167,13 +188,13 @@ public class ImptPresenter implements ImptContract.Presenter {
 
                         @Override
                         public void onNext(String s) {
-                            if(mImptView == null){
+                            if (mImptView == null) {
                                 //view被销毁
                                 return;
                             }
                             LogUtil.i(this, "导入成功:" + courseTimeTerm);
 
-                            Preferences.putInt(app.mContext.getString(
+                            Preferences.putLong(app.mContext.getString(
                                     R.string.app_preference_current_cs_name_id),
                                     CourseDbDao.instance().getCsNameId(courseTimeTerm));
 
@@ -183,10 +204,11 @@ public class ImptPresenter implements ImptContract.Presenter {
 
                         @Override
                         public void onError(Throwable e) {
-                            if(mImptView == null){
+                            if (mImptView == null) {
                                 //view被销毁
                                 return;
                             }
+                            e.printStackTrace();
                             mImptView.hideImpting();
                             mImptView.showErrToast("插入数据库失败", true);
                         }
@@ -204,7 +226,7 @@ public class ImptPresenter implements ImptContract.Presenter {
 
 
     private boolean verify(String xh, String pwd, String captcha) {
-        if(mImptView == null){
+        if (mImptView == null) {
             //view被销毁
             return false;
         }
@@ -242,7 +264,7 @@ public class ImptPresenter implements ImptContract.Presenter {
                 new HttpCallback<Bitmap>() {
                     @Override
                     public void onSuccess(Bitmap bitmap) {
-                        if(mImptView == null){
+                        if (mImptView == null) {
                             //view被销毁
                             return;
                         }
@@ -253,7 +275,7 @@ public class ImptPresenter implements ImptContract.Presenter {
 
                     @Override
                     public void onFail(String errMsg) {
-                        if(mImptView == null){
+                        if (mImptView == null) {
                             //view被销毁
                             return;
                         }

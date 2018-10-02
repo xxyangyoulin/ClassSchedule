@@ -102,6 +102,11 @@ public class CoursePresenter implements CourseContract.Presenter {
                         .queryBuilder()
                         .where(CourseV2Dao.Properties.CouCgId.eq(csNameId))
                         .list();
+
+                for (CourseV2 cours : courses) {
+                    System.out.println("TEST  " + cours.getCouName()+"--"+cours.getCouColor());
+                }
+
                 emitter.onNext(courses);
                 emitter.onComplete();
             }

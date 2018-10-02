@@ -18,6 +18,7 @@ import com.mnnyang.gzuclassschedule.app.Url;
 import com.mnnyang.gzuclassschedule.mvp.impt.ImptActivity;
 import com.mnnyang.gzuclassschedule.utils.DialogHelper;
 import com.mnnyang.gzuclassschedule.utils.DialogListener;
+import com.mnnyang.gzuclassschedule.utils.Preferences;
 
 /**
  * Created by xxyangyoulin on 2018/4/9.
@@ -61,7 +62,8 @@ public class SchoolActivity extends BaseActivity implements SchoolContract.View,
                 R.layout.layout_input_course_table_name, null);
 
         final EditText editText = view.findViewById(R.id.et_course_table_name);
-
+        String schoolUrl = Preferences.getString(getString(R.string.app_preference_url_school), "");
+        editText.setText(schoolUrl);
         mDialogHelper.showCustomDialog(this, view,
                 getString(R.string.please_input_school_url), new DialogListener() {
                     @Override
@@ -77,6 +79,7 @@ public class SchoolActivity extends BaseActivity implements SchoolContract.View,
                         if (!schoolUrl.startsWith("http")) {
                             schoolUrl = "http://" + schoolUrl;
                         }
+                        Preferences.putString(getString(R.string.app_preference_url_school), schoolUrl);
                         mPresenter.testUrl(schoolUrl);
                     }
 
@@ -105,7 +108,7 @@ public class SchoolActivity extends BaseActivity implements SchoolContract.View,
 
     @Override
     public void testUrlFailed(String url) {
-        showNotice("目前网络无法访问:" + url+"\n");
+        showNotice("目前网络无法访问:" + url + "\n");
     }
 
     @Override

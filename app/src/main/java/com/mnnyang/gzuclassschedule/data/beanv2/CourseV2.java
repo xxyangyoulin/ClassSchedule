@@ -52,7 +52,13 @@ public class CourseV2 extends CourseAncestor {
 
     public CourseV2 init() {
         setRow(getCouWeek());
+
+        if (getCouColor() != null) {
+            setColor(getCouColor());
+        }
+
         getShowIndexes().clear();
+
         try {
             String[] split = couAllWeek.split(",");
             for (String s : split) {
@@ -75,8 +81,48 @@ public class CourseV2 extends CourseAncestor {
             setText(getCouName() + "\n@" + getCouLocation());
         }
 
-        LogUtil.e(this,"init--"+super.showIndexes);
         return this;
+    }
+
+    /**
+     * name teacher location 相等判为同一门课
+     */
+    public boolean isSameClass(CourseV2 other) {
+        if (other == null) {
+            return false;
+        }
+
+        if (other.getCouName() == null || this.getCouName() == null) {
+            return false;
+        }
+
+        if (other.getCouName().equals(this.getCouName())) {
+            if ((other.getCouTeacher() == null && this.getCouTeacher() == null)
+                    || (other.getCouTeacher().equals(this.getCouTeacher()))) {
+                return (other.getCouLocation() == null && this.getCouLocation() == null)
+                        || (other.getCouLocation().equals(this.getCouLocation()));
+            }
+        }
+        return false;
+    }
+
+    /**
+     * name teacher 相等判为同一门课
+     */
+    public boolean isSameClassWithoutLocation(CourseV2 other) {
+        if (other == null) {
+            return false;
+        }
+
+        if (other.getCouName() == null || this.getCouName() == null) {
+            return false;
+        }
+
+        if (other.getCouName().equals(this.getCouName())) {
+            return (other.getCouTeacher() == null && this.getCouTeacher() == null)
+                    || (other.getCouTeacher().equals(this.getCouTeacher()));
+        }
+        return false;
     }
 
     public Long getCouId() {
@@ -147,7 +193,6 @@ public class CourseV2 extends CourseAncestor {
     }
 
     public CourseV2 setCouAllWeek(String couAllWeek) {
-        System.out.println(this.hashCode()+"被更改："+couAllWeek);
         this.couAllWeek = couAllWeek;
         return this;
     }

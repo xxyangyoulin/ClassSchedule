@@ -63,9 +63,6 @@ public class MgActivity extends BaseActivity implements MgContract.View, View.On
         recyclerView.setLayoutManager(new LinearLayoutManager(getBaseContext()));
         mAdapter = new MgAdapter(R.layout.layout_item_cs, csItems);
 
-        //mAdapter.setFooter(LayoutInflater.from(this).inflate(
-        //        R.layout.layout_no_more, recyclerView, false));
-
         recyclerView.setAdapter(mAdapter);
 
         recyclerView.addItemDecoration(new DividerItemDecoration(
@@ -76,7 +73,6 @@ public class MgActivity extends BaseActivity implements MgContract.View, View.On
 
             @Override
             public void onEditClick(View view, Long csNameId, RecyclerBaseAdapter.ViewHolder holder) {
-                toast(csNameId + "");
                 editDialog(csNameId);
             }
 
@@ -137,9 +133,6 @@ public class MgActivity extends BaseActivity implements MgContract.View, View.On
     }
 
     private void deleteDialog(final long id) {
-       /* String currentScheduleName = Preferences.getString(
-                getString(R.string.app_preference_current_sd_name),
-                getString(R.string.default_course_name));*/
         long csNameId = Preferences.getLong(
                 getString(R.string.app_preference_current_cs_name_id), 0);
 
@@ -161,11 +154,7 @@ public class MgActivity extends BaseActivity implements MgContract.View, View.On
     }
 
     private void deletingDialog(long id) {
-        DialogHelper dh = new DialogHelper();
-        dh.showProgressDialog(this, getString(R.string.deleting),
-                getString(R.string.please_wait_a_moment), false);
-
-        mPresenter.deleteCsName(id, dh);
+        mPresenter.deleteCsName(id);
     }
 
     private void switchDialog(final long tag) {

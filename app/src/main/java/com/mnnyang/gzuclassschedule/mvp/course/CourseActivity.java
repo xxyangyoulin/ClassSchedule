@@ -123,7 +123,7 @@ public class CourseActivity extends BaseActivity implements CourseContract.View,
                 RecyclerView.HORIZONTAL, false));
         ArrayList<String> strings = new ArrayList<>();
         for (int i = 1; i <= 25; i++) {
-            strings.add("第" + i + "节");
+            strings.add("第" + i + "周");
         }
         SelectWeekAdapter selectWeekAdapter = new SelectWeekAdapter(R.layout.adapter_select_week, strings);
         mRvSelectWeek.setAdapter(selectWeekAdapter);
@@ -413,7 +413,7 @@ public class CourseActivity extends BaseActivity implements CourseContract.View,
 
             LogUtil.e(this, course.toString());
             if (course.getColor() == -1) {
-                course.setColor(Utils.getRandomColor(i++));
+                //course.setColor(Utils.getRandomColor(i++));
             }
             mCourseViewV2.addCourse(course);
         }
