@@ -1,6 +1,7 @@
 package com.mnnyang.gzuclassschedule.mvp.home;
 
 import android.Manifest;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
@@ -21,10 +22,13 @@ import com.mnnyang.gzuclassschedule.R;
 import com.mnnyang.gzuclassschedule.app.AppUtils;
 import com.mnnyang.gzuclassschedule.app.Cache;
 import com.mnnyang.gzuclassschedule.data.beanv2.UserWrapper;
+import com.mnnyang.gzuclassschedule.mvp.add.AddActivity;
 import com.mnnyang.gzuclassschedule.mvp.login.SignActivity;
 import com.mnnyang.gzuclassschedule.mvp.mg.MgActivity;
+import com.mnnyang.gzuclassschedule.mvp.school.SchoolActivity;
 import com.mnnyang.gzuclassschedule.mvp.setting.SettingActivity;
 import com.mnnyang.gzuclassschedule.utils.DialogHelper;
+import com.mnnyang.gzuclassschedule.utils.DialogListener;
 import com.mnnyang.gzuclassschedule.utils.RequestPermission;
 import com.mnnyang.gzuclassschedule.utils.ScreenUtils;
 import com.mnnyang.gzuclassschedule.utils.event.SignEvent;
@@ -55,6 +59,7 @@ public class HomeFragment extends BaseFragment implements HomeContract.View,
     private View mLayoutSetting;
     private View mLayoutCourseMg;
     private TextView mTvUsername;
+    private View mViewAdd;
 
     @Override
     public boolean isActive() {
@@ -81,6 +86,7 @@ public class HomeFragment extends BaseFragment implements HomeContract.View,
     public void initView() {
         mToolbar = mRootView.findViewById(R.id.toolbar);
         mTvUsername = mRootView.findViewById(R.id.tv_username);
+        mViewAdd = mRootView.findViewById(R.id.layout_add);
         mViewShare = mRootView.findViewById(R.id.layout_share);
         mLayoutSetting = mRootView.findViewById(R.id.layout_setting);
         mLayoutCourseMg = mRootView.findViewById(R.id.layout_course_mg);
@@ -106,6 +112,7 @@ public class HomeFragment extends BaseFragment implements HomeContract.View,
 
     @Override
     public void initListener() {
+        mViewAdd.setOnClickListener(this);
         mViewShare.setOnClickListener(this);
         mLayoutOverwriteLocal.setOnClickListener(this);
         mLayoutUpload.setOnClickListener(this);
@@ -116,9 +123,13 @@ public class HomeFragment extends BaseFragment implements HomeContract.View,
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
+            case R.id.layout_add:
+                addSelectDialog();
+                break;
             case R.id.layout_share:
                 showShareDialog();
                 break;
+
             case R.id.layout_overwrite_local:
                 mPresenter.downCourse();
                 break;
@@ -134,6 +145,34 @@ public class HomeFragment extends BaseFragment implements HomeContract.View,
             default:
                 break;
         }
+    }
+
+    private void addSelectDialog() {
+        DialogHelper helper = new DialogHelper();
+        String[] selectAddMenu = {"手动添加", "导入方正课表"};
+        helper.showListDialog(activity, null, selectAddMenu, new DialogListener() {
+            @Override
+            public void onItemClick(DialogInterface dialog, int which) {
+                switch (which) {
+                    case 0:
+                        userAdd();
+                        break;
+                    case 1:
+                        autoAdd();
+                        break;
+                    default:
+                        break;
+                }
+            }
+        });
+    }
+
+    private void autoAdd() {
+        startActivity(new Intent(activity, SchoolActivity.class));
+    }
+
+    private void userAdd() {
+        startActivity(new Intent(activity, AddActivity.class));
     }
 
     private void courseManage() {
@@ -239,6 +278,9 @@ public class HomeFragment extends BaseFragment implements HomeContract.View,
                 .into(mCivAvator);
     }
 
+    /**
+     * 二维码生成成功
+     */
     @Override
     public void createQRCodeSucceed(Bitmap bitmap) {
         if (!isActive()) {
@@ -251,7 +293,7 @@ public class HomeFragment extends BaseFragment implements HomeContract.View,
         ((ImageView) dialogView.findViewById(R.id.iv_qr_code)).setImageBitmap(bitmap);
 
         dialogHelper.showCustomDialog(Objects.requireNonNull(getContext()),
-                dialogView, null, ScreenUtils.dp2px(180), null);
+                dialogView, null, ScreenUtils.dp2px(220), null);
     }
 
     @Override
@@ -289,7 +331,7 @@ public class HomeFragment extends BaseFragment implements HomeContract.View,
             @Override
             public void onClick(View v) {
                 dialogHelper.hideCustomDialog();
-                mPresenter.createQRCode();
+                mPresenter.createQRCode(getResources());
 
             }
         });

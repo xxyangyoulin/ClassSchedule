@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AlertDialog;
+import android.text.TextUtils;
 import android.view.View;
 import android.view.Window;
 import android.widget.LinearLayout;
@@ -69,18 +70,20 @@ public class DialogHelper {
     /**
      * List对话框
      */
-    public void showListDialog(@NonNull Activity activity, @NonNull String title,
+    public void showListDialog(@NonNull Activity activity,  String title,
                                @NonNull String[] items, @NonNull final DialogListener listener) {
 
-        new AlertDialog.Builder(activity)
-                .setTitle(title)
-                .setItems(items, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        listener.onItemClick(dialog, which);
-                    }
-                })
-                .show();
+        AlertDialog.Builder builder = new AlertDialog.Builder(activity);
+
+        if (!TextUtils.isEmpty(title)) {
+            builder.setTitle(title);
+        }
+        builder.setItems(items, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                listener.onItemClick(dialog, which);
+            }
+        }).show();
     }
 
 

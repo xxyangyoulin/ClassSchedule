@@ -49,6 +49,8 @@ public class SignPresenter implements SignContact.Presenter {
                     } else {
                         mView.signInFailed(baseBean.getMsg());
                     }
+                }else {
+
                 }
             }
 

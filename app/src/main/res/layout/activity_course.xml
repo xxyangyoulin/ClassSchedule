@@ -20,10 +20,11 @@
         android:layout_height="40dp"
         android:orientation="horizontal" />
 
-
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:fadingEdge="none"
+        android:overScrollMode="never"
         android:scrollbarSize="0dp"
         android:scrollbars="none">
 
@@ -37,7 +38,6 @@
                 android:layout_width="28dp"
                 android:layout_height="match_parent"
                 android:orientation="vertical" />
-
 
             <com.mnnyang.gzuclassschedule.custom.course.CourseView
                 android:id="@+id/course_view_v2"

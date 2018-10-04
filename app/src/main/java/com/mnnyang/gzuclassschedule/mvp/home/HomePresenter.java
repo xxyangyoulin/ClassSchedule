@@ -1,18 +1,24 @@
 package com.mnnyang.gzuclassschedule.mvp.home;
 
 
+import android.content.res.Resources;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.support.annotation.NonNull;
 import android.text.TextUtils;
 
+import com.mnnyang.gzuclassschedule.R;
 import com.mnnyang.gzuclassschedule.app.Cache;
 import com.mnnyang.gzuclassschedule.data.bean.Course;
 import com.mnnyang.gzuclassschedule.data.bean.CsItem;
 import com.mnnyang.gzuclassschedule.data.bean.CsName;
 import com.mnnyang.gzuclassschedule.data.beanv2.BaseBean;
+import com.mnnyang.gzuclassschedule.data.beanv2.CourseGroup;
+import com.mnnyang.gzuclassschedule.data.beanv2.CourseV2;
 import com.mnnyang.gzuclassschedule.data.beanv2.DownCourseWrapper;
 import com.mnnyang.gzuclassschedule.data.beanv2.UserWrapper;
 import com.mnnyang.gzuclassschedule.data.db.CourseDbDao;
+import com.mnnyang.gzuclassschedule.data.greendao.CourseV2Dao;
 import com.mnnyang.gzuclassschedule.data.http.HttpCallback;
 import com.mnnyang.gzuclassschedule.data.http.MyHttpUtils;
 import com.mnnyang.gzuclassschedule.utils.LogUtil;
@@ -92,7 +98,7 @@ public class HomePresenter implements HomeContract.Presenter {
 
 
     @Override
-    public void createQRCode() {
+    public void createQRCode(final Resources resources) {
 
         mView.showLoading("正在努力生成二维码");
 
@@ -102,7 +108,7 @@ public class HomePresenter implements HomeContract.Presenter {
         Disposable subscribe = Observable.create(new ObservableOnSubscribe<Bitmap>() {
             @Override
             public void subscribe(ObservableEmitter<Bitmap> emitter) throws Exception {
-                Bitmap bitmap = new QRCode().makeQRCodeImage(encodeContent, width, width, null);
+                Bitmap bitmap = new QRCode().makeQRCodeImage(encodeContent, width, width, BitmapFactory.decodeResource(resources, R.mipmap.ic_launcher));
                 if (bitmap != null) {
                     emitter.onNext(bitmap);
                     emitter.onComplete();
@@ -150,8 +156,9 @@ public class HomePresenter implements HomeContract.Presenter {
         mView.showLoading("同步中");
 
         JSONObject result = buildJsonOfAllCourse();
-        System.out.println(result.toString());
         MyHttpUtils utils = new MyHttpUtils();
+        System.out.println("-------" + result.toString());
+
         utils.uploadCourse(result.toString(), new HttpCallback<BaseBean>() {
             @Override
             public void onSuccess(BaseBean baseBean) {
@@ -164,7 +171,6 @@ public class HomePresenter implements HomeContract.Presenter {
                 if (baseBean != null) {
                     if (baseBean.getCode() == 1) {
                         mView.showMassage("同步成功");
-                        //TODO 第一次上传的时候，如果成功，就废弃旧数据库的所有操作
 
                     } else {
                         mView.showMassage("同步失败：" + baseBean.getMsg());
@@ -188,7 +194,9 @@ public class HomePresenter implements HomeContract.Presenter {
 
     @NonNull
     private JSONObject buildJsonOfAllCourse() {
-        ArrayList<CsItem> csItems = CourseDbDao.instance().loadCsNameList();
+        List<CourseGroup> groups = Cache.instance().getCourseGroupDao()
+                .queryBuilder().list();
+        CourseV2Dao courseV2Dao = Cache.instance().getCourseV2Dao();
 
         JSONObject result = new JSONObject();
         JSONArray jsonArray = new JSONArray();
@@ -199,36 +207,33 @@ public class HomePresenter implements HomeContract.Presenter {
             e.printStackTrace();
         }
 
-        for (CsItem csItem : csItems) {
-            CsName csName = csItem.getCsName();
-            ArrayList<Course> courses = CourseDbDao.instance().loadCourses(csName.getName());
-            for (Course course : courses) {
+        for (CourseGroup group : groups) {
+            List<CourseV2> courseV2s = courseV2Dao.queryBuilder()
+                    .where(CourseV2Dao.Properties.CouCgId.eq(group.getCgId()))
+                    .list();
+
+            for (CourseV2 course : courseV2s) {
                 try {
                     JSONObject jsonItem = new JSONObject();
-                    jsonItem.put("name", course.getName());
-                    jsonItem.put("location", course.getClassRoom());
-                    jsonItem.put("week", course.getWeek());
-                    jsonItem.put("teacher", course.getTeacher());
-
-                    List<Integer> nodes = course.getNodes();
-                    if (!nodes.isEmpty()) {
-                        jsonItem.put("start_node", nodes.get(0));
-                        jsonItem.put("node_count", nodes.size());
-                    }
-
-                    jsonItem.put("start_week", course.getStartWeek());
-                    jsonItem.put("end_week", course.getEndWeek());
-                    jsonItem.put("week_type", course.getWeekType());
-                    jsonItem.put("cs_name", course.getCsName());
-                    jsonItem.put("color", course.getColor());
+                    jsonItem.put("id", course.getCouId());
+                    jsonItem.put("name", course.getCouName());
+                    jsonItem.put("location", course.getCouLocation() == null ? "" : course.getCouLocation());
+                    jsonItem.put("week", course.getCouWeek());
+                    jsonItem.put("teacher", course.getCouTeacher() == null ? "" : course.getCouTeacher());
+                    jsonItem.put("all_week", course.getCouAllWeek());
+                    jsonItem.put("start_node", course.getCouStartNode());
+                    jsonItem.put("node_count", course.getCouNodeCount());
+                    jsonItem.put("color", course.getCouColor()== null ?  "-1": course.getCouColor());
+                    jsonItem.put("group_name", group.getCgName());
 
                     jsonArray.put(jsonItem);
                 } catch (JSONException e) {
-                    LogUtil.e(this, "buildJsonOfAllCourse() failed--->" + course.toSelfString());
+                    LogUtil.e(this, "buildJsonOfAllCourse() failed--->" + course.toString());
                     e.printStackTrace();
                 }
             }
         }
+
         return result;
     }
 

@@ -13,12 +13,13 @@
         android:orientation="horizontal">
 
         <TextView
+            android:id="@+id/tv_month"
             android:layout_width="24dp"
             android:layout_height="match_parent"
             android:gravity="center"
             android:text="1\n月"
             android:textColor="@color/widget_title_text_color"
-            android:textSize="12sp" />
+            android:textSize="11sp" />
 
         <TextView
             android:layout_width="0dp"

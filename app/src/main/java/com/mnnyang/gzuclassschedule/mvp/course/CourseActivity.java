@@ -206,6 +206,7 @@ public class CourseActivity extends BaseActivity implements CourseContract.View,
             textView.setGravity(Gravity.CENTER);
 
             textView.setWidth(0);
+            textView.setTextColor(0xd0212121);
             LinearLayout.LayoutParams params = null;
 
             if (i == -1) {

@@ -15,6 +15,7 @@ import com.mnnyang.gzuclassschedule.app.Constant;
 import com.mnnyang.gzuclassschedule.mvp.course.CourseActivity;
 import com.mnnyang.gzuclassschedule.utils.LogUtil;
 import com.mnnyang.gzuclassschedule.utils.Preferences;
+import com.mnnyang.gzuclassschedule.utils.TimeUtils;
 
 public class MyWidget extends AppWidgetProvider {
 
@@ -56,6 +57,9 @@ public class MyWidget extends AppWidgetProvider {
 
         thisWidget = new ComponentName(context, MyWidget.class);
         remoteViews = new RemoteViews(context.getPackageName(), R.layout.widget_all);
+
+        int month = TimeUtils.getNowMonth();
+        remoteViews.setTextViewText(R.id.tv_month,month+"\n月");
 
         Intent intent = new Intent(context, UpdateService.class);
         intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId);

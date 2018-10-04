@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     package="com.mnnyang.gzuclassschedule">
 
     <uses-permission android:name="android.permission.INTERNET" />
@@ -8,14 +9,19 @@
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
 
+        <!--TODO allowBackup-->
     <application
         android:name=".app.app"
-        android:allowBackup="true"
+        android:allowBackup="false"
+        android:fullBackupContent="@xml/backup_descriptor"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/greenTheme">
+        android:networkSecurityConfig="@xml/network_security_config"
+        android:theme="@style/greenTheme"
+        tools:ignore="GoogleAppIndexingWarning"
+        tools:targetApi="n">
         <activity
             android:name=".mvp.course.CourseActivity"
             android:launchMode="singleTask">
@@ -27,15 +33,25 @@
         <activity android:name=".mvp.setting.SettingActivity">
 
         </activity>
-        <activity android:name=".mvp.impt.ImptActivity"></activity>
+        <activity android:name=".mvp.impt.ImptActivity">
+
+        </activity>
         <activity
             android:name=".mvp.add.AddActivity"
             android:windowSoftInputMode="stateHidden">
         </activity>
-        <activity android:name=".mvp.mg.MgActivity"></activity>
-        <activity android:name=".mvp.about.AboutActivity"></activity>
-        <activity android:name=".mvp.conf.ConfActivity"></activity>
-        <activity android:name=".mvp.school.SchoolActivity"></activity>
+        <activity android:name=".mvp.mg.MgActivity">
+
+        </activity>
+        <activity android:name=".mvp.about.AboutActivity">
+
+        </activity>
+        <activity android:name=".mvp.conf.ConfActivity">
+
+        </activity>
+        <activity android:name=".mvp.school.SchoolActivity">
+
+        </activity>
         <activity
             android:name=".mvp.home.HomeActivity"
             android:launchMode="singleTask"
@@ -70,6 +86,11 @@
             android:name=".widget.UpdateService"
             android:exported="false"
             android:permission="android.permission.BIND_REMOTEVIEWS" />
+
+        <service
+            android:name=".widget.UpdateJobService"
+            android:permission="android.permission.BIND_JOB_SERVICE" />
+
     </application>
 
 </manifest>

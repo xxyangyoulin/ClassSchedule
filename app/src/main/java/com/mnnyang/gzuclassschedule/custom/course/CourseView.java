@@ -12,7 +12,6 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.text.TextPaint;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.util.TypedValue;
 import android.view.MotionEvent;
 import android.view.View;
@@ -24,7 +23,6 @@ import android.widget.TextView;
 
 import com.mnnyang.gzuclassschedule.R;
 import com.mnnyang.gzuclassschedule.custom.util.Utils;
-import com.mnnyang.gzuclassschedule.utils.LogUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -147,8 +145,6 @@ public class CourseView extends FrameLayout {
     private void realAddCourseItemView(CourseAncestor course) {
         updateItemStatus(course);
 
-        LogUtil.e(this, "正式添加+" + course.getText() + "--" + getChildCount());
-
         View itemView = createItemView(course);
 
         LayoutParams params = new LayoutParams(mRowItemWidth,
@@ -173,7 +169,6 @@ public class CourseView extends FrameLayout {
     private void updateItemStatus(CourseAncestor course) {
         /*更新course的活跃状态*/
         course.setActiveStatus(course.shouldShow(mCurrentIndex));
-        LogUtil.e(this,"更新状态--》"+course.getText()+"--+"+course.getActiveStatus());
     }
 
     private void setItemViewBackground(CourseAncestor course, TextView tv) {
@@ -251,7 +246,6 @@ public class CourseView extends FrameLayout {
     @SuppressLint("ClickableViewAccessibility")
     @Override
     public boolean onTouchEvent(MotionEvent event) {
-        Log.d("COurseView", "onTouchEvent");
         switch (event.getAction()) {
             case MotionEvent.ACTION_DOWN:
                 return true; //TODO why?

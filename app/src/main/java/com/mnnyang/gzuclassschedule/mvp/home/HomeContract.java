@@ -1,5 +1,6 @@
 package com.mnnyang.gzuclassschedule.mvp.home;
 
+import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.support.annotation.NonNull;
 
@@ -14,7 +15,7 @@ public interface HomeContract {
     interface Presenter extends BasePresenter {
         void loadUserInfo();
 
-        void createQRCode();
+        void createQRCode(Resources resources);
 
         void showCourseGroup();
 

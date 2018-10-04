@@ -37,7 +37,7 @@
         android:id="@+id/layout_create_qr_code"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@drawable/ripple_dialog_color_2"
+        android:background="?attr/selectableItemBackground"
         android:clickable="true"
         android:focusable="true"
         android:gravity="center"
@@ -49,14 +49,14 @@
             android:layout_width="50dp"
             android:layout_height="50dp"
             android:src="@drawable/ic_svg_qcode"
-            android:tint="@color/white_f1" />
+            android:tint="@color/black" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="8dp"
             android:text="二维码分享"
-            android:textColor="@color/white_f1"
+            android:textColor="@color/black"
             android:textSize="@dimen/margin_24dp" />
     </LinearLayout>
 
