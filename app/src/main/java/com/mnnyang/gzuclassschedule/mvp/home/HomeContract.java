@@ -1,11 +1,11 @@
 package com.mnnyang.gzuclassschedule.mvp.home;
 
-import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.support.annotation.NonNull;
 
 import com.mnnyang.gzuclassschedule.BasePresenter;
 import com.mnnyang.gzuclassschedule.BaseView;
+import com.mnnyang.gzuclassschedule.data.beanv2.CourseGroup;
 import com.mnnyang.gzuclassschedule.data.beanv2.DownCourseWrapper;
 import com.mnnyang.gzuclassschedule.data.beanv2.UserWrapper;
 
@@ -15,9 +15,11 @@ public interface HomeContract {
     interface Presenter extends BasePresenter {
         void loadUserInfo();
 
-        void createQRCode(Resources resources);
-
         void showCourseGroup();
+
+        void createShare(long groupId, String groupName);
+
+        void downShare(String url);
 
         void uploadLocalCourse();
 
@@ -50,6 +52,8 @@ public interface HomeContract {
         void pleaseLoginIn();
 
         void updateShowAvator(@NonNull String email);
+
+        void showGroupDialog(List<CourseGroup> groups);
 
         void createQRCodeSucceed(Bitmap bitmap);
 

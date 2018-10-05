@@ -1,25 +1,28 @@
 package com.mnnyang.gzuclassschedule.mvp.home;
 
 
-import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.support.annotation.NonNull;
 import android.text.TextUtils;
 
 import com.mnnyang.gzuclassschedule.R;
+import com.mnnyang.gzuclassschedule.app.AppUtils;
 import com.mnnyang.gzuclassschedule.app.Cache;
+import com.mnnyang.gzuclassschedule.app.Url;
+import com.mnnyang.gzuclassschedule.app.app;
 import com.mnnyang.gzuclassschedule.data.beanv2.BaseBean;
 import com.mnnyang.gzuclassschedule.data.beanv2.CourseGroup;
 import com.mnnyang.gzuclassschedule.data.beanv2.CourseV2;
 import com.mnnyang.gzuclassschedule.data.beanv2.DownCourseWrapper;
+import com.mnnyang.gzuclassschedule.data.beanv2.ShareBean;
 import com.mnnyang.gzuclassschedule.data.beanv2.UserWrapper;
-import com.mnnyang.gzuclassschedule.data.db.CourseDbDao;
 import com.mnnyang.gzuclassschedule.data.greendao.CourseGroupDao;
 import com.mnnyang.gzuclassschedule.data.greendao.CourseV2Dao;
 import com.mnnyang.gzuclassschedule.data.http.HttpCallback;
 import com.mnnyang.gzuclassschedule.data.http.MyHttpUtils;
 import com.mnnyang.gzuclassschedule.utils.LogUtil;
+import com.mnnyang.gzuclassschedule.utils.Preferences;
 import com.mnnyang.gzuclassschedule.utils.ScreenUtils;
 import com.mnnyang.gzuclassschedule.utils.event.CourseDataChangeEvent;
 import com.mnnyang.gzuclassschedule.utils.spec.QRCode;
@@ -36,9 +39,10 @@ import java.util.Map;
 import io.reactivex.Observable;
 import io.reactivex.ObservableEmitter;
 import io.reactivex.ObservableOnSubscribe;
+import io.reactivex.Observer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
-import io.reactivex.functions.Consumer;
+import io.reactivex.functions.Function;
 import io.reactivex.schedulers.Schedulers;
 
 public class HomePresenter implements HomeContract.Presenter {
@@ -97,54 +101,199 @@ public class HomePresenter implements HomeContract.Presenter {
         });
     }
 
+    @Override
+    public void showCourseGroup() {
+        List<CourseGroup> groups = Cache.instance().getCourseGroupDao().loadAll();
+        if (groups == null || groups.isEmpty()) {
+            mView.showMassage("没有课程数据");
+            return;
+        }
+        mView.showGroupDialog(groups);
+    }
 
     @Override
-    public void createQRCode(final Resources resources) {
-
-        mView.showLoading("正在努力生成二维码");
-
-        final String encodeContent = "hello";
-        final int width = ScreenUtils.dp2px(150);
-
-        Disposable subscribe = Observable.create(new ObservableOnSubscribe<Bitmap>() {
+    public void createShare(final long groupId, final String groupName) {
+        mView.showLoading("建立分享中");
+        Observable.create(new ObservableOnSubscribe<ShareBean>() {
             @Override
-            public void subscribe(ObservableEmitter<Bitmap> emitter) throws Exception {
-                Bitmap bitmap = new QRCode().makeQRCodeImage(encodeContent, width, width, BitmapFactory.decodeResource(resources, R.mipmap.ic_launcher));
-                if (bitmap != null) {
-                    emitter.onNext(bitmap);
-                    emitter.onComplete();
+            public void subscribe(final ObservableEmitter<ShareBean> emitter) throws Exception {
+                List<CourseV2> list = Cache.instance().getCourseV2Dao()
+                        .queryBuilder()
+                        .where(CourseV2Dao.Properties.CouCgId.eq(groupId))
+                        .where(CourseV2Dao.Properties.CouDeleted.eq(false))
+                        .list();
+
+                if (list != null && !list.isEmpty()) {
+                    String json = buildJsonOfGroups(list, groupName);
+                    MyHttpUtils utils = new MyHttpUtils();
+                    utils.uploadShare(json, new HttpCallback<ShareBean>() {
+                        @Override
+                        public void onSuccess(ShareBean bean) {
+                            emitter.onNext(bean);
+                        }
+
+                        @Override
+                        public void onFail(String errMsg) {
+                            emitter.onError(new Exception(errMsg));
+                        }
+                    });
                 } else {
-                    emitter.onError(new Exception("生成二维码失败"));
+                    emitter.onError(new Exception("该课表没有课程"));
                 }
             }
-        }).subscribeOn(Schedulers.computation())
+
+        }).map(new Function<ShareBean, Bitmap>() {
+            @Override
+            public Bitmap apply(ShareBean bean) throws Exception {
+                if (bean == null || TextUtils.isEmpty(bean.getData())) {
+                    return null;
+                }
+                Bitmap logo = BitmapFactory.decodeResource(Cache.instance().getContext().getResources(),
+                        R.mipmap.ic_launcher);
+                final int width = ScreenUtils.dp2px(150);
+                String content = Url.URL_SHARE + "?id=" + bean.getData();
+
+                return new QRCode().makeQRCodeImage(content, width, width, logo);
+            }
+        }).subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Consumer<Bitmap>() {
+                .subscribe(new Observer<Bitmap>() {
                     @Override
-                    public void accept(Bitmap bitmap) throws Exception {
-                        if (mView == null) {
-                            //view被销毁
+                    public void onSubscribe(Disposable d) {
+
+                    }
+
+                    @Override
+                    public void onNext(Bitmap bitmap) {
+                        if (!mView.isActive()) {
                             return;
                         }
                         mView.stopLoading();
+                        if (bitmap == null) {
+                            mView.showMassage("分享失败！");
+                            return;
+                        }
                         mView.createQRCodeSucceed(bitmap);
                     }
-                }, new Consumer<Throwable>() {
+
                     @Override
-                    public void accept(Throwable throwable) throws Exception {
-                        if (mView == null) {
-                            //view被销毁
+                    public void onError(Throwable e) {
+                        if (!mView.isActive()) {
                             return;
                         }
                         mView.stopLoading();
-                        mView.createQRCodeFailed(throwable.getMessage());
+                        mView.showMassage(e.getMessage());
+                    }
+
+                    @Override
+                    public void onComplete() {
+
                     }
                 });
     }
 
     @Override
-    public void showCourseGroup() {
+    public void downShare(String url) {
+        if (TextUtils.isEmpty(url)) {
+            mView.showMassage("分享为空");
+            return;
+        }
 
+        mView.showLoading("导入中");
+        new MyHttpUtils().downShare(url, new HttpCallback<DownCourseWrapper>() {
+            @Override
+            public void onSuccess(DownCourseWrapper downCourseWrapper) {
+                if (mView == null) {//view被销毁
+                    return;
+                }
+                mView.stopLoading();
+                if (downCourseWrapper == null || downCourseWrapper.getData() == null) {
+                    mView.showMassage("导入数据为空");
+                    return;
+                }
+                long newGroupId = writeShare(downCourseWrapper.getData());
+                // 通知更新
+
+                // 切换到当前课表
+                Preferences.putLong(app.mContext.getString(
+                        R.string.app_preference_current_cs_name_id), newGroupId);
+                mView.showMassage("导入成功！");
+                EventBus.getDefault().post(new CourseDataChangeEvent());
+                mView.cloudToLocalSucceed();
+            }
+
+            @Override
+            public void onFail(String errMsg) {
+                if (mView == null) {//view被销毁
+                    return;
+                }
+                mView.stopLoading();
+                mView.showMassage(errMsg);
+            }
+        });
+
+    }
+
+    /**
+     * 分享写入本地
+     */
+    private long writeShare(List<DownCourseWrapper.DownCourse> data) {
+        CourseV2Dao courseV2Dao = Cache.instance().getCourseV2Dao();
+
+        CourseGroup group = new CourseGroup();
+        group.setCgName("来自热心网友分享" + AppUtils.createUUID().substring(0, 8));
+        long newGroupId = Cache.instance().getCourseGroupDao().insert(group);
+
+        for (DownCourseWrapper.DownCourse downCourse : data) {
+            CourseV2 courseV2 = new CourseV2()
+                    .setCouOnlyId(AppUtils.createUUID()) //new only_id
+                    .setCouCgId(newGroupId) //new group
+                    .setCouName(downCourse.getName())
+                    .setCouTeacher(downCourse.getTeacher())
+                    .setCouLocation(downCourse.getLocation())
+                    .setCouColor(downCourse.getColor())
+                    .setCouWeek(downCourse.getWeek())
+                    .setCouStartNode(downCourse.getStart_node())
+                    .setCouNodeCount(downCourse.getNode_count())
+                    .setCouAllWeek(downCourse.getAll_week());
+
+            courseV2Dao.insert(courseV2);
+        }
+
+        return newGroupId;
+    }
+
+    private String buildJsonOfGroups(List<CourseV2> courseV2s, String groupName) {
+        JSONObject result = new JSONObject();
+        JSONArray jsonArray = new JSONArray();
+
+        try {
+            result.put("data", jsonArray);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        for (CourseV2 course : courseV2s) {
+            try {
+                JSONObject jsonItem = new JSONObject();
+                jsonItem.put("id", course.getCouId());
+                jsonItem.put("name", course.getCouName());
+                jsonItem.put("location", course.getCouLocation() == null ? "" : course.getCouLocation());
+                jsonItem.put("week", course.getCouWeek());
+                jsonItem.put("teacher", course.getCouTeacher() == null ? "" : course.getCouTeacher());
+                jsonItem.put("all_week", course.getCouAllWeek());
+                jsonItem.put("start_node", course.getCouStartNode());
+                jsonItem.put("node_count", course.getCouNodeCount());
+                jsonItem.put("color", course.getCouColor() == null ? "-1" : course.getCouColor());
+                jsonItem.put("group_name", groupName);
+
+                jsonArray.put(jsonItem);
+            } catch (JSONException e) {
+                LogUtil.e(this, "buildJsonOfAllCourse() failed--->" + course.toString());
+                e.printStackTrace();
+            }
+        }
+        return result.toString();
     }
 
     @Override
@@ -153,7 +302,6 @@ public class HomePresenter implements HomeContract.Presenter {
             mView.pleaseLoginIn();
             return;
         }
-
         mView.showLoading("同步中");
 
         JSONObject result = buildJsonOfAllCourse();
@@ -168,11 +316,9 @@ public class HomePresenter implements HomeContract.Presenter {
                     return;
                 }
                 mView.stopLoading();
-
                 if (baseBean != null) {
                     if (baseBean.getCode() == 1) {
                         mView.showMassage("同步成功");
-
                     } else {
                         mView.showMassage("同步失败：" + baseBean.getMsg());
                     }
@@ -227,6 +373,7 @@ public class HomePresenter implements HomeContract.Presenter {
                     jsonItem.put("color", course.getCouColor() == null ? "-1" : course.getCouColor());
                     jsonItem.put("group_name", group.getCgName());
                     jsonItem.put("only_id", course.getCouOnlyId());
+                    jsonItem.put("deleted", course.getCouDeleted());
 
                     jsonArray.put(jsonItem);
                 } catch (JSONException e) {

@@ -9,8 +9,9 @@ public class Url {
     /**
      * 贵州大学正方教务管理系统
      */
-    public static final String URL_HOST = "http://10.0.2.2:8000/";
+    public static final String URL_HOST = "http://192.168.1.7:8000/";
     public static final String URL_UPLOAD_COURSE = URL_HOST+"main/upload_course/";
+    public static final String URL_SHARE = URL_HOST+"main/share/";
     public static final String URL_DOWN_COURSE = URL_HOST+"main/down_course/";
     public static final String URL_LOGIN = URL_HOST+"user/login/";
     public static final String URL_REGISTER = URL_HOST+"user/register/";
@@ -20,7 +21,6 @@ public class Url {
     public static final String URL_GZU_HOST = "http://210.40.2.253:8888/";
 
     public static final String URL_CHECK_UPDATE_APP = "https://raw.githubusercontent.com/mnnyang/GzuClassSchedule/master/check.json";
-
 
     public static final String CheckCode = "CheckCode.aspx";
     public static final String xskbcx = "xskbcx.aspx";

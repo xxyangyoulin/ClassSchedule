@@ -31,11 +31,13 @@ public class CourseV2 extends CourseAncestor {
     private Long couCgId;
 
     private String couOnlyId;
+    
+    private Boolean couDeleted = false;
 
-    @Generated(hash = 284353310)
-    public CourseV2(Long couId, String couName, String couLocation, String couTeacher,
-                    Integer couWeek, Integer couStartNode, Integer couNodeCount, String couAllWeek,
-                    Integer couColor, Long couCgId, String couOnlyId) {
+    @Generated(hash = 669626279)
+    public CourseV2(Long couId, String couName, String couLocation, String couTeacher, Integer couWeek,
+            Integer couStartNode, Integer couNodeCount, String couAllWeek, Integer couColor,
+            Long couCgId, String couOnlyId, Boolean couDeleted) {
         this.couId = couId;
         this.couName = couName;
         this.couLocation = couLocation;
@@ -47,6 +49,7 @@ public class CourseV2 extends CourseAncestor {
         this.couColor = couColor;
         this.couCgId = couCgId;
         this.couOnlyId = couOnlyId;
+        this.couDeleted = couDeleted;
     }
 
     @Generated(hash = 552593624)
@@ -259,5 +262,13 @@ public class CourseV2 extends CourseAncestor {
     public CourseV2 setCouOnlyId(String couOnlyId) {
         this.couOnlyId = couOnlyId;
         return this;
+    }
+
+    public Boolean getCouDeleted() {
+        return this.couDeleted;
+    }
+
+    public void setCouDeleted(Boolean couDeleted) {
+        this.couDeleted = couDeleted;
     }
 }

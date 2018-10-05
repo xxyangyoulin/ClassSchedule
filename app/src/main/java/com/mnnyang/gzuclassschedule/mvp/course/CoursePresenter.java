@@ -98,14 +98,11 @@ public class CoursePresenter implements CourseContract.Presenter {
         Observable.create(new ObservableOnSubscribe<List<CourseV2>>() {
             @Override
             public void subscribe(ObservableEmitter<List<CourseV2>> emitter) throws Exception {
-                final List<CourseV2> courses  = Cache.instance().getCourseV2Dao()
+                final List<CourseV2> courses = Cache.instance().getCourseV2Dao()
                         .queryBuilder()
-                        .where(CourseV2Dao.Properties.CouCgId.eq(csNameId))
+                        .where(CourseV2Dao.Properties.CouCgId.eq(csNameId))//根据当前课表组id查询
+                        .where(CourseV2Dao.Properties.CouDeleted.eq(false))//查询没有删除的
                         .list();
-
-                for (CourseV2 cours : courses) {
-                    System.out.println("TEST  " + cours.getCouName()+"--"+cours.getCouColor());
-                }
 
                 emitter.onNext(courses);
                 emitter.onComplete();
@@ -125,7 +122,7 @@ public class CoursePresenter implements CourseContract.Presenter {
                             return;
                         }
 
-                        LogUtil.e(this,"-------------------------------------------");
+                        LogUtil.e(this, "-------------------------------------------");
                         System.out.println(courses);
                         mView.setCourseData(courses);
                     }
@@ -144,8 +141,17 @@ public class CoursePresenter implements CourseContract.Presenter {
 
     @Override
     public void deleteCourse(long courseId) {
-        //CourseDbDao.instance().removeCourse(courseId);
-        Cache.instance().getCourseV2Dao().deleteByKey(courseId);
+        //Cache.instance().getCourseV2Dao().deleteByKey(courseId);
+        CourseV2Dao courseV2Dao = Cache.instance().getCourseV2Dao();
+        CourseV2 courseV2 = courseV2Dao.queryBuilder()
+                .where(CourseV2Dao.Properties.CouId.eq(courseId))
+                .unique();
+
+        if (courseV2 != null) {
+            courseV2.setCouDeleted(true);
+            courseV2Dao.update(courseV2);
+        }
+
         mView.updateCoursePreference(); //must be main thread
     }
 

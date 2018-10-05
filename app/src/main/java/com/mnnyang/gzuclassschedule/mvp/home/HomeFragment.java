@@ -5,6 +5,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.Toolbar;
@@ -21,6 +22,7 @@ import com.mnnyang.gzuclassschedule.BaseFragment;
 import com.mnnyang.gzuclassschedule.R;
 import com.mnnyang.gzuclassschedule.app.AppUtils;
 import com.mnnyang.gzuclassschedule.app.Cache;
+import com.mnnyang.gzuclassschedule.data.beanv2.CourseGroup;
 import com.mnnyang.gzuclassschedule.data.beanv2.UserWrapper;
 import com.mnnyang.gzuclassschedule.mvp.add.AddActivity;
 import com.mnnyang.gzuclassschedule.mvp.login.SignActivity;
@@ -39,6 +41,7 @@ import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
+import java.util.List;
 import java.util.Objects;
 
 import de.hdodenhof.circleimageview.CircleImageView;
@@ -192,7 +195,7 @@ public class HomeFragment extends BaseFragment implements HomeContract.View,
         if (requestCode == REQUEST_CODE_SCAN && resultCode == RESULT_OK) {
             if (data != null) {
                 String content = data.getStringExtra(Constant.CODED_CONTENT);
-                Toast.makeText(activity, content, Toast.LENGTH_SHORT).show();
+                mPresenter.downShare(content);
             }
         }
     }
@@ -336,8 +339,8 @@ public class HomeFragment extends BaseFragment implements HomeContract.View,
             @Override
             public void onClick(View v) {
                 dialogHelper.hideCustomDialog();
-                mPresenter.createQRCode(getResources());
-
+//                mPresenter.createQRCode(getResources());
+                mPresenter.showCourseGroup();
             }
         });
 
@@ -370,6 +373,28 @@ public class HomeFragment extends BaseFragment implements HomeContract.View,
                         Toast.makeText(activity, "没有打开相机的权限", Toast.LENGTH_SHORT).show();
                     }
                 });
+    }
+
+
+
+    @Override
+    public void showGroupDialog(List<CourseGroup> groups) {
+        DialogHelper helper = new DialogHelper();
+        final String[] items = new String[groups.size()];
+        final long[] ids = new long[items.length];
+
+        for (int i = 0; i < groups.size(); i++) {
+            items[i] = groups.get(i).getCgName();
+            ids[i] = groups.get(i).getCgId();
+        }
+
+        helper.showListDialog(activity, "选择要分享的课表", items, new DialogListener() {
+            @Override
+            public void onItemClick(DialogInterface dialog, int which) {
+                super.onItemClick(dialog, which);
+                mPresenter.createShare(ids[which], items[which]);
+            }
+        });
     }
 
     private void hideSignOutMenu(boolean hide) {

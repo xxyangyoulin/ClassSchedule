@@ -4,6 +4,7 @@ import com.mnnyang.gzuclassschedule.app.Constant;
 import com.mnnyang.gzuclassschedule.app.Url;
 import com.mnnyang.gzuclassschedule.data.beanv2.BaseBean;
 import com.mnnyang.gzuclassschedule.data.beanv2.DownCourseWrapper;
+import com.mnnyang.gzuclassschedule.data.beanv2.ShareBean;
 import com.mnnyang.gzuclassschedule.data.beanv2.UserWrapper;
 import com.mnnyang.gzuclassschedule.utils.LogUtil;
 import com.zhy.http.okhttp.OkHttpUtils;
@@ -36,9 +37,51 @@ public class MyHttpUtils {
                 });
     }
 
+
+    public void uploadShare(String json, final HttpCallback<ShareBean> callback) {
+        OkHttpUtils.postString()
+                .url(Url.URL_SHARE)
+                .content(json)
+                .mediaType(MediaType.parse(Constant.CONTENT_TYPE_JSON))
+                .build()
+                .execute(new JsonCallback<ShareBean>(ShareBean.class) {
+                    @Override
+                    public void onError(Call call, Exception e, int id) {
+                        e.printStackTrace();
+                        callback.onFail(e.getMessage());
+                    }
+
+                    @Override
+                    public void onResponse(ShareBean response, int id) {
+                        callback.onSuccess(response);
+                        LogUtil.e(this, "onResponse-->" + response.toString());
+                    }
+                });
+    }
+
+
     public void downCourse(final HttpCallback<DownCourseWrapper> callback) {
         OkHttpUtils.post()
                 .url(Url.URL_DOWN_COURSE)
+                .build()
+                .execute(new JsonCallback<DownCourseWrapper>(DownCourseWrapper.class) {
+                    @Override
+                    public void onError(Call call, Exception e, int id) {
+                        e.printStackTrace();
+                        callback.onFail(e.getMessage());
+                    }
+
+                    @Override
+                    public void onResponse(DownCourseWrapper response, int id) {
+                        callback.onSuccess(response);
+                        LogUtil.e(this, "onResponse-->" + response.toString());
+                    }
+                });
+    }
+
+    public void downShare(String shareUrl, final HttpCallback<DownCourseWrapper> callback) {
+        OkHttpUtils.get()
+                .url(shareUrl)
                 .build()
                 .execute(new JsonCallback<DownCourseWrapper>(DownCourseWrapper.class) {
                     @Override
