@@ -2,7 +2,11 @@ package com.mnnyang.gzuclassschedule.mvp.setting;
 
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.didikee.donate.AlipayDonate;
+import android.didikee.donate.WeiXinDonate;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
+import android.os.Environment;
 import android.preference.PreferenceManager;
 import android.support.v7.widget.AppCompatRadioButton;
 import android.view.MenuItem;
@@ -31,6 +35,9 @@ import com.mnnyang.gzuclassschedule.utils.ScreenUtils;
 import com.mnnyang.gzuclassschedule.utils.ToastUtils;
 import com.mnnyang.gzuclassschedule.utils.VersionUpdate;
 
+import java.io.File;
+import java.io.InputStream;
+
 import static com.mnnyang.gzuclassschedule.app.Constant.themeColorArray;
 import static com.mnnyang.gzuclassschedule.app.Constant.themeNameArray;
 
@@ -44,6 +51,7 @@ public class SettingActivity extends BaseActivity implements SettingContract.Vie
 
     private SettingItemNormal sinMorePref;
     private SettingItemNormal sinFeedback;
+    private SettingItemNormal sinDonate;
     private SettingItemNormal sinAbout;
     private HorizontalScrollView hsvTheme;
     private LinearLayout layoutTheme;
@@ -70,6 +78,7 @@ public class SettingActivity extends BaseActivity implements SettingContract.Vie
 
         sinMorePref = findViewById(R.id.sin_more_pref);
         sinFeedback = findViewById(R.id.sin_feedback);
+        sinDonate = findViewById(R.id.sin_donate);
         sinAbout = findViewById(R.id.sin_about);
 
         sinUserAdd.setSettingOnClickListener(this);
@@ -78,6 +87,7 @@ public class SettingActivity extends BaseActivity implements SettingContract.Vie
 
         sinMorePref.setSettingOnClickListener(this);
         sinFeedback.setSettingOnClickListener(this);
+        sinDonate.setSettingOnClickListener(this);
         sinAbout.setSettingOnClickListener(this);
 
         layoutTheme.setOnClickListener(new View.OnClickListener() {
@@ -115,6 +125,9 @@ public class SettingActivity extends BaseActivity implements SettingContract.Vie
             case R.id.sin_feedback:
                 mPresenter.feedback();
                 break;
+            case R.id.sin_donate:
+                donate();
+                break;
             case R.id.sin_about:
                 gotoAboutActivity();
                 break;
@@ -124,6 +137,37 @@ public class SettingActivity extends BaseActivity implements SettingContract.Vie
             default:
                 break;
         }
+    }
+
+    private void donate() {
+//        donateAlipay("fkx0201809rfs0hvrukmg80");
+        donateWeixin();
+    }
+
+    /**
+     * 支付宝支付
+     *
+     * @param payCode 收款码后面的字符串；例如：收款二维码里面的字符串为 https://qr.alipay.com/stx00187oxldjvyo3ofaw60 ，则
+     *                payCode = stx00187oxldjvyo3ofaw60
+     *                注：不区分大小写
+     */
+    private void donateAlipay(String payCode) {
+        boolean hasInstalledAlipayClient = AlipayDonate.hasInstalledAlipayClient(this);
+        if (hasInstalledAlipayClient) {
+            AlipayDonate.startAlipayClient(this, payCode);
+        }
+    }
+
+    /**
+     * 需要提前准备好 微信收款码 照片，可通过微信客户端生成
+     */
+    private void donateWeixin() {
+        InputStream weixinQrIs = getResources().openRawResource(R.raw.weixin_donate);
+        String qrPath = Environment.getExternalStorageDirectory().getAbsolutePath()
+                + File.separator + "AndroidDonateSample" + File.separator +
+                "didikee_weixin.png";
+        WeiXinDonate.saveDonateQrImage2SDCard(qrPath, BitmapFactory.decodeStream(weixinQrIs));
+        WeiXinDonate.donateViaWeiXin(this, qrPath);
     }
 
     @Override

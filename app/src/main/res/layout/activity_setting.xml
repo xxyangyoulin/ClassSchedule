@@ -179,6 +179,7 @@
                 android:background="@color/divider" />
 
             <com.mnnyang.gzuclassschedule.custom.settting.SettingItemNormal
+                android:id="@+id/sin_donate"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 app:item_title="捐赠"

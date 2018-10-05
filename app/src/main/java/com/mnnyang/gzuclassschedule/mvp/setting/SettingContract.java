@@ -11,6 +11,7 @@ import com.mnnyang.gzuclassschedule.BaseView;
 public interface SettingContract {
     interface Presenter extends BasePresenter {
         void feedback();
+
     }
 
     interface View extends BaseView<Presenter> {
