@@ -40,6 +40,7 @@ import com.mnnyang.gzuclassschedule.custom.util.Utils;
 import com.mnnyang.gzuclassschedule.data.beanv2.CourseGroup;
 import com.mnnyang.gzuclassschedule.data.beanv2.CourseV2;
 import com.mnnyang.gzuclassschedule.data.greendao.CourseGroupDao;
+import com.mnnyang.gzuclassschedule.data.greendao.CourseV2Dao;
 import com.mnnyang.gzuclassschedule.mvp.add.AddActivity;
 import com.mnnyang.gzuclassschedule.mvp.home.HomeActivity;
 import com.mnnyang.gzuclassschedule.utils.DialogHelper;
@@ -313,6 +314,7 @@ public class CourseActivity extends BaseActivity implements CourseContract.View,
 
     private void updateView() {
         updateCoursePreference();
+        AppUtils.updateWidget(getApplicationContext());
     }
 
     @SuppressLint("SetTextI18n")
@@ -368,16 +370,18 @@ public class CourseActivity extends BaseActivity implements CourseContract.View,
     public void setCourseData(List<CourseV2> courses) {
         mCourseViewV2.clear();
 
+        CourseV2Dao courseV2Dao = Cache.instance().getCourseV2Dao();
         LogUtil.d(this, "当前课程数：" + courses.size());
 
-        int i = 0;
         for (CourseV2 course : courses) {
+            if (course.getCouColor() == null || course.getCouColor() == -1) {
+                course.setCouColor(Utils.getRandomColor());
+                courseV2Dao.update(course);
+            }
             course.init();
 
-            LogUtil.e(this, course.toString());
-            if (course.getColor() == -1) {
-                course.setColor(Utils.getRandomColor(i++));
-            }
+            LogUtil.e(this, "即将显示："+course.toString());
+
             mCourseViewV2.addCourse(course);
         }
     }

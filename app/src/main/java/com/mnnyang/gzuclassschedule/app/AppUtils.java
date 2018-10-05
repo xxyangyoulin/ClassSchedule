@@ -36,13 +36,15 @@ import java.util.regex.Pattern;
 public class AppUtils {
 
     /**
-     * 生成唯一id
+     * 生成UUID
      */
-    public static String createUUID()
-    {
+    public static String createUUID() {
         return UUID.randomUUID().toString().replace("-", "");
     }
 
+    /**
+     * 获取当前周数
+     */
     public static int getCurrentWeek(Context context) {
         int week = 1;
 
@@ -77,6 +79,9 @@ public class AppUtils {
         return week;
     }
 
+    /**
+     * 更改当前周
+     */
     public static void PreferencesCurrentWeek(Context context, int currentWeekCount) {
         //得到一个当前周 周一的日期
         Calendar calendar = Calendar.getInstance();
@@ -93,6 +98,9 @@ public class AppUtils {
                 calendar.getTimeInMillis() + "");
     }
 
+    /**
+     * 根据邮箱获取gravator头像
+     */
     public static String getGravatar(String email) {
         String emailMd5 = AppUtils.md5Hex(email);        //设置图片大小32px
         String avatar = "http://www.gravatar.com/avatar/" + emailMd5 + "?s=64";
@@ -100,6 +108,9 @@ public class AppUtils {
         return avatar;
     }
 
+    /**
+     * 更新widget组件
+     */
     public static void updateWidget(Context context) {
         Intent intent = new Intent();
         intent.setAction("com.mnnyang.action.UPDATE_WIDGET");
@@ -107,8 +118,8 @@ public class AppUtils {
         context.sendBroadcast(intent);
     }
 
-    public static String hex(byte[] array) {
-        StringBuffer sb = new StringBuffer();
+    private static String hex(byte[] array) {
+        StringBuilder sb = new StringBuilder();
         for (int i = 0; i < array.length; ++i) {
             sb.append(Integer.toHexString((array[i]
                     & 0xFF) | 0x100).substring(1, 3));
@@ -116,12 +127,13 @@ public class AppUtils {
         return sb.toString();
     }
 
-    public static String md5Hex(String message) {
+    private static String md5Hex(String message) {
         try {
             MessageDigest md =
                     MessageDigest.getInstance("MD5");
             return hex(md.digest(message.getBytes("CP1252")));
         } catch (NoSuchAlgorithmException | UnsupportedEncodingException e) {
+            e.printStackTrace();
         }
         return null;
     }
@@ -141,13 +153,16 @@ public class AppUtils {
     public static void copyOldData(Context context) {
         boolean first_enter_app = Preferences.getBoolean("first_enter_app", true);
         if (first_enter_app) {
-            startCopy(context);
+            migrateData(context);
             Preferences.putBoolean("first_enter_app", false);
         }
 
     }
 
-    private static void startCopy(Context context) {
+    /**
+     * 迁移旧数据
+     */
+    private static void migrateData(Context context) {
         MyOpenHelper myOpenHelper = new MyOpenHelper(
                 context, "coursev2.db", null);
 
@@ -192,7 +207,6 @@ public class AppUtils {
                     couAllWeek = couAllWeek.substring(0, couAllWeek.length() - 1);
                 }
 
-                System.out.println("----------------" + couAllWeek);
                 courseV2.setCouAllWeek(couAllWeek);
                 courseV2.setCouCgId(insert1);
                 courseV2Dao.insert(courseV2);

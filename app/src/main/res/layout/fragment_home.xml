@@ -34,7 +34,6 @@
                     android:layout_width="56dp"
                     android:layout_height="56dp"
                     android:layout_gravity="center"
-                    android:layout_marginTop="8dp"
                     android:src="@drawable/ic_account_circle_black_24dp"
                     app:civ_border_color="@color/white"
                     app:civ_border_width="0dp" />
@@ -44,10 +43,10 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
-                    android:layout_marginTop="@dimen/margin_16dp"
+                    android:layout_marginTop="@dimen/margin_8dp"
                     android:clickable="true"
                     android:focusable="true"
-                    android:text="xxyangyoulin"
+                    tools:text="xxyangyoulin"
                     android:textColor="@color/white"
                     android:textSize="16sp" />
 
@@ -55,7 +54,7 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/margin_16dp"
+                    android:layout_marginTop="@dimen/margin_8dp"
                     android:orientation="horizontal">
 
                     <LinearLayout
@@ -120,6 +119,7 @@
                 android:layout_height="wrap_content"
                 android:background="?attr/selectableItemBackground"
                 android:clickable="true"
+                android:visibility="gone"
                 android:focusable="true"
                 android:padding="@dimen/margin_16dp">
 
@@ -139,6 +139,7 @@
             <View
                 android:layout_width="match_parent"
                 android:layout_height="1px"
+                android:visibility="gone"
                 android:layout_marginLeft="@dimen/margin_16dp"
                 android:background="#50919191" />
 

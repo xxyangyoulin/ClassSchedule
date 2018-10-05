@@ -15,13 +15,13 @@ public interface HomeContract {
     interface Presenter extends BasePresenter {
         void loadUserInfo();
 
-        void showCourseGroup();
+        void showGroup();
 
         void createShare(long groupId, String groupName);
 
         void downShare(String url);
 
-        void uploadLocalCourse();
+        void uploadCourse();
 
         void downCourse();
     }

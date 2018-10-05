@@ -5,7 +5,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.Toolbar;
@@ -137,7 +136,7 @@ public class HomeFragment extends BaseFragment implements HomeContract.View,
                 mPresenter.downCourse();
                 break;
             case R.id.layout_upload:
-                mPresenter.uploadLocalCourse();
+                mPresenter.uploadCourse();
                 break;
             case R.id.layout_setting:
                 setting();
@@ -336,7 +335,7 @@ public class HomeFragment extends BaseFragment implements HomeContract.View,
             public void onClick(View v) {
                 dialogHelper.hideCustomDialog();
 //                mPresenter.createQRCode(getResources());
-                mPresenter.showCourseGroup();
+                mPresenter.showGroup();
             }
         });
 
@@ -419,6 +418,9 @@ public class HomeFragment extends BaseFragment implements HomeContract.View,
         switch (item.getItemId()) {
             case R.id.action_sign_out:
                 signOut();
+                break;
+            case R.id.action_add:
+                addSelectDialog();
                 break;
         }
         return false;

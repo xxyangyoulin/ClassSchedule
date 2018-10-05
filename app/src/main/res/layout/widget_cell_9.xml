@@ -13,5 +13,5 @@
         android:text=""
         android:gravity="center|top"
         android:textSize="12.0sp"
-        android:textStyle="normal" />
+        android:textStyle="bold" />
 </LinearLayout>

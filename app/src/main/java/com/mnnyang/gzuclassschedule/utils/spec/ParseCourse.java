@@ -172,7 +172,7 @@ public class ParseCourse {
         for (int i1 = 0; i1 < result.size(); i1++) {
             CourseV2 left = result.get(i1);
             if (left.getCouColor() == null) {
-                int color = Utils.getRandomColor(i1);
+                int color = Utils.getRandomColor();
                 left.setCouColor(color);
                 for (CourseV2 courseV2 : result) {
                     if(courseV2.isSameClassWithoutLocation(left)){

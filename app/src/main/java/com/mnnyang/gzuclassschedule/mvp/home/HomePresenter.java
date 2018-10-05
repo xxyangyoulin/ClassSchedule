@@ -49,6 +49,8 @@ public class HomePresenter implements HomeContract.Presenter {
 
     private HomeContract.View mView;
 
+    private Map<String, Long> mCacheGroup;
+
     public HomePresenter(HomeContract.View view) {
         mView = view;
         mView.setPresenter(this);
@@ -59,6 +61,9 @@ public class HomePresenter implements HomeContract.Presenter {
         loadUserInfo();
     }
 
+    /**
+     * 加载用户信息
+     */
     @Override
     public void loadUserInfo() {
 
@@ -101,8 +106,11 @@ public class HomePresenter implements HomeContract.Presenter {
         });
     }
 
+    /**
+     * 显示所有课程表
+     */
     @Override
-    public void showCourseGroup() {
+    public void showGroup() {
         List<CourseGroup> groups = Cache.instance().getCourseGroupDao().loadAll();
         if (groups == null || groups.isEmpty()) {
             mView.showMassage("没有课程数据");
@@ -111,6 +119,9 @@ public class HomePresenter implements HomeContract.Presenter {
         mView.showGroupDialog(groups);
     }
 
+    /**
+     * 建立分享
+     */
     @Override
     public void createShare(final long groupId, final String groupName) {
         mView.showLoading("建立分享中");
@@ -192,6 +203,9 @@ public class HomePresenter implements HomeContract.Presenter {
                 });
     }
 
+    /**
+     * 下载解析分享
+     */
     @Override
     public void downShare(String url) {
         if (TextUtils.isEmpty(url)) {
@@ -263,6 +277,9 @@ public class HomePresenter implements HomeContract.Presenter {
         return newGroupId;
     }
 
+    /**
+     * 建立json
+     */
     private String buildJsonOfGroups(List<CourseV2> courseV2s, String groupName) {
         JSONObject result = new JSONObject();
         JSONArray jsonArray = new JSONArray();
@@ -296,8 +313,11 @@ public class HomePresenter implements HomeContract.Presenter {
         return result.toString();
     }
 
+    /**
+     * 上传
+     */
     @Override
-    public void uploadLocalCourse() {
+    public void uploadCourse() {
         if (TextUtils.isEmpty(Cache.instance().getEmail())) {
             mView.pleaseLoginIn();
             return;
@@ -339,6 +359,9 @@ public class HomePresenter implements HomeContract.Presenter {
         });
     }
 
+    /**
+     * 对所有course建立json
+     */
     @NonNull
     private JSONObject buildJsonOfAllCourse() {
         List<CourseGroup> groups = Cache.instance().getCourseGroupDao()
@@ -386,6 +409,9 @@ public class HomePresenter implements HomeContract.Presenter {
         return result;
     }
 
+    /**
+     * 下载course
+     */
     @Override
     public void downCourse() {
         if (TextUtils.isEmpty(Cache.instance().getEmail())) {
@@ -403,7 +429,7 @@ public class HomePresenter implements HomeContract.Presenter {
                 mView.stopLoading();
                 if (bean != null) {
                     if (bean.getCode() == 1) {
-                        cloudOverWriteLocal(bean.getData());
+                        overWriteLocal(bean.getData());
 
                         mView.stopLoading();
                         EventBus.getDefault().post(new CourseDataChangeEvent());
@@ -428,9 +454,10 @@ public class HomePresenter implements HomeContract.Presenter {
         });
     }
 
-    private Map<String, Long> mCacheGroup;
-
-    private void cloudOverWriteLocal(List<DownCourseWrapper.DownCourse> downCourses) {
+    /**
+     * 覆盖本地
+     */
+    private void overWriteLocal(List<DownCourseWrapper.DownCourse> downCourses) {
         mCacheGroup = new HashMap<>();
         CourseV2Dao courseDao = Cache.instance().getCourseV2Dao();
 
@@ -449,6 +476,9 @@ public class HomePresenter implements HomeContract.Presenter {
         }
     }
 
+    /**
+     * 添加
+     */
     private void addCourse(DownCourseWrapper.DownCourse downCourse, Long groupId) {
         CourseV2Dao courseDao = Cache.instance().getCourseV2Dao();
 
@@ -467,6 +497,9 @@ public class HomePresenter implements HomeContract.Presenter {
         courseDao.insert(oldCourse);
     }
 
+    /**
+     * 获取group_id
+     */
     private Long getGroupId(DownCourseWrapper.DownCourse downCourse) {
         if (downCourse == null) {
             return null;

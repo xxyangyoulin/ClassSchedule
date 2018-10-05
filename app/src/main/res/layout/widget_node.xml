@@ -12,7 +12,7 @@
         android:background="@android:color/transparent"
         android:gravity="center"
         android:text=""
-        android:textColor="@color/white"
+        android:textColor="#bbffffff"
         android:textSize="12.0sp"
         android:textStyle="normal" />
 

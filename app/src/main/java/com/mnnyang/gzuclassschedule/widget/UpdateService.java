@@ -49,12 +49,11 @@ public class UpdateService extends RemoteViewsService {
                 .where(CourseV2Dao.Properties.CouCgId.eq(group_id))
                 .list();
 
-        int i = 0;
         mCourses = new ArrayList<>();
         for (CourseV2 course : courseV2s) {
             course.init();
             if (course.getColor() == -1) {
-                course.setColor(Utils.getRandomColor(i++));
+                course.setColor(Utils.getRandomColor());
             }
             course.setActiveStatus(course.shouldShow(mCurrentWeek));
             mCourses.add(course);

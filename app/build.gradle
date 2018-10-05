@@ -71,4 +71,6 @@ dependencies {
     }
 
     implementation 'com.github.franmontiel:PersistentCookieJar:v1.0.1'
+
+    implementation 'com.github.didikee:AndroidDonate:0.1.0'
 }

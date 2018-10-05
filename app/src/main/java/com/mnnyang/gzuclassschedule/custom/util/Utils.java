@@ -7,6 +7,8 @@ import android.graphics.drawable.StateListDrawable;
 
 import com.mnnyang.gzuclassschedule.R;
 
+import java.util.Random;
+
 
 /**
  * shape选择器生成工具
@@ -88,8 +90,8 @@ public class Utils {
     }
 
 
-    public static int getRandomColor(int randomFeed) {
-        return colorList[randomFeed % colorList.length];
+    public static int getRandomColor() {
+        return colorList[new Random().nextInt(20) % colorList.length];
     }
 
     public static int getColor(Resources resources, int colorId) {
