@@ -2,6 +2,7 @@ package com.mnnyang.gzuclassschedule.utils.spec;
 
 import android.support.annotation.NonNull;
 
+import com.mnnyang.gzuclassschedule.app.AppUtils;
 import com.mnnyang.gzuclassschedule.app.Constant;
 import com.mnnyang.gzuclassschedule.app.Url;
 import com.mnnyang.gzuclassschedule.custom.course.CourseAncestor;
@@ -389,7 +390,7 @@ public class ParseCourse {
         String[] split = source.split(" ");
         if (split.length / 4 > 0 && split.length % 4 == 0) {
             for (int i = 0; i < split.length / 4; i++) {
-                CourseV2 course = new CourseV2();
+                CourseV2 course = new CourseV2().setCouOnlyId(AppUtils.createUUID());
                 courses.add(course);
 
                 //course.setSource(source);
@@ -405,7 +406,7 @@ public class ParseCourse {
 
         } else if (split.length / 5 > 0 && split.length % 5 == 0) {
             for (int i = 0; i < split.length / 5; i++) {
-                CourseV2 course = new CourseV2();
+                CourseV2 course = new CourseV2().setCouOnlyId(AppUtils.createUUID());
                 courses.add(course);
 
                 course.setCouName(split[i * 5]);
@@ -417,7 +418,8 @@ public class ParseCourse {
             }
 
         } else if (split.length > 2) {
-            CourseV2 course = new CourseV2();
+            CourseV2 course = new CourseV2().setCouOnlyId(AppUtils.createUUID());
+
             courses.add(course);
 
             //course.setSource(source);

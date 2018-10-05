@@ -54,16 +54,18 @@ public class CourseGroup {
         return this.cgName;
     }
 
-    public void setCgName(String cgName) {
+    public CourseGroup setCgName(String cgName) {
         this.cgName = cgName;
+        return this;
     }
 
     public String getCgSchool() {
         return this.cgSchool;
     }
 
-    public void setCgSchool(String cgSchool) {
+    public CourseGroup setCgSchool(String cgSchool) {
         this.cgSchool = cgSchool;
+        return this;
     }
 
     /**

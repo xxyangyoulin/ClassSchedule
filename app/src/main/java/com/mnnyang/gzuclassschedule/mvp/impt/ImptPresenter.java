@@ -12,7 +12,7 @@ import com.mnnyang.gzuclassschedule.data.db.CourseDbDao;
 import com.mnnyang.gzuclassschedule.data.greendao.CourseGroupDao;
 import com.mnnyang.gzuclassschedule.data.greendao.CourseV2Dao;
 import com.mnnyang.gzuclassschedule.data.http.HttpCallback;
-import com.mnnyang.gzuclassschedule.data.http.HttpUtils;
+import com.mnnyang.gzuclassschedule.data.http.EduHttpUtils;
 import com.mnnyang.gzuclassschedule.utils.LogUtil;
 import com.mnnyang.gzuclassschedule.utils.Preferences;
 import com.mnnyang.gzuclassschedule.utils.ToastUtils;
@@ -66,7 +66,7 @@ public class ImptPresenter implements ImptContract.Presenter {
         }
 
         mImptView.showImpting();
-        HttpUtils.newInstance().toImpt(mSchoolUrl, xh, year, term, new HttpCallback<String>() {
+        EduHttpUtils.newInstance().toImpt(mSchoolUrl, xh, year, term, new HttpCallback<String>() {
             @Override
             public void onSuccess(String s) {
                 if (mImptView == null) {
@@ -100,7 +100,7 @@ public class ImptPresenter implements ImptContract.Presenter {
         if (!verify(xh, pwd, captcha)) return;
 
         mImptView.showImpting();
-        HttpUtils.newInstance().login(mSchoolUrl, xh, pwd, captcha, null, null,
+        EduHttpUtils.newInstance().login(mSchoolUrl, xh, pwd, captcha, null, null,
                 new HttpCallback<String>() {
 
                     @Override
@@ -260,7 +260,7 @@ public class ImptPresenter implements ImptContract.Presenter {
         captchaIsLoading = true;
         mImptView.captchaIsLoading(true);
 
-        HttpUtils.newInstance().loadCaptcha(app.mContext.getCacheDir(), mSchoolUrl,
+        EduHttpUtils.newInstance().loadCaptcha(app.mContext.getCacheDir(), mSchoolUrl,
                 new HttpCallback<Bitmap>() {
                     @Override
                     public void onSuccess(Bitmap bitmap) {

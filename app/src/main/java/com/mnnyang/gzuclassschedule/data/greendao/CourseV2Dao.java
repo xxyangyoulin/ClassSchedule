@@ -37,6 +37,7 @@ public class CourseV2Dao extends AbstractDao<CourseV2, Long> {
         public final static Property CouAllWeek = new Property(7, String.class, "couAllWeek", false, "COU_ALL_WEEK");
         public final static Property CouColor = new Property(8, Integer.class, "couColor", false, "COU_COLOR");
         public final static Property CouCgId = new Property(9, Long.class, "couCgId", false, "COU_CG_ID");
+        public final static Property CouOnlyId = new Property(10, String.class, "couOnlyId", false, "COU_ONLY_ID");
     }
 
     private Query<CourseV2> courseGroup_CgItemsQuery;
@@ -62,7 +63,8 @@ public class CourseV2Dao extends AbstractDao<CourseV2, Long> {
                 "\"COU_NODE_COUNT\" INTEGER," + // 6: couNodeCount
                 "\"COU_ALL_WEEK\" TEXT," + // 7: couAllWeek
                 "\"COU_COLOR\" INTEGER," + // 8: couColor
-                "\"COU_CG_ID\" INTEGER);"); // 9: couCgId
+                "\"COU_CG_ID\" INTEGER," + // 9: couCgId
+                "\"COU_ONLY_ID\" TEXT);"); // 10: couOnlyId
     }
 
     /** Drops the underlying database table. */
@@ -124,6 +126,11 @@ public class CourseV2Dao extends AbstractDao<CourseV2, Long> {
         if (couCgId != null) {
             stmt.bindLong(10, couCgId);
         }
+ 
+        String couOnlyId = entity.getCouOnlyId();
+        if (couOnlyId != null) {
+            stmt.bindString(11, couOnlyId);
+        }
     }
 
     @Override
@@ -179,6 +186,11 @@ public class CourseV2Dao extends AbstractDao<CourseV2, Long> {
         if (couCgId != null) {
             stmt.bindLong(10, couCgId);
         }
+ 
+        String couOnlyId = entity.getCouOnlyId();
+        if (couOnlyId != null) {
+            stmt.bindString(11, couOnlyId);
+        }
     }
 
     @Override
@@ -198,7 +210,8 @@ public class CourseV2Dao extends AbstractDao<CourseV2, Long> {
             cursor.isNull(offset + 6) ? null : cursor.getInt(offset + 6), // couNodeCount
             cursor.isNull(offset + 7) ? null : cursor.getString(offset + 7), // couAllWeek
             cursor.isNull(offset + 8) ? null : cursor.getInt(offset + 8), // couColor
-            cursor.isNull(offset + 9) ? null : cursor.getLong(offset + 9) // couCgId
+            cursor.isNull(offset + 9) ? null : cursor.getLong(offset + 9), // couCgId
+            cursor.isNull(offset + 10) ? null : cursor.getString(offset + 10) // couOnlyId
         );
         return entity;
     }
@@ -215,6 +228,7 @@ public class CourseV2Dao extends AbstractDao<CourseV2, Long> {
         entity.setCouAllWeek(cursor.isNull(offset + 7) ? null : cursor.getString(offset + 7));
         entity.setCouColor(cursor.isNull(offset + 8) ? null : cursor.getInt(offset + 8));
         entity.setCouCgId(cursor.isNull(offset + 9) ? null : cursor.getLong(offset + 9));
+        entity.setCouOnlyId(cursor.isNull(offset + 10) ? null : cursor.getString(offset + 10));
      }
     
     @Override

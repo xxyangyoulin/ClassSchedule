@@ -2,6 +2,7 @@ package com.mnnyang.gzuclassschedule.data.beanv2;
 
 import android.text.TextUtils;
 
+import com.mnnyang.gzuclassschedule.app.AppUtils;
 import com.mnnyang.gzuclassschedule.custom.course.CourseAncestor;
 import com.mnnyang.gzuclassschedule.utils.LogUtil;
 
@@ -29,11 +30,12 @@ public class CourseV2 extends CourseAncestor {
 
     private Long couCgId;
 
-    @Generated(hash = 1410596089)
-    public CourseV2(Long couId, String couName, String couLocation,
-                    String couTeacher, Integer couWeek, Integer couStartNode,
-                    Integer couNodeCount, String couAllWeek, Integer couColor,
-                    Long couCgId) {
+    private String couOnlyId;
+
+    @Generated(hash = 284353310)
+    public CourseV2(Long couId, String couName, String couLocation, String couTeacher,
+                    Integer couWeek, Integer couStartNode, Integer couNodeCount, String couAllWeek,
+                    Integer couColor, Long couCgId, String couOnlyId) {
         this.couId = couId;
         this.couName = couName;
         this.couLocation = couLocation;
@@ -44,6 +46,7 @@ public class CourseV2 extends CourseAncestor {
         this.couAllWeek = couAllWeek;
         this.couColor = couColor;
         this.couCgId = couCgId;
+        this.couOnlyId = couOnlyId;
     }
 
     @Generated(hash = 552593624)
@@ -123,6 +126,20 @@ public class CourseV2 extends CourseAncestor {
                     || (other.getCouTeacher().equals(this.getCouTeacher()));
         }
         return false;
+    }
+
+    /**
+     * 判断onlyId相等
+     */
+    public boolean onlyIdEqualsOnlyIdOf(CourseV2 CourseV2) {
+        if (CourseV2 == null) {
+            return false;
+        }
+
+        if (this.getCouOnlyId() == null || CourseV2.getCouOnlyId() == null) {
+            return false;
+        }
+        return this.getCouOnlyId().equals(CourseV2.getCouOnlyId());
     }
 
     public Long getCouId() {
@@ -233,5 +250,14 @@ public class CourseV2 extends CourseAncestor {
 
     public String toSuperString() {
         return super.toString();
+    }
+
+    public String getCouOnlyId() {
+        return this.couOnlyId;
+    }
+
+    public CourseV2 setCouOnlyId(String couOnlyId) {
+        this.couOnlyId = couOnlyId;
+        return this;
     }
 }

@@ -13,6 +13,7 @@ import android.widget.TextView;
 
 import com.mnnyang.gzuclassschedule.BaseActivity;
 import com.mnnyang.gzuclassschedule.R;
+import com.mnnyang.gzuclassschedule.app.AppUtils;
 import com.mnnyang.gzuclassschedule.app.Cache;
 import com.mnnyang.gzuclassschedule.app.Constant;
 import com.mnnyang.gzuclassschedule.custom.EditTextLayout;
@@ -176,7 +177,7 @@ public class AddActivity extends BaseActivity implements AddContract.View, View.
             if (mAncestor != null) {
                 // 屏幕点击过来
 
-                CourseV2 defaultCourse = new CourseV2()
+                CourseV2 defaultCourse = new CourseV2().setCouOnlyId(AppUtils.createUUID())
                         .setCouAllWeek(Constant.DEFAULT_ALL_WEEK)
                         .setCouWeek(mAncestor.getRow())
                         .setCouStartNode(mAncestor.getCol())
@@ -208,7 +209,7 @@ public class AddActivity extends BaseActivity implements AddContract.View, View.
     }
 
     private void initEmptyLocation(LinearLayout locationItem) {
-        CourseV2 defaultCourse = new CourseV2()
+        CourseV2 defaultCourse = new CourseV2().setCouOnlyId(AppUtils.createUUID())
                 .setCouAllWeek(Constant.DEFAULT_ALL_WEEK)
                 .setCouWeek(1)
                 .setCouStartNode(1)

@@ -9,15 +9,12 @@ import android.text.TextUtils;
 
 import com.mnnyang.gzuclassschedule.R;
 import com.mnnyang.gzuclassschedule.app.Cache;
-import com.mnnyang.gzuclassschedule.data.bean.Course;
-import com.mnnyang.gzuclassschedule.data.bean.CsItem;
-import com.mnnyang.gzuclassschedule.data.bean.CsName;
 import com.mnnyang.gzuclassschedule.data.beanv2.BaseBean;
 import com.mnnyang.gzuclassschedule.data.beanv2.CourseGroup;
 import com.mnnyang.gzuclassschedule.data.beanv2.CourseV2;
 import com.mnnyang.gzuclassschedule.data.beanv2.DownCourseWrapper;
 import com.mnnyang.gzuclassschedule.data.beanv2.UserWrapper;
-import com.mnnyang.gzuclassschedule.data.db.CourseDbDao;
+import com.mnnyang.gzuclassschedule.data.greendao.CourseGroupDao;
 import com.mnnyang.gzuclassschedule.data.greendao.CourseV2Dao;
 import com.mnnyang.gzuclassschedule.data.http.HttpCallback;
 import com.mnnyang.gzuclassschedule.data.http.MyHttpUtils;
@@ -29,8 +26,9 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import io.reactivex.Observable;
 import io.reactivex.ObservableEmitter;
@@ -223,8 +221,9 @@ public class HomePresenter implements HomeContract.Presenter {
                     jsonItem.put("all_week", course.getCouAllWeek());
                     jsonItem.put("start_node", course.getCouStartNode());
                     jsonItem.put("node_count", course.getCouNodeCount());
-                    jsonItem.put("color", course.getCouColor()== null ?  "-1": course.getCouColor());
+                    jsonItem.put("color", course.getCouColor() == null ? "-1" : course.getCouColor());
                     jsonItem.put("group_name", group.getCgName());
+                    jsonItem.put("only_id", course.getCouOnlyId());
 
                     jsonArray.put(jsonItem);
                 } catch (JSONException e) {
@@ -276,13 +275,49 @@ public class HomePresenter implements HomeContract.Presenter {
         });
     }
 
+    private Map<String, Long> mCacheGroup;
+
     @Override
     public void cloudOverWriteLocal(List<DownCourseWrapper.DownCourse> downCourses) {
+        mCacheGroup = new HashMap<>();
+
+        CourseV2Dao courseDao = Cache.instance().getCourseV2Dao();
         if (downCourses != null) {
             for (DownCourseWrapper.DownCourse downCourse : downCourses) {
-                //TODO 保存到新的数据库，
+                Long groupId = getGroupId(downCourse);
+                if (groupId != null) {
 
+                }
             }
+        }
+    }
+
+    private Long getGroupId(DownCourseWrapper.DownCourse downCourse) {
+        if (downCourse == null) {
+            return null;
+        }
+
+        CourseGroupDao groupDao = Cache.instance().getCourseGroupDao();
+
+        String groupName = downCourse.getGroup_name();
+        if (!TextUtils.isEmpty(groupName)) {
+            Long groupId = mCacheGroup.get(groupName);
+            if (null == groupId) {
+                CourseGroup dbGroup = groupDao.queryBuilder()
+                        .where(CourseGroupDao.Properties.CgName.eq(groupName))
+                        .unique();
+                if (dbGroup == null) {
+                    CourseGroup newGroup = new CourseGroup().setCgName(groupName);
+                    groupId = groupDao.insert(newGroup);
+                } else {
+                    groupId = dbGroup.getCgId();
+                }
+                mCacheGroup.put(groupName, groupId);
+            }
+            return groupId;
+        } else {
+            LogUtil.e(this, "下载的数据未找到group_name");
+            return null;
         }
     }
 

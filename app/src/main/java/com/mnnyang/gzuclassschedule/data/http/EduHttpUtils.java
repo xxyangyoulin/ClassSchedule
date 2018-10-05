@@ -18,21 +18,22 @@ import java.io.File;
 import okhttp3.Call;
 
 /**
+ * 教务系统访问
  * Created by mnnyang on 17-10-19.
  */
 
-public class HttpUtils {
+public class EduHttpUtils {
     public static final String ACCESS_ERR = "抱歉,访问出错,请重试";
 
-    private HttpUtils() {
+    private EduHttpUtils() {
     }
 
 
     private static class Holder {
-        private static final HttpUtils HTTP_UTILS = new HttpUtils();
+        private static final EduHttpUtils HTTP_UTILS = new EduHttpUtils();
     }
 
-    public static HttpUtils newInstance() {
+    public static EduHttpUtils newInstance() {
         return Holder.HTTP_UTILS;
     }
 

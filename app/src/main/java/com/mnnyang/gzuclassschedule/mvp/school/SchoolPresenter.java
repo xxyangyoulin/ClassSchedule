@@ -1,7 +1,7 @@
 package com.mnnyang.gzuclassschedule.mvp.school;
 
 import com.mnnyang.gzuclassschedule.data.http.HttpCallback;
-import com.mnnyang.gzuclassschedule.data.http.HttpUtils;
+import com.mnnyang.gzuclassschedule.data.http.EduHttpUtils;
 
 /**
  * Created by xxyangyoulin on 2018/4/9.
@@ -33,7 +33,7 @@ public class SchoolPresenter implements SchoolContract.Presenter {
         testing = true;
         mView.testingUrl(true);
 
-        HttpUtils.newInstance().testUrl(url, new HttpCallback<String>() {
+        EduHttpUtils.newInstance().testUrl(url, new HttpCallback<String>() {
             @Override
             public void onSuccess(String s) {
                 if (mView == null) {

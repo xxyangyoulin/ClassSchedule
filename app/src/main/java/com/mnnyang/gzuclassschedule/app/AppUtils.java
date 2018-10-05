@@ -16,6 +16,7 @@ import com.mnnyang.gzuclassschedule.data.greendao.CourseGroupDao;
 import com.mnnyang.gzuclassschedule.data.greendao.CourseV2Dao;
 import com.mnnyang.gzuclassschedule.data.greendao.DaoMaster;
 import com.mnnyang.gzuclassschedule.data.greendao.DaoSession;
+import com.mnnyang.gzuclassschedule.data.greendao.MyOpenHelper;
 import com.mnnyang.gzuclassschedule.utils.LogUtil;
 import com.mnnyang.gzuclassschedule.utils.Preferences;
 import com.mnnyang.gzuclassschedule.utils.TimeUtils;
@@ -26,12 +27,21 @@ import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.UUID;
 import java.util.regex.Pattern;
 
 /**
  *
  */
 public class AppUtils {
+
+    /**
+     * 生成唯一id
+     */
+    public static String createUUID()
+    {
+        return UUID.randomUUID().toString().replace("-", "");
+    }
 
     public static int getCurrentWeek(Context context) {
         int week = 1;
@@ -138,9 +148,10 @@ public class AppUtils {
     }
 
     private static void startCopy(Context context) {
-        DaoMaster.DevOpenHelper devOpenHelper = new DaoMaster.DevOpenHelper(
+        MyOpenHelper myOpenHelper = new MyOpenHelper(
                 context, "coursev2.db", null);
-        DaoMaster daoMaster = new DaoMaster(devOpenHelper.getWritableDatabase());
+
+        DaoMaster daoMaster = new DaoMaster(myOpenHelper.getWritableDatabase());
 
         DaoSession daoSession = daoMaster.newSession();
 
@@ -162,7 +173,7 @@ public class AppUtils {
                     continue;
                 }
 
-                CourseV2 courseV2 = new CourseV2();
+                CourseV2 courseV2 = new CourseV2().setCouOnlyId(AppUtils.createUUID());
 
                 courseV2.setCouName(course.getName());
                 courseV2.setCouTeacher(course.getTeacher());

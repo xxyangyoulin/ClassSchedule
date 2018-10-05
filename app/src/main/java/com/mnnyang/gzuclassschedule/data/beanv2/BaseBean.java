@@ -39,4 +39,8 @@ public class BaseBean implements Serializable {
                 ", msg='" + msg + '\'' +
                 '}';
     }
+
+
+
+
 }

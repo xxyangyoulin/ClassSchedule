@@ -11,6 +11,9 @@ import com.zhy.http.okhttp.OkHttpUtils;
 import okhttp3.Call;
 import okhttp3.MediaType;
 
+/**
+ * 登录和备份
+ */
 public class MyHttpUtils {
     public void uploadCourse(String json, final HttpCallback<BaseBean> callback) {
         OkHttpUtils.postString()

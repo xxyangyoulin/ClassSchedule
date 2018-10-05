@@ -9,6 +9,7 @@ import com.mnnyang.gzuclassschedule.data.greendao.CourseGroupDao;
 import com.mnnyang.gzuclassschedule.data.greendao.CourseV2Dao;
 import com.mnnyang.gzuclassschedule.data.greendao.DaoMaster;
 import com.mnnyang.gzuclassschedule.data.greendao.DaoSession;
+import com.mnnyang.gzuclassschedule.data.greendao.MyOpenHelper;
 import com.mnnyang.gzuclassschedule.utils.Preferences;
 
 public class Cache {
@@ -31,13 +32,13 @@ public class Cache {
         return Holder.instance;
     }
 
-    public void init(Context context){
+    public void init(Context context) {
         mContext = context;
         initGreenDao(context);
     }
 
     private void initGreenDao(Context context) {
-        DaoMaster.DevOpenHelper devOpenHelper = new DaoMaster.DevOpenHelper(
+        MyOpenHelper devOpenHelper = new MyOpenHelper(
                 context, "coursev2.db", null);
         DaoMaster daoMaster = new DaoMaster(devOpenHelper.getWritableDatabase());
 

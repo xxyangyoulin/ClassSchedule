@@ -1,9 +1,9 @@
 package com.mnnyang.gzuclassschedule.data.beanv2;
 
-import java.io.Serializable;
 import java.util.List;
 
 public class DownCourseWrapper extends BaseBean {
+
 
     private List<DownCourse> data;
 
@@ -15,35 +15,43 @@ public class DownCourseWrapper extends BaseBean {
         this.data = data;
     }
 
-    public static class DownCourse implements Serializable {
+    public static class DownCourse {
         /**
-         * group : 默认课表
-         * name : hhh
+         * week : 2
+         * all_week : 1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25
+         * name : tf FB b
          * color : -1
-         * start_node : 1
-         * location : 45
-         * time_all_week : 1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16
-         * time_which_day : 4
-         * node_count : 4
-         * teacher : hgjhg
+         * group_name : 默认
+         * start_node : 4
+         * location :
+         * node_count : 1
+         * teacher :
          */
 
-        private String group;
+        private int week;
+        private String all_week;
         private String name;
         private int color;
+        private String group_name;
         private int start_node;
         private String location;
-        private String time_all_week;
-        private int time_which_day;
         private int node_count;
         private String teacher;
 
-        public String getGroup() {
-            return group;
+        public int getWeek() {
+            return week;
         }
 
-        public void setGroup(String group) {
-            this.group = group;
+        public void setWeek(int week) {
+            this.week = week;
+        }
+
+        public String getAll_week() {
+            return all_week;
+        }
+
+        public void setAll_week(String all_week) {
+            this.all_week = all_week;
         }
 
         public String getName() {
@@ -62,6 +70,14 @@ public class DownCourseWrapper extends BaseBean {
             this.color = color;
         }
 
+        public String getGroup_name() {
+            return group_name;
+        }
+
+        public void setGroup_name(String group_name) {
+            this.group_name = group_name;
+        }
+
         public int getStart_node() {
             return start_node;
         }
@@ -76,22 +92,6 @@ public class DownCourseWrapper extends BaseBean {
 
         public void setLocation(String location) {
             this.location = location;
-        }
-
-        public String getTime_all_week() {
-            return time_all_week;
-        }
-
-        public void setTime_all_week(String time_all_week) {
-            this.time_all_week = time_all_week;
-        }
-
-        public int getTime_which_day() {
-            return time_which_day;
-        }
-
-        public void setTime_which_day(int time_which_day) {
-            this.time_which_day = time_which_day;
         }
 
         public int getNode_count() {
