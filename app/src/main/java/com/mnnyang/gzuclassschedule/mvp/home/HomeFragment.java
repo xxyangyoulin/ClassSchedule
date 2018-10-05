@@ -300,12 +300,8 @@ public class HomeFragment extends BaseFragment implements HomeContract.View,
     }
 
     @Override
-    public void createQRCodeFailed(String msg) {
-        toast(msg);
-    }
-
-    @Override
     public void cloudToLocalSucceed() {
+        startActivity(new Intent(activity, MgActivity.class));
         activity.finish();
     }
 
@@ -374,7 +370,6 @@ public class HomeFragment extends BaseFragment implements HomeContract.View,
                     }
                 });
     }
-
 
 
     @Override

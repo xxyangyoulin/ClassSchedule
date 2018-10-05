@@ -403,8 +403,11 @@ public class HomePresenter implements HomeContract.Presenter {
                 mView.stopLoading();
                 if (bean != null) {
                     if (bean.getCode() == 1) {
-                        //mView.showMassage("同步成功");
                         cloudOverWriteLocal(bean.getData());
+
+                        mView.stopLoading();
+                        EventBus.getDefault().post(new CourseDataChangeEvent());
+                        mView.cloudToLocalSucceed();
                     } else {
                         mView.showMassage("同步失败：" + bean.getMsg());
                     }
@@ -427,40 +430,29 @@ public class HomePresenter implements HomeContract.Presenter {
 
     private Map<String, Long> mCacheGroup;
 
-    @Override
-    public void cloudOverWriteLocal(List<DownCourseWrapper.DownCourse> downCourses) {
+    private void cloudOverWriteLocal(List<DownCourseWrapper.DownCourse> downCourses) {
         mCacheGroup = new HashMap<>();
-
         CourseV2Dao courseDao = Cache.instance().getCourseV2Dao();
-        if (downCourses != null) {
-            for (DownCourseWrapper.DownCourse downCourse : downCourses) {
-                Long groupId = getGroupId(downCourse);
-                if (groupId != null) {
-                    CourseV2 oldCourse = courseDao.queryBuilder()
-                            .where(CourseV2Dao.Properties.CouOnlyId.eq(downCourse.getOnly_id()))
-                            .unique();
-                    if (oldCourse != null) {
-                        // 移动端存在旧的数据 解决方法是使用云数据覆盖本地
-                        updateCourse(courseDao, downCourse, oldCourse);
-                    } else {
-                        // 不存在则添加
-                        newCourse(courseDao, downCourse, groupId);
-                    }
+
+        for (DownCourseWrapper.DownCourse downCourse : downCourses) {
+            Long groupId = getGroupId(downCourse);
+            if (groupId != null) {
+                CourseV2 oldCourse = courseDao.queryBuilder()
+                        .where(CourseV2Dao.Properties.CouOnlyId.eq(downCourse.getOnly_id()))
+                        .unique();
+                if (oldCourse != null) {
+                    // 删除手机上的数据 （覆盖）
+                    courseDao.delete(oldCourse);
                 }
+                addCourse(downCourse, groupId);
             }
         }
-
-        if (mView == null) {// mView被销毁
-            return;
-        }
-        mView.stopLoading();
-        EventBus.getDefault().post(new CourseDataChangeEvent());
-        mView.cloudToLocalSucceed();
     }
 
-    private void newCourse(CourseV2Dao courseDao, DownCourseWrapper.DownCourse downCourse, Long groupId) {
-        CourseV2 oldCourse;
-        oldCourse = new CourseV2()
+    private void addCourse(DownCourseWrapper.DownCourse downCourse, Long groupId) {
+        CourseV2Dao courseDao = Cache.instance().getCourseV2Dao();
+
+        CourseV2 oldCourse = new CourseV2()
                 .setCouOnlyId(downCourse.getOnly_id())
                 .setCouCgId(groupId)
                 .setCouName(downCourse.getName())
@@ -471,19 +463,8 @@ public class HomePresenter implements HomeContract.Presenter {
                 .setCouStartNode(downCourse.getStart_node())
                 .setCouNodeCount(downCourse.getNode_count())
                 .setCouAllWeek(downCourse.getAll_week());
-        courseDao.insert(oldCourse);
-    }
 
-    private void updateCourse(CourseV2Dao courseDao, DownCourseWrapper.DownCourse downCourse, CourseV2 oldCourse) {
-        oldCourse.setCouName(downCourse.getName())
-                .setCouTeacher(downCourse.getTeacher())
-                .setCouLocation(downCourse.getLocation())
-                .setCouColor(downCourse.getColor())
-                .setCouWeek(downCourse.getWeek())
-                .setCouStartNode(downCourse.getStart_node())
-                .setCouNodeCount(downCourse.getNode_count())
-                .setCouAllWeek(downCourse.getAll_week());
-        courseDao.update(oldCourse);
+        courseDao.insert(oldCourse);
     }
 
     private Long getGroupId(DownCourseWrapper.DownCourse downCourse) {

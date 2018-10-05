@@ -24,8 +24,6 @@ public interface HomeContract {
         void uploadLocalCourse();
 
         void downCourse();
-
-        void cloudOverWriteLocal(List<DownCourseWrapper.DownCourse> downCourses);
     }
 
     interface View extends BaseView<HomeContract.Presenter> {
@@ -56,8 +54,6 @@ public interface HomeContract {
         void showGroupDialog(List<CourseGroup> groups);
 
         void createQRCodeSucceed(Bitmap bitmap);
-
-        void createQRCodeFailed(String msg);
 
         void cloudToLocalSucceed();
     }
