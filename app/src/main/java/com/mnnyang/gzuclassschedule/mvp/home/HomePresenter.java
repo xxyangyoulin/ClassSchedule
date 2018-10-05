@@ -14,14 +14,17 @@ import com.mnnyang.gzuclassschedule.data.beanv2.CourseGroup;
 import com.mnnyang.gzuclassschedule.data.beanv2.CourseV2;
 import com.mnnyang.gzuclassschedule.data.beanv2.DownCourseWrapper;
 import com.mnnyang.gzuclassschedule.data.beanv2.UserWrapper;
+import com.mnnyang.gzuclassschedule.data.db.CourseDbDao;
 import com.mnnyang.gzuclassschedule.data.greendao.CourseGroupDao;
 import com.mnnyang.gzuclassschedule.data.greendao.CourseV2Dao;
 import com.mnnyang.gzuclassschedule.data.http.HttpCallback;
 import com.mnnyang.gzuclassschedule.data.http.MyHttpUtils;
 import com.mnnyang.gzuclassschedule.utils.LogUtil;
 import com.mnnyang.gzuclassschedule.utils.ScreenUtils;
+import com.mnnyang.gzuclassschedule.utils.event.CourseDataChangeEvent;
 import com.mnnyang.gzuclassschedule.utils.spec.QRCode;
 
+import org.greenrobot.eventbus.EventBus;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -286,10 +289,54 @@ public class HomePresenter implements HomeContract.Presenter {
             for (DownCourseWrapper.DownCourse downCourse : downCourses) {
                 Long groupId = getGroupId(downCourse);
                 if (groupId != null) {
-
+                    CourseV2 oldCourse = courseDao.queryBuilder()
+                            .where(CourseV2Dao.Properties.CouOnlyId.eq(downCourse.getOnly_id()))
+                            .unique();
+                    if (oldCourse != null) {
+                        // 移动端存在旧的数据 解决方法是使用云数据覆盖本地
+                        updateCourse(courseDao, downCourse, oldCourse);
+                    } else {
+                        // 不存在则添加
+                        newCourse(courseDao, downCourse, groupId);
+                    }
                 }
             }
         }
+
+        if (mView == null) {// mView被销毁
+            return;
+        }
+        mView.stopLoading();
+        EventBus.getDefault().post(new CourseDataChangeEvent());
+        mView.cloudToLocalSucceed();
+    }
+
+    private void newCourse(CourseV2Dao courseDao, DownCourseWrapper.DownCourse downCourse, Long groupId) {
+        CourseV2 oldCourse;
+        oldCourse = new CourseV2()
+                .setCouOnlyId(downCourse.getOnly_id())
+                .setCouCgId(groupId)
+                .setCouName(downCourse.getName())
+                .setCouTeacher(downCourse.getTeacher())
+                .setCouLocation(downCourse.getLocation())
+                .setCouColor(downCourse.getColor())
+                .setCouWeek(downCourse.getWeek())
+                .setCouStartNode(downCourse.getStart_node())
+                .setCouNodeCount(downCourse.getNode_count())
+                .setCouAllWeek(downCourse.getAll_week());
+        courseDao.insert(oldCourse);
+    }
+
+    private void updateCourse(CourseV2Dao courseDao, DownCourseWrapper.DownCourse downCourse, CourseV2 oldCourse) {
+        oldCourse.setCouName(downCourse.getName())
+                .setCouTeacher(downCourse.getTeacher())
+                .setCouLocation(downCourse.getLocation())
+                .setCouColor(downCourse.getColor())
+                .setCouWeek(downCourse.getWeek())
+                .setCouStartNode(downCourse.getStart_node())
+                .setCouNodeCount(downCourse.getNode_count())
+                .setCouAllWeek(downCourse.getAll_week());
+        courseDao.update(oldCourse);
     }
 
     private Long getGroupId(DownCourseWrapper.DownCourse downCourse) {

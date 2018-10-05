@@ -33,6 +33,7 @@ public class DownCourseWrapper extends BaseBean {
         private String name;
         private int color;
         private String group_name;
+        private String only_id;
         private int start_node;
         private String location;
         private int node_count;
@@ -108,6 +109,14 @@ public class DownCourseWrapper extends BaseBean {
 
         public void setTeacher(String teacher) {
             this.teacher = teacher;
+        }
+
+        public String getOnly_id() {
+            return only_id;
+        }
+
+        public void setOnly_id(String only_id) {
+            this.only_id = only_id;
         }
     }
 }

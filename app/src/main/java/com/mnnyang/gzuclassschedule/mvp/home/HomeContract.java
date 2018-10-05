@@ -54,5 +54,7 @@ public interface HomeContract {
         void createQRCodeSucceed(Bitmap bitmap);
 
         void createQRCodeFailed(String msg);
+
+        void cloudToLocalSucceed();
     }
 }

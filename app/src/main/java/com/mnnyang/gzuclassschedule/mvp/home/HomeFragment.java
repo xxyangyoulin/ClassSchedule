@@ -301,6 +301,11 @@ public class HomeFragment extends BaseFragment implements HomeContract.View,
         toast(msg);
     }
 
+    @Override
+    public void cloudToLocalSucceed() {
+        activity.finish();
+    }
+
     public static HomeFragment newInstance() {
 
         Bundle args = new Bundle();
