@@ -8,11 +8,10 @@ import com.mnnyang.gzuclassschedule.app.app;
 import com.mnnyang.gzuclassschedule.data.bean.CourseTime;
 import com.mnnyang.gzuclassschedule.data.beanv2.CourseGroup;
 import com.mnnyang.gzuclassschedule.data.beanv2.CourseV2;
-import com.mnnyang.gzuclassschedule.data.db.CourseDbDao;
 import com.mnnyang.gzuclassschedule.data.greendao.CourseGroupDao;
 import com.mnnyang.gzuclassschedule.data.greendao.CourseV2Dao;
-import com.mnnyang.gzuclassschedule.data.http.HttpCallback;
 import com.mnnyang.gzuclassschedule.data.http.EduHttpUtils;
+import com.mnnyang.gzuclassschedule.data.http.HttpCallback;
 import com.mnnyang.gzuclassschedule.utils.LogUtil;
 import com.mnnyang.gzuclassschedule.utils.Preferences;
 import com.mnnyang.gzuclassschedule.utils.ToastUtils;
@@ -145,13 +144,11 @@ public class ImptPresenter implements ImptContract.Presenter {
             Observable.create(new ObservableOnSubscribe<String>() {
                 @Override
                 public void subscribe(ObservableEmitter<String> emitter) throws Exception {
-                    //final ArrayList<Course> courses = ParseCourse.parse(html);
                     ArrayList<CourseV2> courseV2s = ParseCourse.parse(html);
-                    for (CourseV2 cours : courseV2s) {
-                        System.out.println("TEST IMP  " + cours.getCouName()+"--"+cours.getCouColor());
+                    for (CourseV2 course : courseV2s) {
+                        System.out.println("TEST IMP  " + course.getCouName() + "--" + course.getCouColor());
                     }
                     //删除旧数据
-                    //CourseDbDao.instance().removeByCsName(courseTimeTerm);
                     CourseGroup group = Cache.instance().getCourseGroupDao()
                             .queryBuilder()
                             .where(CourseGroupDao.Properties.CgName.eq(courseTimeTerm))
@@ -165,6 +162,7 @@ public class ImptPresenter implements ImptContract.Presenter {
                                 .buildDelete()
                                 .executeDeleteWithoutDetachingEntities();
                     } else {
+                        // 不存在旧数据 创建新的课表组
                         group = new CourseGroup();
                         group.setCgName(courseTimeTerm);
                         Cache.instance().getCourseGroupDao().insert(group);
@@ -177,7 +175,6 @@ public class ImptPresenter implements ImptContract.Presenter {
 
                     emitter.onNext("导入成功");
                     emitter.onComplete();
-
                 }
             }).subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
@@ -194,9 +191,12 @@ public class ImptPresenter implements ImptContract.Presenter {
                             }
                             LogUtil.i(this, "导入成功:" + courseTimeTerm);
 
+                            Long curGroupId = Cache.instance().getCourseGroupDao()
+                                    .queryBuilder()
+                                    .where(CourseGroupDao.Properties.CgName.eq(courseTimeTerm))
+                                    .unique().getCgId();
                             Preferences.putLong(app.mContext.getString(
-                                    R.string.app_preference_current_cs_name_id),
-                                    CourseDbDao.instance().getCsNameId(courseTimeTerm));
+                                    R.string.app_preference_current_cs_name_id), curGroupId);
 
                             mImptView.hideImpting();
                             mImptView.showSucceed();

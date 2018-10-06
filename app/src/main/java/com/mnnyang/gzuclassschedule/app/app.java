@@ -32,10 +32,7 @@ public class app extends Application {
 
 
         Cache.instance().init(mContext);
-        //TODO 不该在这里
-        //AppUtils.copyOldData(this);
     }
-
 
     private void initOkHttp() {
         ClearableCookieJar cookieJar =

@@ -12,7 +12,7 @@
     <string name="default_noon_node">4</string>
     <string name="default_course_name">默认课表</string>
 
-    <string name="app_preference_app_is_first_start">app_is_first_start</string>
+    <string name="app_preference_app_is_first_start">app_is_first_start_v2</string>
     <string name="app_preference_start_week_begin_millis">start_week_begin_date</string>
     <string name="app_preference_theme">theme</string>
     <string name="app_preference_bg_iamge_path">bg_image_path</string>

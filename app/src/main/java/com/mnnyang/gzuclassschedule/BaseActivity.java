@@ -2,28 +2,16 @@ package com.mnnyang.gzuclassschedule;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 
 import com.mnnyang.gzuclassschedule.app.Constant;
-import com.mnnyang.gzuclassschedule.data.bean.Course;
-import com.mnnyang.gzuclassschedule.data.bean.CsItem;
-import com.mnnyang.gzuclassschedule.data.beanv2.CourseGroup;
-import com.mnnyang.gzuclassschedule.data.beanv2.CourseV2;
-import com.mnnyang.gzuclassschedule.data.db.CourseDbDao;
-import com.mnnyang.gzuclassschedule.data.greendao.CourseGroupDao;
-import com.mnnyang.gzuclassschedule.data.greendao.CourseV2Dao;
-import com.mnnyang.gzuclassschedule.data.greendao.DaoMaster;
-import com.mnnyang.gzuclassschedule.data.greendao.DaoSession;
 import com.mnnyang.gzuclassschedule.utils.ActivityUtil;
 import com.mnnyang.gzuclassschedule.utils.LogUtil;
 import com.mnnyang.gzuclassschedule.utils.Preferences;
 import com.mnnyang.gzuclassschedule.utils.ToastUtils;
-
-import java.util.ArrayList;
 
 
 /**

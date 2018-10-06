@@ -39,10 +39,12 @@ import com.mnnyang.gzuclassschedule.custom.course.CourseView;
 import com.mnnyang.gzuclassschedule.custom.util.Utils;
 import com.mnnyang.gzuclassschedule.data.beanv2.CourseGroup;
 import com.mnnyang.gzuclassschedule.data.beanv2.CourseV2;
+import com.mnnyang.gzuclassschedule.data.db.CourseDbDao;
 import com.mnnyang.gzuclassschedule.data.greendao.CourseGroupDao;
 import com.mnnyang.gzuclassschedule.data.greendao.CourseV2Dao;
 import com.mnnyang.gzuclassschedule.mvp.add.AddActivity;
 import com.mnnyang.gzuclassschedule.mvp.home.HomeActivity;
+import com.mnnyang.gzuclassschedule.mvp.mg.MgActivity;
 import com.mnnyang.gzuclassschedule.utils.DialogHelper;
 import com.mnnyang.gzuclassschedule.utils.DialogListener;
 import com.mnnyang.gzuclassschedule.utils.LogUtil;
@@ -339,16 +341,17 @@ public class CourseActivity extends BaseActivity implements CourseContract.View,
 
     @Override
     public void initFirstStart() {
-        //TODO 重复使用
         boolean isFirst = Preferences.getBoolean(getString(R.string.app_preference_app_is_first_start), true);
         if (!isFirst) {
             return;
         }
         CourseGroupDao groupDao = Cache.instance().getCourseGroupDao();
+
         CourseGroup defaultGroup = groupDao
                 .queryBuilder()
-                .where(CourseGroupDao.Properties.CgName.eq("默认"))
+                .where(CourseGroupDao.Properties.CgName.eq("默认课表"))
                 .unique();
+
         long insert;
         if (defaultGroup == null) {
             insert = groupDao.insert(new CourseGroup(0L, "默认", ""));
@@ -357,7 +360,21 @@ public class CourseActivity extends BaseActivity implements CourseContract.View,
         }
 
         Preferences.putLong(getString(R.string.app_preference_current_cs_name_id), insert);
+
+        //migrate old data
+        AppUtils.copyOldData(this);
+
         Preferences.putBoolean(getString(R.string.app_preference_app_is_first_start), false);
+
+        if (CourseDbDao.instance().loadCsNameList().size() > 0) {
+            isV1Update();
+        }
+    }
+
+    private void isV1Update() {
+        LogUtil.e(this, "属于从1.x升级上来");
+        toast("请选择正在使用的课表");
+        startActivity(new Intent(this, MgActivity.class));
     }
 
     @Override
@@ -379,7 +396,7 @@ public class CourseActivity extends BaseActivity implements CourseContract.View,
             }
             course.init();
 
-            LogUtil.e(this, "即将显示："+course.toString());
+            LogUtil.e(this, "即将显示：" + course.toString());
 
             mCourseViewV2.addCourse(course);
         }
