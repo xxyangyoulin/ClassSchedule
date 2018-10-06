@@ -70,7 +70,6 @@
 
         </activity>
 
-
         <receiver android:name=".widget.MyWidget">
             <intent-filter>
                 <action android:name="com.mnnyang.action.UPDATE_WIDGET" />

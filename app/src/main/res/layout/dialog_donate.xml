@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.mnnyang.gzuclassschedule.custom.RippleLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="center"
+    android:orientation="horizontal"
+    app:count="2">
+
+    <ImageView
+        android:id="@+id/iv_alipay"
+        android:layout_width="0dp"
+        android:layout_height="130dp"
+        android:layout_weight="1"
+        android:background="?attr/selectableItemBackgroundBorderless"
+        android:clickable="true"
+        android:focusable="true"
+        android:padding="@dimen/margin_16dp"
+        android:src="@drawable/svg_image_alipay" />
+
+    <ImageView
+        android:id="@+id/iv_wechat"
+        android:layout_width="0dp"
+        android:layout_height="130dp"
+        android:layout_weight="1"
+        android:background="?attr/selectableItemBackgroundBorderless"
+        android:clickable="true"
+        android:focusable="true"
+        android:padding="@dimen/margin_16dp"
+        android:src="@drawable/svg_image_wechat" />
+</com.mnnyang.gzuclassschedule.custom.RippleLayout>

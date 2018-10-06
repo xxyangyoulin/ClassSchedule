@@ -15,12 +15,15 @@
     <declare-styleable name="ColorImageView">
         <attr name="bgcolor" format="color|reference" />
     </declare-styleable>
+    <declare-styleable name="RippleLayout">
+        <attr name="count" format="integer" />
+    </declare-styleable>
 
 
     <declare-styleable name="SettingItemNormal">
         <attr name="item_title" format="string|reference" />
         <attr name="summary" format="string|reference" />
-        <attr name="showSwitch" format="boolean"/>
+        <attr name="showSwitch" format="boolean" />
         <attr name="checked" format="boolean" />
         <attr name="detach" format="boolean" />
     </declare-styleable>

@@ -1,11 +1,13 @@
 package com.mnnyang.gzuclassschedule.custom;
 
 import android.content.Context;
+import android.content.res.TypedArray;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.util.AttributeSet;
 import android.widget.LinearLayout;
 
+import com.mnnyang.gzuclassschedule.R;
 import com.mnnyang.gzuclassschedule.custom.util.Utils;
 
 import java.util.ArrayList;
@@ -37,13 +39,11 @@ public class RippleLayout extends LinearLayout {
     public RippleLayout(Context context, AttributeSet attrs) {
         super(context, attrs);
         init();
-    }
 
-    public RippleLayout(Context context, AttributeSet attrs, int defStyleAttr) {
-        super(context, attrs, defStyleAttr);
-        init();
+        TypedArray array = context.obtainStyledAttributes(attrs, R.styleable.RippleLayout);
+        mCircleMax = array.getInteger(R.styleable.RippleLayout_count, mCircleMax);
+        array.recycle();
     }
-
 
     private void init() {
         mRandom = new Random();
@@ -71,8 +71,7 @@ public class RippleLayout extends LinearLayout {
         }
 
         for (int i = 0; i < mCircleMax; i++) {
-            mCircles.add(new Circle(mRandom.nextInt(mWidth), mRandom.nextInt(mHeight),
-                    mRandom.nextInt(120) + 50, Utils.getRandomColor()));
+            mCircles.add(resetCircle(new Circle()));
         }
     }
 
@@ -83,14 +82,22 @@ public class RippleLayout extends LinearLayout {
             canvas.drawCircle(circle.x, circle.y, circle.currRadius, mPaint);
             circle.currRadius += 1;
             if (circle.currRadius > circle.maxRadius) {
-                circle.currRadius = 0;
-                circle.x = mRandom.nextInt(mWidth);
-                circle.y = mRandom.nextInt(mHeight);
+                resetCircle(circle);
             }
         }
         super.draw(canvas);
 
         postDelayed(action, 16);
+    }
+
+    private Circle resetCircle(Circle circle) {
+        circle.currRadius = 0;
+        circle.x = mRandom.nextInt(mWidth);
+        circle.y = mRandom.nextInt(mHeight);
+        circle.maxRadius = mRandom.nextInt(120) + 50;
+        circle.setColor(Utils.getRandomColor());
+
+        return circle;
     }
 
     Runnable action = new Runnable() {
@@ -107,11 +114,11 @@ public class RippleLayout extends LinearLayout {
         int currRadius = 0;
         int color;
 
-        public Circle(int x, int y, int maxRadius, int color) {
-            this.x = x;
-            this.y = y;
-            this.maxRadius = maxRadius;
+        public int getColor() {
+            return color;
+        }
 
+        public void setColor(int color) {
             this.color = color & 0xFFFFFF;
         }
     }

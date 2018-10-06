@@ -1,5 +1,6 @@
 package com.mnnyang.gzuclassschedule.mvp.setting;
 
+import android.Manifest;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.didikee.donate.AlipayDonate;
@@ -7,7 +8,8 @@ import android.didikee.donate.WeiXinDonate;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.os.Environment;
-import android.preference.PreferenceManager;
+import android.support.annotation.NonNull;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.AppCompatRadioButton;
 import android.view.MenuItem;
 import android.view.View;
@@ -21,7 +23,6 @@ import com.mnnyang.gzuclassschedule.BaseActivity;
 import com.mnnyang.gzuclassschedule.R;
 import com.mnnyang.gzuclassschedule.mvp.about.AboutActivity;
 import com.mnnyang.gzuclassschedule.mvp.add.AddActivity;
-import com.mnnyang.gzuclassschedule.app.Constant;
 import com.mnnyang.gzuclassschedule.app.app;
 import com.mnnyang.gzuclassschedule.mvp.course.CourseActivity;
 import com.mnnyang.gzuclassschedule.custom.settting.SettingItemNormal;
@@ -31,6 +32,7 @@ import com.mnnyang.gzuclassschedule.utils.ActivityUtil;
 import com.mnnyang.gzuclassschedule.utils.DialogHelper;
 import com.mnnyang.gzuclassschedule.utils.DialogListener;
 import com.mnnyang.gzuclassschedule.utils.Preferences;
+import com.mnnyang.gzuclassschedule.utils.RequestPermission;
 import com.mnnyang.gzuclassschedule.utils.ScreenUtils;
 import com.mnnyang.gzuclassschedule.utils.ToastUtils;
 import com.mnnyang.gzuclassschedule.utils.VersionUpdate;
@@ -140,8 +142,36 @@ public class SettingActivity extends BaseActivity implements SettingContract.Vie
     }
 
     private void donate() {
-//        donateAlipay("fkx0201809rfs0hvrukmg80");
-        donateWeixin();
+        DialogHelper helper = new DialogHelper();
+        View view = View.inflate(this, R.layout.dialog_donate, null);
+        view.findViewById(R.id.iv_alipay).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                donateAlipay(getString(R.string.alipay_qr_code));
+            }
+        });
+        view.findViewById(R.id.iv_wechat).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                donateWeixinRemind();
+            }
+        });
+
+        helper.showCustomDialog(this, view, null, null);
+    }
+
+    private void donateWeixinRemind() {
+        new AlertDialog.Builder(this)
+                .setTitle("微信捐赠操作步骤")
+                .setMessage("点击确定按钮后会跳转微信扫描二维码界面：\n\n" + "1. 点击右上角的菜单按钮\n\n" + "2. 点击'从相册选取二维码'\n\n" + "3. 选择第一张二维码图片即可\n\n")
+                .setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        donateWeixin();
+                    }
+                })
+                .setNegativeButton("取消", null)
+                .show();
     }
 
     /**
@@ -158,13 +188,30 @@ public class SettingActivity extends BaseActivity implements SettingContract.Vie
         }
     }
 
+
+    private void donateWeixin() {
+        RequestPermission.with(this)
+                .permissions(Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.MOUNT_UNMOUNT_FILESYSTEMS)
+                .request(new RequestPermission.Callback() {
+                    @Override
+                    public void onGranted() {
+                        toDonateWeixin();
+                    }
+
+                    @Override
+                    public void onDenied() {
+                        toast("微信捐赠需要在内存中存入二维码图片");
+                    }
+                });
+    }
+
     /**
      * 需要提前准备好 微信收款码 照片，可通过微信客户端生成
      */
-    private void donateWeixin() {
+    private void toDonateWeixin() {
         InputStream weixinQrIs = getResources().openRawResource(R.raw.weixin_donate);
         String qrPath = Environment.getExternalStorageDirectory().getAbsolutePath()
-                + File.separator + "AndroidDonateSample" + File.separator +
+                + File.separator + "MDKeBiao" + File.separator +
                 "didikee_weixin.png";
         WeiXinDonate.saveDonateQrImage2SDCard(qrPath, BitmapFactory.decodeStream(weixinQrIs));
         WeiXinDonate.donateViaWeiXin(this, qrPath);
@@ -259,6 +306,13 @@ public class SettingActivity extends BaseActivity implements SettingContract.Vie
     @Override
     public void showNotice(String notice) {
         ToastUtils.show(notice);
+    }
+
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        RequestPermission.onRequestPermissionsResult(requestCode, permissions, grantResults);
     }
 
     @Override
