@@ -58,7 +58,7 @@
             <ImageView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:src="@drawable/ic_svg_classroom"/>
+                android:src="@drawable/ic_location_on_black_24dp"/>
 
             <TextView
                 android:id="@+id/tv_calssroom"
@@ -81,7 +81,7 @@
             <ImageView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:src="@drawable/ic_svg_teacher"/>
+                android:src="@drawable/ic_person_black_24dp"/>
 
 
             <TextView
@@ -105,7 +105,7 @@
             <ImageView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:src="@drawable/ic_svg_node"/>
+                android:src="@drawable/ic_timeline_black_24dp"/>
 
 
             <TextView
@@ -129,7 +129,7 @@
             <ImageView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:src="@drawable/ic_svg_week"/>
+                android:src="@drawable/ic_access_time_black_24dp"/>
 
             <TextView
                 android:id="@+id/tv_week_range"

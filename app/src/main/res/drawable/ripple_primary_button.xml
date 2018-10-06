@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?><!-- drawable/ripple_mask.xml-->
 <ripple xmlns:android="http://schemas.android.com/apk/res/android"
-    android:color="#b3e5fc">
+    android:color="@color/color_gary_40">
     <!--<item android:id="@android:id/mask" android:drawable="@color/pink_dialog"/>-->
 
     <item>
@@ -10,7 +10,7 @@
             <!--android:state_pressed="true">-->
             <!--</item>-->
             <item
-                android:drawable="@color/blue_dialog"
+                android:drawable="?android:colorPrimary"
                 android:state_pressed="false" />
         </selector>
     </item>

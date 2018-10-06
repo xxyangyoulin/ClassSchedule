@@ -123,34 +123,28 @@ public class AddActivity extends BaseActivity implements AddContract.View, View.
                 courseV2.setCouName(name);
                 courseV2.setCouTeacher(teacher);
 
-                if (mAddMode) {
+                if (mAddMode || courseV2.getCouId() == null) {
                     courseV2.setCouCgId(couCgId);
                     courseV2.init();
-                    long insert = Cache.instance().getCourseV2Dao().insert(courseV2);
-                    if (insert > 0) {
-                        toast("添加成功！" + insert);
-                        EventBus.getDefault().post(new CourseDataChangeEvent());
-                        finish();
-                    } else {
-                        toast("添加失败！");
-                    }
+                    Cache.instance().getCourseV2Dao().insert(courseV2);
                 } else {
-                    //edit mode
-                    if (!(courseV2.getCouId() > 0)) {
-                        throw new RuntimeException("要更新的课程没有找到id");
-                    }
                     courseV2.init();
                     Cache.instance().getCourseV2Dao().update(courseV2);
-                    toast("编辑成功！");
-                    EventBus.getDefault().post(new CourseDataChangeEvent());
-                    finish();
                 }
 
             }
         }
         if (!hasLocation) {
-            toast("没有设置课程时间！");
+            toast("没有设置课程时间！☆\\(￣▽￣)/");
         }
+
+        if(mAddMode){
+            toast("添加成功！☆\\(￣▽￣)/");
+        }else{
+            toast("编辑成功！☆\\(￣▽￣)/");
+        }
+        EventBus.getDefault().post(new CourseDataChangeEvent());
+        finish();
     }
 
     private void addLocation(boolean closeable) {

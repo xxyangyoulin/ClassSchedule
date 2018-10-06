@@ -50,8 +50,6 @@ public class CoursePresenter implements CourseContract.Presenter {
         String path = Preferences.getString(app.mContext.getString(R.string.app_preference_bg_iamge_path), "");
         if (!TextUtils.isEmpty(path)) {
             loadImage(path);
-        } else {
-            LogUtil.e(this, "no background");
         }
     }
 
@@ -121,9 +119,6 @@ public class CoursePresenter implements CourseContract.Presenter {
                             //view被销毁
                             return;
                         }
-
-                        LogUtil.e(this, "-------------------------------------------");
-                        System.out.println(courses);
                         mView.setCourseData(courses);
                     }
 
@@ -158,6 +153,6 @@ public class CoursePresenter implements CourseContract.Presenter {
     @Override
     public void onDestroy() {
         mView = null;
-        System.gc();
+//        System.gc();
     }
 }

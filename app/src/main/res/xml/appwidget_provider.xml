@@ -4,7 +4,7 @@
     android:initialLayout="@layout/widget_all"
     android:minHeight="150dp"
     android:minWidth="200dp"
-    android:previewImage="@mipmap/ic_launcher"
+    android:previewImage="@drawable/preview_widget_weekday"
     android:resizeMode="horizontal|vertical"
     android:updatePeriodMillis="86400000" />
 

@@ -8,6 +8,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.KeyEvent;
+import android.view.MenuItem;
 import android.view.ViewGroup;
 import android.webkit.CookieManager;
 import android.webkit.GeolocationPermissions;
@@ -28,7 +29,7 @@ import com.mnnyang.gzuclassschedule.utils.ToastUtils;
  * 来自简书：Wing_Lih
  * ttps://www.jianshu.com/p/3fcf8ba18d7f
  */
-public class Html5Activity extends AppCompatActivity {
+public class Html5Activity extends BaseActivity {
 
     private String TAG = "Html5Activity";
 
@@ -54,7 +55,7 @@ public class Html5Activity extends AppCompatActivity {
         mTitle = bundle.getString("title", "");
         mJavaScriptInterface = bundle.getSerializable("javascript");
 
-        //initBackToolbar(TextUtils.isEmpty(mTitle) ? "加载中" : mTitle);
+        initBackToolbar(TextUtils.isEmpty(mTitle) ? "加载中" : mTitle);
 
         Log.d("Url:", mUrl);
         Log.d("mTitle:", mTitle);
@@ -148,7 +149,7 @@ public class Html5Activity extends AppCompatActivity {
             CookieManager cookieManager = CookieManager.getInstance();
 
             /*保存cookie*/
-            LogUtil.i(this,"保存了Cookie="+cookieManager.getCookie(url));
+            LogUtil.i(this, "保存了Cookie=" + cookieManager.getCookie(url));
             //Cache.newInstance().setCookie(cookieManager.getCookie(url));
         }
 
@@ -234,6 +235,7 @@ public class Html5Activity extends AppCompatActivity {
         ToastUtils.show("加载错误！");
     }
 
+
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         if (keyCode == KeyEvent.KEYCODE_BACK && mWebView.canGoBack()) {
@@ -242,6 +244,16 @@ public class Html5Activity extends AppCompatActivity {
         }
 
         return super.onKeyDown(keyCode, event);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                finish();
+                break;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     @Override
@@ -259,5 +271,4 @@ public class Html5Activity extends AppCompatActivity {
             mWebView = null;
         }
     }
-
 }

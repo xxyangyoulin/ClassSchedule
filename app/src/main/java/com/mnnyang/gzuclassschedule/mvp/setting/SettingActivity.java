@@ -191,7 +191,9 @@ public class SettingActivity extends BaseActivity implements SettingContract.Vie
 
     private void donateWeixin() {
         RequestPermission.with(this)
-                .permissions(Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.MOUNT_UNMOUNT_FILESYSTEMS)
+                .permissions(Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                        Manifest.permission.MOUNT_UNMOUNT_FILESYSTEMS,
+                        Manifest.permission.READ_EXTERNAL_STORAGE)
                 .request(new RequestPermission.Callback() {
                     @Override
                     public void onGranted() {

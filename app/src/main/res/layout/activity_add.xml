@@ -47,7 +47,7 @@
                     android:layout_height="wrap_content"
                     app:hint="课程名称"
                     app:hintColor="@color/color_gary_40"
-                    app:icon="@drawable/ic_svg_classroom"
+                    app:icon="@drawable/ic_svg_book"
                     app:textColor="@color/secondary_text" />
 
                 <View

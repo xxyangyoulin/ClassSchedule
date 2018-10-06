@@ -13,27 +13,33 @@ public class Url {
     /**
      * 上传course
      */
-    public static final String URL_UPLOAD_COURSE = URL_HOST+"main/upload_course/";
+    public static final String URL_UPLOAD_COURSE = URL_HOST + "main/upload_course/";
     /**
      * 分享course
      */
-    public static final String URL_SHARE = URL_HOST+"main/share/";
+    public static final String URL_SHARE = URL_HOST + "main/share/";
     /**
      * 下载course
      */
-    public static final String URL_DOWN_COURSE = URL_HOST+"main/down_course/";
+    public static final String URL_DOWN_COURSE = URL_HOST + "main/down_course/";
     /**
      * 登录
      */
-    public static final String URL_LOGIN = URL_HOST+"user/login/";
+    public static final String URL_LOGIN = URL_HOST + "user/login/";
     /**
      * 注册
      */
-    public static final String URL_REGISTER = URL_HOST+"user/register/";
+    public static final String URL_REGISTER = URL_HOST + "user/register/";
     /**
      * 用户信息
      */
-    public static final String URL_USER_INFO = URL_HOST+"user/info/";
+    public static final String URL_USER_INFO = URL_HOST + "user/info/";
+
+    /**
+     * 找回密码
+     */
+    public static final String URL_RETRIEVE_PASSWORD = URL_HOST + "user/password/";
+
 
     /**
      * 贵州大学正方教务管理系统

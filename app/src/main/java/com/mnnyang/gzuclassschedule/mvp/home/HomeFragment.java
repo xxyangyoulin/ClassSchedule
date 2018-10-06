@@ -21,6 +21,7 @@ import com.mnnyang.gzuclassschedule.BaseFragment;
 import com.mnnyang.gzuclassschedule.R;
 import com.mnnyang.gzuclassschedule.app.AppUtils;
 import com.mnnyang.gzuclassschedule.app.Cache;
+import com.mnnyang.gzuclassschedule.app.Url;
 import com.mnnyang.gzuclassschedule.data.beanv2.CourseGroup;
 import com.mnnyang.gzuclassschedule.data.beanv2.UserWrapper;
 import com.mnnyang.gzuclassschedule.mvp.add.AddActivity;
@@ -194,7 +195,11 @@ public class HomeFragment extends BaseFragment implements HomeContract.View,
         if (requestCode == REQUEST_CODE_SCAN && resultCode == RESULT_OK) {
             if (data != null) {
                 String content = data.getStringExtra(Constant.CODED_CONTENT);
-                mPresenter.downShare(content);
+                if (content.startsWith(Url.URL_SHARE)) {
+                    mPresenter.downShare(content);
+                }else{
+                    toast("分享已失效！");
+                }
             }
         }
     }

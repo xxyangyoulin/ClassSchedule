@@ -103,7 +103,7 @@ public class AppUtils {
      */
     public static String getGravatar(String email) {
         String emailMd5 = AppUtils.md5Hex(email);        //设置图片大小32px
-        String avatar = "http://www.gravatar.com/avatar/" + emailMd5 + "?s=64";
+        String avatar = "http://www.gravatar.com/avatar/" + emailMd5 + "?s=128";
         System.out.println(avatar);
         return avatar;
     }

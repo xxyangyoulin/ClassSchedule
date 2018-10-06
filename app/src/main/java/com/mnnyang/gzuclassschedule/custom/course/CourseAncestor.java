@@ -162,8 +162,6 @@ public class CourseAncestor implements Serializable {
     }
 
     public boolean shouldShow(int index) {
-        LogUtil.e(this, "index:" + index);
-        LogUtil.e(this, "indexs:" + showIndexes);
         return showIndexes.contains(index);
     }
 

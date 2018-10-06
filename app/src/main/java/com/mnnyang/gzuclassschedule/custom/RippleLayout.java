@@ -50,7 +50,7 @@ public class RippleLayout extends LinearLayout {
         mPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
         mPaint.setStyle(Paint.Style.FILL_AND_STROKE);
         mPaint.setStrokeWidth(3);
-        mPaint.setColor(Utils.getRandomColor());
+        mPaint.setColor(Utils.getDarkRandomColor());
         setBackgroundColor(0x20ffffff);
     }
 
@@ -95,7 +95,7 @@ public class RippleLayout extends LinearLayout {
         circle.x = mRandom.nextInt(mWidth);
         circle.y = mRandom.nextInt(mHeight);
         circle.maxRadius = mRandom.nextInt(120) + 50;
-        circle.setColor(Utils.getRandomColor());
+        circle.setColor(Utils.getDarkRandomColor());
 
         return circle;
     }

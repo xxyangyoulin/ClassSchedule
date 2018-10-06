@@ -414,6 +414,13 @@ public class CourseActivity extends BaseActivity implements CourseContract.View,
     }
 
     @Override
+    public void onBackPressed() {
+        //TODO 保留返回任务？
+//        super.onBackPressed();
+        moveTaskToBack(false);
+    }
+
+    @Override
     public boolean onTouchEvent(MotionEvent event) {
         if (mDialog != null) mDialog.dismiss();
         return super.onTouchEvent(event);
@@ -439,71 +446,4 @@ public class CourseActivity extends BaseActivity implements CourseContract.View,
     public void setPresenter(CourseContract.Presenter presenter) {
         mPresenter = presenter;
     }
-
-   /*private void popupWindow(View v) {
-        mPopupWindow = new PopupWindow(
-                ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-
-        final HorizontalScrollView popupView = getPopupWindowView();
-        mPopupWindow.setContentView(popupView);
-        mPopupWindow.setBackgroundDrawable(new ColorDrawable(0x00000000));
-        mPopupWindow.setOutsideTouchable(true);
-        mPopupWindow.setAnimationStyle(R.style.animDown);
-        //是否允许popup超出屏幕范围
-        mPopupWindow.setClippingEnabled(true);
-
-        mPopupWindow.getContentView().measure(View.MeasureSpec.UNSPECIFIED,
-                View.MeasureSpec.UNSPECIFIED);
-
-        int xoff = mLayoutWeekTitle.getWidth() - mPopupWindow.getContentView().getMeasuredWidth();
-        int yoff = -mTvWeekCount.getHeight();
-        mPopupWindow.showAsDropDown(v, xoff / 2, yoff);
-
-        if (mCurrentWeekCount <= 3) {
-            return;
-        }
-
-        popupView.getViewTreeObserver().addOnGlobalLayoutListener(
-                new ViewTreeObserver.OnGlobalLayoutListener() {
-                    @Override
-                    public void onGlobalLayout() {
-                        popupView.getViewTreeObserver()
-                                .removeGlobalOnLayoutListener(this);
-                        ViewGroup llView = (ViewGroup) popupView.getChildAt(0);
-                        int width = llView.getChildAt(0).getWidth();
-                        int x = width * (mCurrentWeekCount - 3);
-                        popupView.scrollTo(x, 0);
-                    }
-                });
-    }*/
-
-    /*@NonNull
-    private HorizontalScrollView getPopupWindowView() {
-        final HorizontalScrollView popupView = new HorizontalScrollView(getBaseContext());
-        LinearLayout linearLayout = new LinearLayout(getBaseContext());
-        linearLayout.setOrientation(LinearLayout.HORIZONTAL);
-        linearLayout.setBackgroundColor(Color.BLACK);
-
-        for (int i = 1; i <= 25; i++) {
-            TextView tv = (TextView) LayoutInflater.from(getBaseContext())
-                    .inflate(R.layout.layout_week_text_view, null);
-            linearLayout.addView(tv);
-            tv.setText("第" + i + "周");
-            tv.setTag(i);
-            tv.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    System.out.println(v.getTag());
-                    mCurrentWeekCount = (int) v.getTag();
-                    mPopupWindow.dismiss();
-                    AppUtils.PreferencesCurrentWeek(getBaseContext(),(Integer) v.getTag());
-                    mCourseViewV2.setCurrentIndex(mCurrentWeekCount);
-                    mCourseViewV2.resetView();
-                    mTvWeekCount.setText("第" + mCurrentWeekCount + "周");
-                }
-            });
-        }
-        popupView.addView(linearLayout);
-        return popupView;
-    }*/
 }

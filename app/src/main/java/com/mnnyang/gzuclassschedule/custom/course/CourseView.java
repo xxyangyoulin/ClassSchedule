@@ -346,7 +346,7 @@ public class CourseView extends FrameLayout {
         //TextView
         final TextView tv = getCourseTextView(mColItemHeight * course.getRowNum(), mRowItemWidth);
 
-        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
+        LayoutParams params = new LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT,
                 ViewGroup.LayoutParams.MATCH_PARENT);
         params.setMargins(textLRMargin, textTBMargin, textLRMargin, textTBMargin);
