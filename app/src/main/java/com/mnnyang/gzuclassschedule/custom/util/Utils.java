@@ -16,22 +16,38 @@ import java.util.Random;
  */
 
 public class Utils {
+//    static int[] colorList = new int[]{
+//            0xFF8AD297,
+//            0xFFF9A883,
+//            0xFF88CFCC,
+//            0xFFF19C99,
+//            0xFFF7C56B,
+//            0xFFD2A596,
+//            0xFF67BDDE,
+//            0xFF9CCF5A,
+//            0xFF9AB4CF,
+//            0xFFE593AD,
+//            0xFFE2C38A,
+//            0xFFB29FD2,
+//            0xFFE2C490,
+//            0xFFE2C490,
+//    };
+
     static int[] colorList = new int[]{
-            0xFF8AD297,
-            0xFFF9A883,
-            0xFF88CFCC,
-            0xFFF19C99,
-            0xFFF7C56B,
-            0xFFD2A596,
-            0xFF67BDDE,
-            0xFF9CCF5A,
-            0xFF9AB4CF,
-            0xFFE593AD,
-            0xFFE2C38A,
-            0xFFB29FD2,
-            0xFFE2C490,
-            0xFFE2C490,
-    };
+            0xFF5ABF6C,
+            0xFFF79060,
+            0xFF63C0BD,
+            0xFFED837F,
+            0xFFF5B94E,
+            0xFFCA9483,
+            0xFF31A6D3,
+            0xFF8BC73D,
+            0xFF87A6C6,
+            0xFFDF7999,
+            0xFFD6A858,
+            0xFF997FC3,
+            0xFFDDB97B,
+            0xFFd3dEe5};
 
     public static GradientDrawable
     getDrawable(Context context, int rgb,
@@ -90,8 +106,10 @@ public class Utils {
     }
 
 
+    private static Random random = new Random();
+
     public static int getRandomColor() {
-        return colorList[new Random().nextInt(20) % colorList.length];
+        return colorList[random.nextInt(20) % colorList.length];
     }
 
     public static int getColor(Resources resources, int colorId) {

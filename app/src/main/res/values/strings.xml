@@ -14,7 +14,6 @@
 
     <string name="app_preference_app_is_first_start">app_is_first_start</string>
     <string name="app_preference_start_week_begin_millis">start_week_begin_date</string>
-    <!--<string name="app_preference_current_sd_name">current_sd_name</string>-->
     <string name="app_preference_theme">theme</string>
     <string name="app_preference_bg_iamge_path">bg_image_path</string>
     <string name="app_preference_bg_enabled">bg_enabled</string>
@@ -49,7 +48,21 @@
     <string name="now_version">有新版本</string>
     <string name="about">关于</string>
 
-    <string name="github_lib">org.jsoup:jsoup:1.10.3\nio.reactivex:rxjava:1.1.3\nio.reactivex:rxandroid:1.0.1\ncom.google.code.gson:gson:2.8.2\ncom.zhy:okhttputils:2.6.2\nwangjie/wheelview</string>
+    <string name="github_lib">com.android.support:design
+    \ncom.android.support:appcompat-v7
+    \ncom.android.support.constraint:constraint-layout
+    \norg.jsoup:jsoup
+    \nio.reactivex.rxjava2:rxandroid
+    \nio.reactivex.rxjava2:rxjava
+    \norg.greenrobot:eventbus
+    \norg.greenrobot:greendao
+    \ncom.google.code.gson:gson
+    \njp.wasabeef:glide-transformations
+    \nde.hdodenhof:circleimageview
+    \ncom.zhy:okhttputils
+    \ncom.github.yuzhiqiang1993:zxing
+    \ncom.github.franmontiel:PersistentCookieJar
+    \ncom.github.didikee:AndroidDonate</string>
     <string name="github_gzuclassschedule">https://github.com/mnnyang/GzuClassSchedule</string>
 
 
