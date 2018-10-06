@@ -10,7 +10,8 @@
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="#f3f3f3">
+        android:background="#f3f3f3"
+        android:scrollbars="none">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -84,14 +85,53 @@
 
                 <TextView
                     android:id="@+id/tv_github"
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="4dp"
                     android:text="@string/github_gzuclassschedule"
-                    android:textColor="@color/primary_text" />
+                    android:textColor="@color/primary_text"
+                    android:textIsSelectable="true" />
 
             </LinearLayout>
 
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/margin_16dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginRight="@dimen/margin_16dp"
+                android:layout_marginBottom="16dp"
+                android:text="开发者"
+                android:textColor="@color/secondary_text" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="@dimen/margin_16dp"
+                android:layout_marginRight="@dimen/margin_16dp"
+                android:background="#ffffff"
+                android:orientation="vertical"
+                android:padding="8dp">
+
+                <TextView
+                    android:id="@+id/tv_blog"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="4dp"
+                    android:text="@string/blog_xxyangyoulin"
+                    android:textColor="@color/primary_text"
+                    android:textIsSelectable="true" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="4dp"
+                    android:layout_marginTop="8dp"
+                    android:text="@string/about_email"
+                    android:textColor="@color/primary_text"
+                    android:textIsSelectable="true" />
+
+            </LinearLayout>
 
             <TextView
                 android:layout_width="wrap_content"

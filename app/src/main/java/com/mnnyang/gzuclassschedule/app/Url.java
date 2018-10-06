@@ -40,16 +40,15 @@ public class Url {
      */
     public static final String URL_RETRIEVE_PASSWORD = URL_HOST + "user/password/";
 
+    /**
+     * app更新
+     */
+    public static final String URL_CHECK_UPDATE_APP  = URL_HOST+"main/check_update/";
 
     /**
      * 贵州大学正方教务管理系统
      */
     public static final String URL_GZU_HOST = "http://210.40.2.253:8888/";
-
-    /**
-     * app更新
-     */
-    public static final String URL_CHECK_UPDATE_APP = "https://raw.githubusercontent.com/mnnyang/GzuClassSchedule/master/check.json";
 
     public static final String CheckCode = "CheckCode.aspx";
     public static final String xskbcx = "xskbcx.aspx";

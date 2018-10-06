@@ -29,15 +29,12 @@ public class ShowDetailDialog {
     private PopupWindow mPopupWindow;
 
     /**
-     * @param activity
-     * @param course          时间信息必须完整
-     * @param dismissListener
+     * @param course 时间信息必须完整
      */
     @SuppressLint("SetTextI18n")
     public void show(final Activity activity, final CourseV2 course,
                      final PopupWindow.OnDismissListener dismissListener) {
         if (null == course) {
-            LogUtil.e(this, "show()--> course is null");
             return;
         }
 
@@ -74,18 +71,28 @@ public class ShowDetailDialog {
                 mPopupWindow.dismiss();
             }
         });
-        View edit = popupView.findViewById(R.id.iv_eidt);
+        final View edit = popupView.findViewById(R.id.iv_eidt);
         edit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(activity, AddActivity.class);
-                intent.putExtra(Constant.INTENT_EDIT_COURSE, course);
-                activity.startActivity(intent);
-                dismiss();
+                edit(activity, course);
+            }
+        });
+        popupView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                edit(activity, course);
             }
         });
 
         initWindow(activity, dismissListener, popupView);
+    }
+
+    private void edit(Activity activity, CourseV2 course) {
+        Intent intent = new Intent(activity, AddActivity.class);
+        intent.putExtra(Constant.INTENT_EDIT_COURSE, course);
+        activity.startActivity(intent);
+        dismiss();
     }
 
     private void initWindow(final Activity activity, final PopupWindow.OnDismissListener dismissListener, View popupView) {
@@ -114,11 +121,13 @@ public class ShowDetailDialog {
     @NonNull
     private StringBuilder getNodeInfo(CourseV2 course) {
         StringBuilder nodeInfo = new StringBuilder();
-        if (course.getCouNodeCount() != 0) {
-            nodeInfo = new StringBuilder(String.valueOf(course.getCouStartNode()));
+        if (course.getCouNodeCount() == 1) {
+            nodeInfo.append("第");
         }
-        for (int i = 1; i < course.getCouNodeCount(); i++) {
-            nodeInfo.append("-").append(course.getShowIndexes().get(i-1));
+        nodeInfo.append(course.getCouStartNode());
+        if (course.getCouNodeCount() > 1) {
+            nodeInfo.append("-");
+            nodeInfo.append(course.getCouStartNode() + course.getCouNodeCount() - 1);
         }
         nodeInfo.append("节");
         return nodeInfo;

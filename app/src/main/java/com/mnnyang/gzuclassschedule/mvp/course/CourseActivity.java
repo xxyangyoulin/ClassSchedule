@@ -168,9 +168,7 @@ public class CourseActivity extends BaseActivity implements CourseContract.View,
         int start = 0, end = 0;
         if (show) {
             start = -mHeightSelectWeek;
-            end = 0;
         } else {
-            start = 0;
             end = -mHeightSelectWeek;
         }
 
@@ -208,7 +206,7 @@ public class CourseActivity extends BaseActivity implements CourseContract.View,
 
             textView.setWidth(0);
             textView.setTextColor(0xd0212121);
-            LinearLayout.LayoutParams params = null;
+            LinearLayout.LayoutParams params;
 
             if (i == -1) {
                 params = new LinearLayout.LayoutParams(
@@ -233,6 +231,7 @@ public class CourseActivity extends BaseActivity implements CourseContract.View,
             TextView textView = new TextView(getApplicationContext());
             textView.setTextSize(NODE_TEXT_SIZE);
             textView.setGravity(Gravity.CENTER);
+            textView.setTextColor(Color.GRAY);
             textView.setText(String.valueOf(i));
 
             LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
@@ -397,7 +396,6 @@ public class CourseActivity extends BaseActivity implements CourseContract.View,
     }
 
     private void weekTitle(View v) {
-        //popupWindow(v);
         animSelectWeek(!mSelectWeekIsShow);
     }
 
@@ -416,7 +414,7 @@ public class CourseActivity extends BaseActivity implements CourseContract.View,
     @Override
     public void onBackPressed() {
         //TODO 保留返回任务？
-//        super.onBackPressed();
+        // super.onBackPressed();
         moveTaskToBack(false);
     }
 

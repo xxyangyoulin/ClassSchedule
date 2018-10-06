@@ -71,7 +71,7 @@ public class RippleLayout extends LinearLayout {
         }
 
         for (int i = 0; i < mCircleMax; i++) {
-            mCircles.add(resetCircle(new Circle()));
+            mCircles.add(resetCircle(new Circle(),true));
         }
     }
 
@@ -82,7 +82,7 @@ public class RippleLayout extends LinearLayout {
             canvas.drawCircle(circle.x, circle.y, circle.currRadius, mPaint);
             circle.currRadius += 1;
             if (circle.currRadius > circle.maxRadius) {
-                resetCircle(circle);
+                resetCircle(circle, false);
             }
         }
         super.draw(canvas);
@@ -90,12 +90,16 @@ public class RippleLayout extends LinearLayout {
         postDelayed(action, 16);
     }
 
-    private Circle resetCircle(Circle circle) {
+    private Circle resetCircle(Circle circle, boolean init) {
         circle.currRadius = 0;
         circle.x = mRandom.nextInt(mWidth);
         circle.y = mRandom.nextInt(mHeight);
         circle.maxRadius = mRandom.nextInt(120) + 50;
         circle.setColor(Utils.getDarkRandomColor());
+
+        if(init){
+            circle.currRadius = mRandom.nextInt(circle.maxRadius);
+        }
 
         return circle;
     }

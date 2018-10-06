@@ -10,15 +10,13 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.mnnyang.gzuclassschedule.BaseActivity;
-import com.mnnyang.gzuclassschedule.BasePresenter;
 import com.mnnyang.gzuclassschedule.R;
 import com.mnnyang.gzuclassschedule.app.app;
-import com.mnnyang.gzuclassschedule.data.bean.Version;
+import com.mnnyang.gzuclassschedule.data.beanv2.VersionWrapper;
 import com.mnnyang.gzuclassschedule.utils.DialogHelper;
 import com.mnnyang.gzuclassschedule.utils.DialogListener;
 import com.mnnyang.gzuclassschedule.utils.ToastUtils;
-import com.mnnyang.gzuclassschedule.utils.VersionUpdate;
-import com.zhy.http.okhttp.request.OkHttpRequest;
+import com.mnnyang.gzuclassschedule.utils.spec.VersionUpdate;
 
 /**
  * Created by xxyangyoulin on 2018/3/13.
@@ -34,7 +32,7 @@ public class AboutActivity extends BaseActivity implements AboutContract.View {
         setContentView(R.layout.activity_about);
 
         initBackToolbar(getString(R.string.about));
-        initGithubTextView();
+        initLinkTextView();
         initVersionName();
         initCheckUpdate();
 
@@ -59,12 +57,20 @@ public class AboutActivity extends BaseActivity implements AboutContract.View {
         });
     }
 
-    private void initGithubTextView() {
-        TextView tv = findViewById(R.id.tv_github);
-        tv.setOnClickListener(new View.OnClickListener() {
+    private void initLinkTextView() {
+        findViewById(R.id.tv_github).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Uri uri = Uri.parse(getString(R.string.github_gzuclassschedule));
+                Intent intent = new Intent(Intent.ACTION_VIEW, uri);
+                startActivity(intent);
+            }
+        });
+
+        findViewById(R.id.tv_blog).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Uri uri = Uri.parse(getString(R.string.blog_xxyangyoulin_url));
                 Intent intent = new Intent(Intent.ACTION_VIEW, uri);
                 startActivity(intent);
             }
@@ -73,14 +79,14 @@ public class AboutActivity extends BaseActivity implements AboutContract.View {
 
 
     @Override
-    public void showNotice(String notice) {
+    public void showMassage(String notice) {
         ToastUtils.show(notice);
     }
 
     @Override
-    public void showUpdateVersionInfo(Version version) {
+    public void showUpdateVersionInfo(VersionWrapper.Version version) {
         DialogHelper dialogHelper = new DialogHelper();
-        dialogHelper.showNormalDialog(this, getString(R.string.now_version), version.getMsg(), new DialogListener() {
+        dialogHelper.showNormalDialog(this, getString(R.string.now_version), version.getDescribe(), new DialogListener() {
             @Override
             public void onPositive(DialogInterface dialog, int which) {
                 super.onPositive(dialog, which);

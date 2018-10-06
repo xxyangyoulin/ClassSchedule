@@ -2,11 +2,11 @@ package com.mnnyang.gzuclassschedule.mvp.about;
 
 import com.mnnyang.gzuclassschedule.R;
 import com.mnnyang.gzuclassschedule.app.app;
-import com.mnnyang.gzuclassschedule.data.bean.Version;
+import com.mnnyang.gzuclassschedule.data.beanv2.VersionWrapper;
 import com.mnnyang.gzuclassschedule.data.http.HttpCallback;
 import com.mnnyang.gzuclassschedule.utils.LogUtil;
 import com.mnnyang.gzuclassschedule.utils.ToastUtils;
-import com.mnnyang.gzuclassschedule.utils.VersionUpdate;
+import com.mnnyang.gzuclassschedule.utils.spec.VersionUpdate;
 
 /**
  * Created by xxyangyoulin on 2018/3/13.
@@ -27,38 +27,44 @@ public class AboutPresenter implements AboutContract.Presenter {
 
     @Override
     public void checkUpdate() {
-        if(mView == null){
+        if (mView == null) {
             //view被销毁
             return;
         }
-        mView.showNotice(app.mContext.getString(R.string.checking_for_updates));
+        mView.showMassage(app.mContext.getString(R.string.checking_for_updates));
 
         final VersionUpdate versionUpdate = new VersionUpdate();
-        versionUpdate.checkUpdate(new HttpCallback<Version>() {
+        versionUpdate.checkUpdate(new HttpCallback<VersionWrapper>() {
             @Override
-            public void onSuccess(Version version) {
-                if(mView == null){
+            public void onSuccess(VersionWrapper versionWrapper) {
+                if (mView == null) {
                     //view被销毁
                     return;
                 }
-                if (version == null) {
-                    LogUtil.e(this, "version object is null");
+                if (versionWrapper == null || versionWrapper.getData() == null) {
+                    mView.showMassage("返回数据为空");
                     return;
                 }
+
+                if (versionWrapper.getCode() != 1) {
+                    mView.showMassage(versionWrapper.getMsg());
+                    return;
+                }
+
                 int localVersion = versionUpdate.getLocalVersion(app.mContext);
 
-                LogUtil.d(this, String.valueOf(version.getCode()));
+                LogUtil.d(this, String.valueOf(versionWrapper.getCode()));
 
-                if (version.getVersion() > localVersion) {
-                    mView.showUpdateVersionInfo(version);
+                if (versionWrapper.getData().getCode() > localVersion) {
+                    mView.showUpdateVersionInfo(versionWrapper.getData());
                 } else {
-                    mView.showNotice(app.mContext.getString(R.string.already_the_latest_version));
+                    mView.showMassage(app.mContext.getString(R.string.already_the_latest_version));
                 }
             }
 
             @Override
             public void onFail(String errMsg) {
-                if(mView == null){
+                if (mView == null) {
                     //view被销毁
                     return;
                 }

@@ -63,8 +63,9 @@
     \ncom.github.yuzhiqiang1993:zxing
     \ncom.github.franmontiel:PersistentCookieJar
     \ncom.github.didikee:AndroidDonate</string>
-    <string name="github_gzuclassschedule">https://github.com/mnnyang/GzuClassSchedule</string>
-
+    <string name="blog_xxyangyoulin">博&#160;&#160;客：http://xxyangyoulin.cn/</string>
+    <string name="blog_xxyangyoulin_url">http://xxyangyoulin.cn/</string>
+    <string name="github_gzuclassschedule">https://github.com/mnnyang/gzuclassschedule/</string>
 
     <string name="check_update">检查更新</string>
     <string name="update_succeed">更新成功</string>
@@ -107,4 +108,5 @@
     <string name="class_schedule">课程表</string>
     <string name="app_preference_url_school">url_school</string>
     <string name="alipay_qr_code">fkx0201809rfs0hvrukmg80</string>
+    <string name="about_email">Email：xxyangyoulin@gmail.com</string>
 </resources>

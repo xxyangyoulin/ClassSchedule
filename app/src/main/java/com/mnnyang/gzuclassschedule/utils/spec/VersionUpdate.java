@@ -1,4 +1,4 @@
-package com.mnnyang.gzuclassschedule.utils;
+package com.mnnyang.gzuclassschedule.utils.spec;
 
 import android.content.ActivityNotFoundException;
 import android.content.Context;
@@ -9,8 +9,9 @@ import android.net.Uri;
 
 import com.google.gson.Gson;
 import com.mnnyang.gzuclassschedule.app.Url;
-import com.mnnyang.gzuclassschedule.data.bean.Version;
+import com.mnnyang.gzuclassschedule.data.beanv2.VersionWrapper;
 import com.mnnyang.gzuclassschedule.data.http.HttpCallback;
+import com.mnnyang.gzuclassschedule.utils.LogUtil;
 import com.zhy.http.okhttp.OkHttpUtils;
 import com.zhy.http.okhttp.callback.StringCallback;
 
@@ -22,7 +23,7 @@ import okhttp3.Call;
 
 public class VersionUpdate {
 
-    public void checkUpdate(final HttpCallback<Version> callback) {
+    public void checkUpdate(final HttpCallback<VersionWrapper> callback) {
         OkHttpUtils.get().url(Url.URL_CHECK_UPDATE_APP)
                 .build().execute(new StringCallback() {
             @Override
@@ -35,8 +36,9 @@ public class VersionUpdate {
             public void onResponse(String response, int id) {
                 try {
                     Gson gson = new Gson();
-                    Version version = gson.fromJson(response, Version.class);
-                    callback.onSuccess(version);
+                    LogUtil.e(this,response);
+                    VersionWrapper versionWrapper = gson.fromJson(response, VersionWrapper.class);
+                    callback.onSuccess(versionWrapper);
                 } catch (Exception e) {
                     e.printStackTrace();
                     callback.onFail("parse error");

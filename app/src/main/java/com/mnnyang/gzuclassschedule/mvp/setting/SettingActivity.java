@@ -35,7 +35,7 @@ import com.mnnyang.gzuclassschedule.utils.Preferences;
 import com.mnnyang.gzuclassschedule.utils.RequestPermission;
 import com.mnnyang.gzuclassschedule.utils.ScreenUtils;
 import com.mnnyang.gzuclassschedule.utils.ToastUtils;
-import com.mnnyang.gzuclassschedule.utils.VersionUpdate;
+import com.mnnyang.gzuclassschedule.utils.spec.VersionUpdate;
 
 import java.io.File;
 import java.io.InputStream;
