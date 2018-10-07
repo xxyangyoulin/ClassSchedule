@@ -6,24 +6,18 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.os.Handler;
-import android.support.annotation.NonNull;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.text.TextUtils;
 import android.view.Gravity;
 import android.view.KeyEvent;
-import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.ViewTreeObserver;
 import android.view.animation.DecelerateInterpolator;
-import android.widget.HorizontalScrollView;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 import android.widget.TextView;
@@ -31,6 +25,7 @@ import android.widget.TextView;
 import com.mnnyang.gzuclassschedule.BaseActivity;
 import com.mnnyang.gzuclassschedule.R;
 import com.mnnyang.gzuclassschedule.RecyclerBaseAdapter;
+import com.mnnyang.gzuclassschedule.SplashFragment;
 import com.mnnyang.gzuclassschedule.app.AppUtils;
 import com.mnnyang.gzuclassschedule.app.Cache;
 import com.mnnyang.gzuclassschedule.app.Constant;
@@ -45,6 +40,7 @@ import com.mnnyang.gzuclassschedule.data.greendao.CourseV2Dao;
 import com.mnnyang.gzuclassschedule.mvp.add.AddActivity;
 import com.mnnyang.gzuclassschedule.mvp.home.HomeActivity;
 import com.mnnyang.gzuclassschedule.mvp.mg.MgActivity;
+import com.mnnyang.gzuclassschedule.utils.ActivityUtil;
 import com.mnnyang.gzuclassschedule.utils.DialogHelper;
 import com.mnnyang.gzuclassschedule.utils.DialogListener;
 import com.mnnyang.gzuclassschedule.utils.LogUtil;
@@ -59,8 +55,6 @@ import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
 
 import static com.mnnyang.gzuclassschedule.utils.ScreenUtils.dp2px;
@@ -86,6 +80,7 @@ public class CourseActivity extends BaseActivity implements CourseContract.View,
     private RecyclerView mRvSelectWeek;
     private int mHeightSelectWeek;
     private boolean mSelectWeekIsShow = false;
+    private LinearLayout mLayoutCourse;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -97,6 +92,7 @@ public class CourseActivity extends BaseActivity implements CourseContract.View,
 
         mLayoutWeekGroup = findViewById(R.id.layout_week_group);
         mLayoutNodeGroup = findViewById(R.id.layout_node_group);
+        mLayoutCourse = findViewById(R.id.layout_course);
 
         initFirstStart();
         initToolbar();
@@ -369,6 +365,12 @@ public class CourseActivity extends BaseActivity implements CourseContract.View,
         if (CourseDbDao.instance().loadCsNameList().size() > 0) {
             isV1Update();
         }
+
+        showOnceSplash();
+    }
+
+    private void showOnceSplash() {
+        new SplashFragment().show(getSupportFragmentManager(),"splash");
     }
 
     private void isV1Update() {
@@ -399,6 +401,13 @@ public class CourseActivity extends BaseActivity implements CourseContract.View,
             LogUtil.e(this, "即将显示：" + course.toString());
 
             mCourseViewV2.addCourse(course);
+        }
+
+        // 没有课程才显示叶子logo
+        if(courses.isEmpty()){
+            mLayoutCourse.setBackgroundResource(R.drawable.svg_bg);
+        }else{
+            mLayoutCourse.setBackgroundResource(0);
         }
     }
 

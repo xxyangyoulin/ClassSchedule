@@ -10,6 +10,7 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AlertDialog;
+import android.support.v7.view.menu.MenuView;
 import android.support.v7.widget.AppCompatRadioButton;
 import android.view.MenuItem;
 import android.view.View;
@@ -20,7 +21,9 @@ import android.widget.RadioGroup;
 import android.widget.ScrollView;
 
 import com.mnnyang.gzuclassschedule.BaseActivity;
+import com.mnnyang.gzuclassschedule.Html5Activity;
 import com.mnnyang.gzuclassschedule.R;
+import com.mnnyang.gzuclassschedule.app.Url;
 import com.mnnyang.gzuclassschedule.mvp.about.AboutActivity;
 import com.mnnyang.gzuclassschedule.mvp.add.AddActivity;
 import com.mnnyang.gzuclassschedule.app.app;
@@ -125,7 +128,7 @@ public class SettingActivity extends BaseActivity implements SettingContract.Vie
                 gotoConfActivity();
                 break;
             case R.id.sin_feedback:
-                mPresenter.feedback();
+                feedbackDialog();
                 break;
             case R.id.sin_donate:
                 donate();
@@ -139,6 +142,32 @@ public class SettingActivity extends BaseActivity implements SettingContract.Vie
             default:
                 break;
         }
+    }
+
+    /**
+     * 反馈方式选择弹窗
+     */
+    private void feedbackDialog() {
+        DialogHelper helper = new DialogHelper();
+        helper.showListDialog(this, "反馈方式", new String[]{"网页反馈", "QQ反馈"}, new DialogListener() {
+            @Override
+            public void onItemClick(DialogInterface dialog, int which) {
+                if (which == 0) {
+                    htmlFeedback();
+                } else if (which == 1) {
+                    mPresenter.feedback();
+                }
+            }
+        });
+    }
+
+    private void htmlFeedback() {
+        Intent intent = new Intent(SettingActivity.this, Html5Activity.class);
+        Bundle bundle = new Bundle();
+        bundle.putString("url", Url.URL_FEEDBACK);
+        bundle.putString("title", "反馈");
+        intent.putExtra("bundle", bundle);
+        startActivity(intent);
     }
 
     private void donate() {

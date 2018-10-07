@@ -89,6 +89,7 @@ public class HomePresenter implements HomeContract.Presenter {
 
                         mView.signInPage(userWrapper.getData());
                     } else if (userWrapper.getCode() == 3) {
+                        Cache.instance().setEmail("");
                         mView.noSignInPage();
                         LogUtil.e(this, userWrapper.toString());
                     }
@@ -160,7 +161,7 @@ public class HomePresenter implements HomeContract.Presenter {
                     return null;
                 }
                 Bitmap logo = BitmapFactory.decodeResource(Cache.instance().getContext().getResources(),
-                        R.mipmap.ic_launcher);
+                        R.mipmap.ic_launcher_round);
                 final int width = ScreenUtils.dp2px(150);
                 String content = Url.URL_SHARE + "?id=" + bean.getData();
 

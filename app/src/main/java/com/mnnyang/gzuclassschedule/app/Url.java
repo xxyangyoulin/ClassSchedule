@@ -39,11 +39,15 @@ public class Url {
      * 找回密码
      */
     public static final String URL_RETRIEVE_PASSWORD = URL_HOST + "user/password/";
+    /**
+     * 反馈
+     */
+    public static final String URL_FEEDBACK = URL_HOST + "main/feedback/";
 
     /**
      * app更新
      */
-    public static final String URL_CHECK_UPDATE_APP  = URL_HOST+"main/check_update/";
+    public static final String URL_CHECK_UPDATE_APP = URL_HOST + "main/check_update/";
 
     /**
      * 贵州大学正方教务管理系统
