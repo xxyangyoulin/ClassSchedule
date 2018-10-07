@@ -9,7 +9,7 @@ public class Url {
     /**
      * HOST
      */
-    public static final String URL_HOST = "http://192.168.1.7:8000/";
+    public static final String URL_HOST = "http://md.xxyangyoulin.cn:80/";
     /**
      * 上传course
      */

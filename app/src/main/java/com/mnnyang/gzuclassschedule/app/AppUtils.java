@@ -1,5 +1,7 @@
 package com.mnnyang.gzuclassschedule.app;
 
+import android.app.job.JobInfo;
+import android.app.job.JobScheduler;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
@@ -20,15 +22,20 @@ import com.mnnyang.gzuclassschedule.data.greendao.MyOpenHelper;
 import com.mnnyang.gzuclassschedule.utils.LogUtil;
 import com.mnnyang.gzuclassschedule.utils.Preferences;
 import com.mnnyang.gzuclassschedule.utils.TimeUtils;
+import com.mnnyang.gzuclassschedule.widget.UpdateJobService;
 
 import java.io.UnsupportedEncodingException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.security.spec.RSAOtherPrimeInfo;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.UUID;
+import java.util.concurrent.TimeUnit;
 import java.util.regex.Pattern;
+
+import static android.content.Context.JOB_SCHEDULER_SERVICE;
 
 /**
  *
@@ -116,6 +123,50 @@ public class AppUtils {
         intent.setAction("com.mnnyang.action.UPDATE_WIDGET");
         intent.setComponent(new ComponentName("com.mnnyang.gzuclassschedule", "com.mnnyang.gzuclassschedule.widget.MyWidget"));
         context.sendBroadcast(intent);
+    }
+
+    public static int UPDATE_WIDGET_JOB_ID = 1;
+
+    /**
+     * 启动桌面小部件更新服务
+     */
+    public static void startWidgetJobService(Context context) {
+        if (!isJobPollServiceOn(context)) {
+            LogUtil.i(AppUtils.class, "安排widget更新任务");
+            JobScheduler jobScheduler = (JobScheduler) context.getSystemService(JOB_SCHEDULER_SERVICE);
+            JobInfo.Builder builder = new JobInfo.Builder(UPDATE_WIDGET_JOB_ID,
+                    new ComponentName(context, UpdateJobService.class));
+            builder.setRequiredNetworkType(JobInfo.NETWORK_TYPE_NONE);
+            builder.setRequiresCharging(true);
+//            builder.setPeriodic(60 * 1000); //一小时更新一次
+            builder.setPeriodic(5000);
+            jobScheduler.schedule(builder.build());
+        } else {
+            LogUtil.i(AppUtils.class, "widget更新任务已经安排");
+        }
+    }
+
+
+    private static boolean isJobPollServiceOn(Context context) {
+        JobScheduler scheduler = (JobScheduler) context
+                .getSystemService(Context.JOB_SCHEDULER_SERVICE);
+
+        for (JobInfo jobInfo : scheduler.getAllPendingJobs()) {
+            if (jobInfo.getId() == UPDATE_WIDGET_JOB_ID) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * 取消widget更新任务
+     */
+    public static void cancelUpdateWidgetService(Context context) {
+        LogUtil.e(AppUtils.class, "cancelUpdateWidgetService");
+        JobScheduler scheduler = (JobScheduler) context
+                .getSystemService(Context.JOB_SCHEDULER_SERVICE);
+        scheduler.cancel(UPDATE_WIDGET_JOB_ID);
     }
 
     private static String hex(byte[] array) {

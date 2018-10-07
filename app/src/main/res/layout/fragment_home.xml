@@ -12,6 +12,7 @@
         android:layout_height="?attr/actionBarSize"
         android:background="?android:attr/colorPrimary"
         android:elevation="0dp"
+        app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
         app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar" />
 
     <ScrollView
@@ -46,9 +47,9 @@
                     android:layout_marginTop="@dimen/margin_8dp"
                     android:clickable="true"
                     android:focusable="true"
-                    tools:text="xxyangyoulin"
                     android:textColor="@color/white"
-                    android:textSize="16sp" />
+                    android:textSize="16sp"
+                    tools:text="xxyangyoulin" />
 
 
                 <LinearLayout
@@ -119,9 +120,9 @@
                 android:layout_height="wrap_content"
                 android:background="?attr/selectableItemBackground"
                 android:clickable="true"
-                android:visibility="gone"
                 android:focusable="true"
-                android:padding="@dimen/margin_16dp">
+                android:padding="@dimen/margin_16dp"
+                android:visibility="gone">
 
                 <TextView
                     android:layout_width="0dp"
@@ -139,9 +140,9 @@
             <View
                 android:layout_width="match_parent"
                 android:layout_height="1px"
-                android:visibility="gone"
                 android:layout_marginLeft="@dimen/margin_16dp"
-                android:background="#50919191" />
+                android:background="#50919191"
+                android:visibility="gone" />
 
             <LinearLayout
                 android:id="@+id/layout_share"

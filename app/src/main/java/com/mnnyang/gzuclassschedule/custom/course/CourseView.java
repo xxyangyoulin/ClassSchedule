@@ -23,6 +23,7 @@ import android.widget.TextView;
 
 import com.mnnyang.gzuclassschedule.R;
 import com.mnnyang.gzuclassschedule.custom.util.Utils;
+import com.mnnyang.gzuclassschedule.utils.LogUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -445,7 +446,7 @@ public class CourseView extends FrameLayout {
     }
 
     public static void l(String s) {
-        System.out.println("------------------" + s);
+        LogUtil.d("CourseView", s);
     }
 
     /***************************************************/

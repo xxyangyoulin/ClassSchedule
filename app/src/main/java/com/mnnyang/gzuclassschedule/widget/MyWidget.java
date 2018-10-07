@@ -10,6 +10,7 @@ import android.os.Bundle;
 import android.widget.RemoteViews;
 
 import com.mnnyang.gzuclassschedule.R;
+import com.mnnyang.gzuclassschedule.app.AppUtils;
 import com.mnnyang.gzuclassschedule.app.Config;
 import com.mnnyang.gzuclassschedule.app.Constant;
 import com.mnnyang.gzuclassschedule.mvp.course.CourseActivity;
@@ -100,7 +101,6 @@ public class MyWidget extends AppWidgetProvider {
     public void onEnabled(Context context) {
         super.onEnabled(context);
         LogUtil.d(this, "onEnabled");
-
     }
 
     /**
@@ -111,6 +111,7 @@ public class MyWidget extends AppWidgetProvider {
     public void onDisabled(Context context) {
         super.onDisabled(context);
         LogUtil.d(this, "onDisabled");
+        AppUtils.cancelUpdateWidgetService(context.getApplicationContext());
 
     }
 

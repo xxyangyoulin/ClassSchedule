@@ -1,12 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:paddingRight="6dp"
     android:background="@color/widget_all_background"
-    android:orientation="vertical">
-
+    android:orientation="vertical"
+    android:paddingRight="6dp">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -18,9 +17,9 @@
             android:layout_width="24dp"
             android:layout_height="match_parent"
             android:gravity="center"
-            tools:text="1\n月"
             android:textColor="@color/widget_title_text_color"
-            android:textSize="11sp" />
+            android:textSize="11sp"
+            tools:text="1\n月" />
 
         <TextView
             android:layout_width="0dp"
@@ -97,8 +96,8 @@
         android:id="@+id/widget_list"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="4dp"
         android:layout_marginTop="4dp"
+        android:layout_marginBottom="4dp"
         android:cacheColorHint="#00000000"
         android:scrollbars="none" />
 

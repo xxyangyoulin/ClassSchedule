@@ -28,18 +28,19 @@
             android:paddingLeft="7dp"
             android:paddingRight="7dp">
 
-            <Button
+            <TextView
                 android:id="@+id/btn_week_all"
                 android:layout_width="0dp"
                 android:layout_height="32dp"
                 android:layout_weight="1"
                 android:background="@drawable/selector_select_week"
+                android:gravity="center"
                 android:padding="0dp"
                 android:text="所有"
                 android:textColor="@color/selector_select_week_text"
                 android:textSize="12sp" />
 
-            <Button
+            <TextView
                 android:id="@+id/btn_week_single"
                 android:layout_width="0dp"
                 android:layout_height="32dp"
@@ -47,17 +48,19 @@
                 android:layout_marginRight="4dp"
                 android:layout_weight="1"
                 android:background="@drawable/selector_select_week"
+                android:gravity="center"
                 android:padding="0dp"
                 android:text="单周"
                 android:textColor="@color/selector_select_week_text"
                 android:textSize="12sp" />
 
-            <Button
+            <TextView
                 android:id="@+id/btn_week_double"
                 android:layout_width="0dp"
                 android:layout_height="32dp"
                 android:layout_weight="1"
                 android:background="@drawable/selector_select_week"
+                android:gravity="center"
                 android:padding="0dp"
                 android:text="双周"
                 android:textColor="@color/selector_select_week_text"
@@ -72,8 +75,8 @@
             android:layout_height="wrap_content"
             android:gravity="center"
             android:orientation="vertical"
-            android:paddingBottom="@dimen/margin_8dp"
-            android:paddingTop="@dimen/margin_8dp">
+            android:paddingTop="@dimen/margin_8dp"
+            android:paddingBottom="@dimen/margin_8dp">
 
             <LinearLayout
                 android:layout_width="wrap_content"

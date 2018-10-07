@@ -197,7 +197,7 @@ public class HomeFragment extends BaseFragment implements HomeContract.View,
                 String content = data.getStringExtra(Constant.CODED_CONTENT);
                 if (content.startsWith(Url.URL_SHARE)) {
                     mPresenter.downShare(content);
-                }else{
+                } else {
                     toast("分享已失效！");
                 }
             }
@@ -360,7 +360,7 @@ public class HomeFragment extends BaseFragment implements HomeContract.View,
      * 扫描二维码
      */
     private void scanQRCode() {
-        RequestPermission.with(this).permissions(Manifest.permission.CAMERA)
+        RequestPermission.with(this).permissions(Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE)
                 .request(new RequestPermission.Callback() {
                     @Override
                     public void onGranted() {

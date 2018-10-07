@@ -16,7 +16,6 @@ import com.mnnyang.gzuclassschedule.data.greendao.CourseV2Dao;
 import com.mnnyang.gzuclassschedule.mvp.course.CourseActivity;
 import com.mnnyang.gzuclassschedule.utils.LogUtil;
 import com.mnnyang.gzuclassschedule.utils.Preferences;
-import com.mnnyang.gzuclassschedule.utils.TimeUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -36,7 +35,7 @@ public class UpdateService extends RemoteViewsService {
         super.onCreate();
     }
 
-    private void initDemoData() {
+    private void initData() {
         //TODO
         long group_id = Preferences.getLong(
                 getString(R.string.app_preference_current_cs_name_id), 0);
@@ -79,7 +78,8 @@ public class UpdateService extends RemoteViewsService {
 
         @Override
         public void onCreate() {
-
+            LogUtil.e(UpdateJobService.class, "onCreate");
+            AppUtils.startWidgetJobService(getApplicationContext());
         }
 
         @Override
@@ -99,9 +99,9 @@ public class UpdateService extends RemoteViewsService {
 
         @Override
         public RemoteViews getViewAt(int position) {
-            initDemoData();
-
             LogUtil.e(this, "getViewAt");
+            initData();
+
             final RemoteViews bigRemoteViews = new RemoteViews(mContext.getPackageName(), R.layout.list_demo_item);
             bigRemoteViews.removeAllViews(R.id.item_node_group);
             bigRemoteViews.removeAllViews(R.id.item_weekday_day_1);
@@ -113,9 +113,6 @@ public class UpdateService extends RemoteViewsService {
             bigRemoteViews.removeAllViews(R.id.item_weekday_day_7);
 
             Intent intent = new Intent(mContext, CourseActivity.class);
-            //TODO
-            //intent.setComponent(new ComponentName("包名", "类名"));
-            //与CustomWidget中remoteViews.setPendingIntentTemplate配对使用
 
             bigRemoteViews.setOnClickFillInIntent(R.id.item_weekday_layout, intent);
 
@@ -125,11 +122,9 @@ public class UpdateService extends RemoteViewsService {
                 bigRemoteViews.addView(R.id.item_node_group, nodeRemoteViews);
             }
 
-
             for (int row = 0; row <= 7; row++) {
                 for (int col = 1; col <= maxNodeSize; col++) {
                     CourseAncestor course = getCourseByRowCol(row, col);
-
                     RemoteViews dayRemoteViews = null;
                     if (course == null) {
                         dayRemoteViews = new RemoteViews(getPackageName(), R.layout.widget_cell_1);
@@ -213,10 +208,10 @@ public class UpdateService extends RemoteViewsService {
                             dayRemoteViews = new RemoteViews(getPackageName(), layout);
                             dayRemoteViews.setTextViewText(id, course.getText());
 
-                            if(course.getActiveStatus()){
+                            if (course.getActiveStatus()) {
                                 dayRemoteViews.setInt(id, "setBackgroundColor", course.getColor());
                                 dayRemoteViews.setInt(id, "setTextColor", 0xFFFFFFFF);
-                            }else{
+                            } else {
                                 dayRemoteViews.setInt(id, "setBackgroundColor", 0xFFE3EEF5);
                                 dayRemoteViews.setInt(id, "setTextColor", 0xFFbadac9);
                             }

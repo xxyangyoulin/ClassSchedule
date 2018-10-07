@@ -44,6 +44,7 @@
                 android:layout_height="wrap_content"
                 android:backgroundTint="@color/primary_green"
                 android:hint="E-mail"
+                android:textSize="16sp"
                 android:inputType="textEmailAddress"
                 android:textColor="@color/primary_green"
                 android:textColorHint="#a04CAF50"
@@ -53,6 +54,7 @@
 
         <android.support.design.widget.TextInputLayout
             android:layout_width="match_parent"
+            android:layout_marginTop="8dp"
             android:layout_height="wrap_content">
 
             <android.support.design.widget.TextInputEditText
@@ -61,6 +63,7 @@
                 android:layout_height="wrap_content"
                 android:backgroundTint="@color/primary_green"
                 android:hint="Password"
+                android:textSize="16sp"
                 android:inputType="textPassword"
                 android:textColor="@color/primary_green"
                 android:textColorHint="#a04CAF50"
@@ -85,6 +88,7 @@
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/margin_8dp"
             android:orientation="horizontal">
 
             <TextView

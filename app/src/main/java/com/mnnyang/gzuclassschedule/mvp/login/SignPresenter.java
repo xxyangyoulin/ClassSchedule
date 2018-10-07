@@ -50,7 +50,7 @@ public class SignPresenter implements SignContact.Presenter {
                         mView.signInFailed(baseBean.getMsg());
                     }
                 }else {
-
+                    mView.showMassage("返回的数据有误！");
                 }
             }
 
@@ -61,6 +61,7 @@ public class SignPresenter implements SignContact.Presenter {
                     return;
                 }
                 mView.stopLoading();
+                mView.showMassage(errMsg);
             }
         });
     }

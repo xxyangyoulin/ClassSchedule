@@ -30,7 +30,6 @@ public class app extends Application {
         initOkHttp();
         initUtils();
 
-
         Cache.instance().init(mContext);
     }
 
