@@ -16,7 +16,7 @@ import java.util.Random;
  */
 
 public class Utils {
-    static int[] colorList = new int[]{
+    private static int[] colorList = new int[]{
             0xFF8AD297,
             0xFFF9A883,
             0xFF88CFCC,
@@ -33,7 +33,7 @@ public class Utils {
             0xFFE2C490,
     };
 
-    static int[] darkColorList = new int[]{
+    private static int[] darkColorList = new int[]{
             0xFF5ABF6C,
             0xFFF79060,
             0xFF63C0BD,
@@ -69,42 +69,6 @@ public class Utils {
         drawable.addState(new int[]{}, normalD);
         return drawable;
     }
-
-    public static int[] getColors(Context context) {
-        Resources resources = context.getResources();
-
-        return new int[]{
-                getColor(resources, R.color.color_g),
-                getColor(resources, R.color.color_g_pressed),
-                getColor(resources, R.color.color_er),
-                getColor(resources, R.color.color_er_pressed),
-                getColor(resources, R.color.color_san),
-                getColor(resources, R.color.color_san_pressed),
-                getColor(resources, R.color.color_si),
-                getColor(resources, R.color.color_si_pressed),
-                getColor(resources, R.color.color_wu),
-                getColor(resources, R.color.color_wu_pressed),
-                getColor(resources, R.color.color_liu),
-                getColor(resources, R.color.color_liu_pressed),
-                getColor(resources, R.color.color_qi),
-                getColor(resources, R.color.color_qi_pressed),
-                getColor(resources, R.color.color_ba),
-                getColor(resources, R.color.color_ba_pressed),
-                getColor(resources, R.color.color_jiu),
-                getColor(resources, R.color.color_jiu_pressed),
-                getColor(resources, R.color.color_yisan),
-                getColor(resources, R.color.color_yisan_pressed),
-                getColor(resources, R.color.color_yis),
-                getColor(resources, R.color.color_yis_pressed),
-                getColor(resources, R.color.color_yiwu),
-                getColor(resources, R.color.color_yiwu_pressed),
-                getColor(resources, R.color.color_yiliu),
-                getColor(resources, R.color.color_yiliu_pressed),
-                getColor(resources, R.color.color_wuw),
-                getColor(resources, R.color.color_wuw_pressed),
-        };
-    }
-
     private static Random random = new Random();
 
     public static int getRandomColor() {

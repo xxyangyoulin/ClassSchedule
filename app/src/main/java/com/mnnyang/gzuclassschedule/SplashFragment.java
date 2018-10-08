@@ -29,13 +29,18 @@ public class SplashFragment extends DialogFragment {
         getDialog().getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
                 | View.SYSTEM_UI_FLAG_LAYOUT_STABLE);
 
+        getDialog().getWindow().setWindowAnimations(R.style.animate_fade_in_dialog);
+
         new Handler().postDelayed(new Runnable() {
+
             @Override
             public void run() {
                 dismiss();
             }
-        }, 2500);
+        }, 3000);
     }
+
+
 
 
 }

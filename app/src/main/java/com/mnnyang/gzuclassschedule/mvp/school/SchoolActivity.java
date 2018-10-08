@@ -44,9 +44,11 @@ public class SchoolActivity extends BaseActivity implements SchoolContract.View,
 
     private void initView() {
         TextView tvGzu = findViewById(R.id.tv_gzu);
+        TextView tv_dlou = findViewById(R.id.tv_dlou);
         TextView tvOtherSchool = findViewById(R.id.tv_other);
         tvOtherSchool.setOnClickListener(this);
         tvGzu.setOnClickListener(this);
+        tv_dlou.setOnClickListener(this);
     }
 
     @Override
@@ -128,6 +130,9 @@ public class SchoolActivity extends BaseActivity implements SchoolContract.View,
             case R.id.tv_gzu:
                 selectedGzu();
                 break;
+            case R.id.tv_dlou:
+                selectedDlou();
+                break;
             case R.id.tv_other:
                 selectedOther();
                 break;
@@ -148,6 +153,10 @@ public class SchoolActivity extends BaseActivity implements SchoolContract.View,
 
     private void selectedOther() {
         showInputDialog();
+    }
+
+    private void selectedDlou() {
+        mPresenter.testUrl("http://jwgl.dlou.edu.cn/(z3zbty45pkdvwpmoi32dy4jw)/default2.aspx");
     }
 
     private void selectedGzu() {

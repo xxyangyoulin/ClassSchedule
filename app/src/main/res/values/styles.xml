@@ -90,4 +90,20 @@
         <item name="android:textColor">?android:attr/colorAccent</item>
         <item name="android:textSize">@dimen/text_size_14sp</item>
     </style>
+
+    <style name="animate_fade_in_dialog">
+        <!--<item name="android:windowEnterAnimation">@anim/dialog_enter</item>-->
+        <item name="android:windowExitAnimation">@anim/alpha</item>
+
+    </style>
+
+    <style name="BottomDialog" parent="@style/Base.V7.Theme.AppCompat.Light.Dialog">
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowBackground">@android:color/transparent</item>
+    </style>
+
+    <style name="BottomDialog.Animation" parent="Animation.AppCompat.Dialog">
+        <item name="android:windowEnterAnimation">@anim/translate_dialog_in</item>
+        <item name="android:windowExitAnimation">@anim/translate_dialog_out</item>
+    </style>
 </resources>

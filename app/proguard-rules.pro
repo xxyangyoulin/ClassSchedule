@@ -23,7 +23,9 @@
 # If you keep the line number information, uncomment this to
 # hide the original source file name.
 #-renamesourcefileattribute SourceFile
--keep public class data.bean.Version { *; }
+# javabean
+-keep  class com.mnnyang.gzuclassschedule.data.beanv2.**{*;}
+-keep  class com.mnnyang.gzuclassschedule.data.greendao.**{*;}
 
 # jsoup
 -dontwarn org.jsoup.**
@@ -43,8 +45,11 @@
 }
 
 # Gson
--keep class com.google.gson.stream.** { *; }
--keepattributes EnclosingMethod
+-keepattributes Signature
+-keepattributes *Annotation*
+-keep class sun.misc.Unsafe { *; }
+-keep class com.google.gson.examples.android.model.** { *; }
+
 
 #okhttputils
 -dontwarn com.zhy.http.**
@@ -62,3 +67,34 @@
 
 #glide
 -dontwarn com.bumptech.glide.**
+
+#evenbus
+-keepattributes *Annotation*
+-keepclassmembers class * {
+    @org.greenrobot.eventbus.Subscribe <methods>;
+}
+-keep enum org.greenrobot.eventbus.ThreadMode { *; }
+
+# Only required if you use AsyncExecutor
+-keepclassmembers class * extends org.greenrobot.eventbus.util.ThrowableFailureEvent {
+    <init>(java.lang.Throwable);
+}
+
+#greendao
+#greendao3.2.0,
+-keep class org.greenrobot.greendao.**{*;}
+-keepclassmembers class * extends org.greenrobot.greendao.AbstractDao {
+public static java.lang.String TABLENAME;
+}
+-dontwarn org.greenrobot.greendao.**
+-keep class **$Properties
+
+-keep class net.sqlcipher.**{*;}
+
+#PersistentCookieJar
+-dontwarn com.franmontiel.persistentcookiejar.**
+-keep class com.franmontiel.persistentcookiejar.**
+
+# zxing
+-keep class com.google.zxing.** {*;}
+-dontwarn com.google.zxing.**

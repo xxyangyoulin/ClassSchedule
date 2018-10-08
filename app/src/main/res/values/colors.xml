@@ -89,4 +89,5 @@
     <color name="black">#000000</color>
     <color name="color_login">#00acc1</color>
     <color name="color_no_login">#9E9E9E</color>
+    <color name="color_divider">#20000000</color>
 </resources>

@@ -45,9 +45,7 @@ public class ParseCourse {
         Elements inputs = doc.getElementsByAttributeValue("name", Url.__VIEWSTATE);
         if (inputs.size() > 0) {
             code = inputs.get(0).attr("value");
-            System.out.println("finded __VIEWSTATE code=" + code);
         } else {
-            System.out.println("Not find __VIEWSTATE code");
         }
 
         return code;

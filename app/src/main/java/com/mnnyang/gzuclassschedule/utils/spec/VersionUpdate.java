@@ -11,9 +11,13 @@ import com.google.gson.Gson;
 import com.mnnyang.gzuclassschedule.app.Url;
 import com.mnnyang.gzuclassschedule.data.beanv2.VersionWrapper;
 import com.mnnyang.gzuclassschedule.data.http.HttpCallback;
+import com.mnnyang.gzuclassschedule.data.http.JsonCallback;
 import com.mnnyang.gzuclassschedule.utils.LogUtil;
+import com.mnnyang.gzuclassschedule.utils.ToastUtils;
 import com.zhy.http.okhttp.OkHttpUtils;
 import com.zhy.http.okhttp.callback.StringCallback;
+
+import java.lang.reflect.Field;
 
 import okhttp3.Call;
 
@@ -25,7 +29,7 @@ public class VersionUpdate {
 
     public void checkUpdate(final HttpCallback<VersionWrapper> callback) {
         OkHttpUtils.get().url(Url.URL_CHECK_UPDATE_APP)
-                .build().execute(new StringCallback() {
+                .build().execute(new JsonCallback<VersionWrapper>(VersionWrapper.class) {
             @Override
             public void onError(Call call, Exception e, int id) {
                 e.printStackTrace();
@@ -33,15 +37,14 @@ public class VersionUpdate {
             }
 
             @Override
-            public void onResponse(String response, int id) {
-                try {
-                    Gson gson = new Gson();
-                    LogUtil.e(this,response);
-                    VersionWrapper versionWrapper = gson.fromJson(response, VersionWrapper.class);
-                    callback.onSuccess(versionWrapper);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    callback.onFail("parse error");
+            public void onResponse(VersionWrapper versionWrapper, int id) {
+                callback.onSuccess(versionWrapper);
+            }
+
+            public  void testReflect(Object model) throws Exception{
+                for (Field field : model.getClass().getDeclaredFields()) {
+                    field.setAccessible(true);
+                    System.out.println(field.getName() + ":" + field.get(model) );
                 }
             }
         });

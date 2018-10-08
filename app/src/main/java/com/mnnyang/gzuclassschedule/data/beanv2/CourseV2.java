@@ -57,7 +57,10 @@ public class CourseV2 extends CourseAncestor {
     }
 
     public CourseV2 init() {
-        setRow(getCouWeek());
+        boolean b = getCouWeek() != null;
+        if(getCouWeek()!=null){
+            setRow(getCouWeek());
+        }
 
         if (getCouColor() != null) {
             setColor(getCouColor());
@@ -74,7 +77,7 @@ public class CourseV2 extends CourseAncestor {
             e.printStackTrace();
         }
 
-        if (getCouNodeCount() != 0) {
+        if (getCouNodeCount()!=null && getCouNodeCount() != 0) {
             setCol(getCouStartNode());
             setRowNum(getCouNodeCount());
         } else {

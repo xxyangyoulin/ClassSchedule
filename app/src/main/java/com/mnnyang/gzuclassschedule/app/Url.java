@@ -48,6 +48,10 @@ public class Url {
      * app更新
      */
     public static final String URL_CHECK_UPDATE_APP = URL_HOST + "main/check_update/";
+    /**
+     * app更新网页
+     */
+    public static final String URL_UPDATE_WEB = URL_HOST;
 
     /**
      * 贵州大学正方教务管理系统

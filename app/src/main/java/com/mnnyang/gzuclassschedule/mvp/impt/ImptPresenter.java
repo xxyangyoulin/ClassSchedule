@@ -145,9 +145,6 @@ public class ImptPresenter implements ImptContract.Presenter {
                 @Override
                 public void subscribe(ObservableEmitter<String> emitter) throws Exception {
                     ArrayList<CourseV2> courseV2s = ParseCourse.parse(html);
-                    for (CourseV2 course : courseV2s) {
-                        System.out.println("TEST IMP  " + course.getCouName() + "--" + course.getCouColor());
-                    }
                     //删除旧数据
                     CourseGroup group = Cache.instance().getCourseGroupDao()
                             .queryBuilder()

@@ -41,7 +41,6 @@ public class Cache {
         MyOpenHelper devOpenHelper = new MyOpenHelper(
                 context, "coursev2.db", null);
         DaoMaster daoMaster = new DaoMaster(devOpenHelper.getWritableDatabase());
-
         DaoSession daoSession = daoMaster.newSession();
 
         mCourseGroupDao = daoSession.getCourseGroupDao();

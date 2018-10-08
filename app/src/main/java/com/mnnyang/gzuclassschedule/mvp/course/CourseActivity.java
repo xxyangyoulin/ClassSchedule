@@ -8,6 +8,7 @@ import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.design.widget.Snackbar;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -177,7 +178,6 @@ public class CourseActivity extends BaseActivity implements CourseContract.View,
         animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
             @Override
             public void onAnimationUpdate(ValueAnimator animation) {
-                System.out.println(animation.getAnimatedValue());
                 LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) mRvSelectWeek.getLayoutParams();
                 params.topMargin = (int) animation.getAnimatedValue();
                 mRvSelectWeek.setLayoutParams(params);
@@ -269,7 +269,13 @@ public class CourseActivity extends BaseActivity implements CourseContract.View,
                 return false;
             }
         });
+        initCourseViewEvent();
+    }
 
+    /**
+     * courseVIew事件
+     */
+    private void initCourseViewEvent() {
         mCourseViewV2.setOnItemClickListener(new CourseView.OnItemClickListener() {
             @Override
             public void onClick(List<CourseAncestor> course, View itemView) {
@@ -288,13 +294,11 @@ public class CourseActivity extends BaseActivity implements CourseContract.View,
                 DialogHelper dialogHelper = new DialogHelper();
                 dialogHelper.showNormalDialog(CourseActivity.this, getString(R.string.confirm_to_delete),
                         "课程 【" + course.getCouName() + "】" + Constant.WEEK[course.getCouWeek()]
-                                + "第" + course.getCouStartNode() + "节 " + "",
-                        new DialogListener() {
+                                + "第" + course.getCouStartNode() + "节 ", new DialogListener() {
                             @Override
                             public void onPositive(DialogInterface dialog, int which) {
                                 super.onPositive(dialog, which);
-                                //delete
-                                mPresenter.deleteCourse(course.getCouId());
+                                deleteCancelSnackBar(course);
                             }
                         });
             }
@@ -307,6 +311,38 @@ public class CourseActivity extends BaseActivity implements CourseContract.View,
             }
 
         });
+    }
+
+    /**
+     * 撤销删除提示
+     */
+    private void deleteCancelSnackBar(final CourseV2 course) {
+        course.setDisplayable(false);
+        mCourseViewV2.resetView();
+        Snackbar.make(mMMonthTextView, "删除成功！", Snackbar.LENGTH_LONG).setAction("撤销",
+                new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                    }
+                }).addCallback(new Snackbar.Callback() {
+            @Override
+            public void onDismissed(Snackbar snackbar, int event) {
+                switch (event) {
+                    case Snackbar.Callback.DISMISS_EVENT_CONSECUTIVE:
+                    case Snackbar.Callback.DISMISS_EVENT_MANUAL:
+                    case Snackbar.Callback.DISMISS_EVENT_SWIPE:
+                    case Snackbar.Callback.DISMISS_EVENT_TIMEOUT:
+                        //to do delete
+                        mPresenter.deleteCourse(course.getCouId());
+                        break;
+                    case Snackbar.Callback.DISMISS_EVENT_ACTION:
+                        //cancel
+                        course.setDisplayable(true);
+                        mCourseViewV2.resetView();
+                        break;
+                }
+            }
+        }).show();
     }
 
     private void updateView() {
@@ -370,7 +406,7 @@ public class CourseActivity extends BaseActivity implements CourseContract.View,
     }
 
     private void showOnceSplash() {
-        new SplashFragment().show(getSupportFragmentManager(),"splash");
+        new SplashFragment().show(getSupportFragmentManager(), "splash");
     }
 
     private void isV1Update() {
@@ -404,9 +440,9 @@ public class CourseActivity extends BaseActivity implements CourseContract.View,
         }
 
         // 没有课程才显示叶子logo
-        if(courses.isEmpty()){
+        if (courses.isEmpty()) {
             mLayoutCourse.setBackgroundResource(R.drawable.svg_bg);
-        }else{
+        } else {
             mLayoutCourse.setBackgroundResource(0);
         }
     }

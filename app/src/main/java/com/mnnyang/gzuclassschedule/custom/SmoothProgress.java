@@ -53,8 +53,6 @@ public class SmoothProgress extends View {
         mHeight = MeasureSpec.getSize(heightMeasureSpec);
     }
 
-    boolean isFirst = true;
-
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);

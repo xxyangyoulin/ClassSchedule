@@ -53,8 +53,6 @@ public class AboutPresenter implements AboutContract.Presenter {
 
                 int localVersion = versionUpdate.getLocalVersion(app.mContext);
 
-                LogUtil.d(this, String.valueOf(versionWrapper.getCode()));
-
                 if (versionWrapper.getData().getCode() > localVersion) {
                     mView.showUpdateVersionInfo(versionWrapper.getData());
                 } else {

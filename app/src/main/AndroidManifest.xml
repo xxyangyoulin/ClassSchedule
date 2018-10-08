@@ -7,9 +7,7 @@
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-    <!-- 创建与删除文件 -->
-    <uses-permission
-        android:name="android.permission.MOUNT_UNMOUNT_FILESYSTEMS"
+    <uses-permission android:name="android.permission.MOUNT_UNMOUNT_FILESYSTEMS"
         tools:ignore="ProtectedPermissions" />
 
     <!--TODO allowBackup-->
@@ -33,7 +31,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".mvp.setting.SettingActivity">
+        <activity android:name=".setting.SettingActivity">
 
         </activity>
         <activity android:name=".mvp.impt.ImptActivity">
@@ -50,11 +48,7 @@
         <activity android:name=".mvp.about.AboutActivity">
 
         </activity>
-        <activity android:name=".mvp.conf.ConfActivity">
-
-        </activity>
-        <activity android:name=".mvp.school.SchoolActivity">
-        </activity>
+        <activity android:name=".mvp.school.SchoolActivity"></activity>
         <activity android:name=".Html5Activity">
 
         </activity>

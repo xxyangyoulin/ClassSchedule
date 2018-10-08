@@ -111,7 +111,6 @@ public class AppUtils {
     public static String getGravatar(String email) {
         String emailMd5 = AppUtils.md5Hex(email);        //设置图片大小32px
         String avatar = "http://www.gravatar.com/avatar/" + emailMd5 + "?s=128";
-        System.out.println(avatar);
         return avatar;
     }
 
@@ -138,8 +137,7 @@ public class AppUtils {
                     new ComponentName(context, UpdateJobService.class));
             builder.setRequiredNetworkType(JobInfo.NETWORK_TYPE_NONE);
             builder.setRequiresCharging(true);
-//            builder.setPeriodic(60 * 1000); //一小时更新一次
-            builder.setPeriodic(5000);
+            builder.setPeriodic(60 * 1000); //一小时更新一次
             jobScheduler.schedule(builder.build());
         } else {
             LogUtil.i(AppUtils.class, "widget更新任务已经安排");

@@ -8,7 +8,6 @@ import android.text.TextUtils;
 import android.view.MenuItem;
 
 import com.mnnyang.gzuclassschedule.BaseActivity;
-import com.mnnyang.gzuclassschedule.R;
 import com.mnnyang.gzuclassschedule.app.Cache;
 import com.mnnyang.gzuclassschedule.utils.ActivityUtil;
 
@@ -44,6 +43,4 @@ public class HomeActivity extends BaseActivity {
         //}
         return super.onOptionsItemSelected(item);
     }
-
-
 }

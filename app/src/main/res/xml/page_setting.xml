@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?><!--最新栏目的新闻-->
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:title="@string/setting">
+
+    <PreferenceCategory android:title="偏好设置">
+        <Preference android:title="颜色风格" />
+
+    </PreferenceCategory>
+
+    <PreferenceCategory android:title="其他">
+
+        <Preference
+            android:summary="如果您喜欢该应用，欢迎援助开发者"
+            android:title="捐赠" />
+
+    </PreferenceCategory>
+
+</PreferenceScreen>

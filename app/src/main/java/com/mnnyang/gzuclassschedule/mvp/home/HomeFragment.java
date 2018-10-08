@@ -3,7 +3,10 @@ package com.mnnyang.gzuclassschedule.mvp.home;
 import android.Manifest;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -18,17 +21,20 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.mnnyang.gzuclassschedule.BaseFragment;
+import com.mnnyang.gzuclassschedule.Html5Activity;
 import com.mnnyang.gzuclassschedule.R;
 import com.mnnyang.gzuclassschedule.app.AppUtils;
 import com.mnnyang.gzuclassschedule.app.Cache;
 import com.mnnyang.gzuclassschedule.app.Url;
+import com.mnnyang.gzuclassschedule.app.app;
 import com.mnnyang.gzuclassschedule.data.beanv2.CourseGroup;
 import com.mnnyang.gzuclassschedule.data.beanv2.UserWrapper;
+import com.mnnyang.gzuclassschedule.mvp.about.AboutActivity;
 import com.mnnyang.gzuclassschedule.mvp.add.AddActivity;
 import com.mnnyang.gzuclassschedule.mvp.login.SignActivity;
 import com.mnnyang.gzuclassschedule.mvp.mg.MgActivity;
 import com.mnnyang.gzuclassschedule.mvp.school.SchoolActivity;
-import com.mnnyang.gzuclassschedule.mvp.setting.SettingActivity;
+import com.mnnyang.gzuclassschedule.setting.SettingActivity;
 import com.mnnyang.gzuclassschedule.utils.DialogHelper;
 import com.mnnyang.gzuclassschedule.utils.DialogListener;
 import com.mnnyang.gzuclassschedule.utils.RequestPermission;
@@ -63,6 +69,8 @@ public class HomeFragment extends BaseFragment implements HomeContract.View,
     private View mLayoutCourseMg;
     private TextView mTvUsername;
     private View mViewAdd;
+    private View mLayoutAbout;
+    private View mLayoutFeedback;
 
     @Override
     public boolean isActive() {
@@ -92,12 +100,12 @@ public class HomeFragment extends BaseFragment implements HomeContract.View,
         mViewAdd = mRootView.findViewById(R.id.layout_add);
         mViewShare = mRootView.findViewById(R.id.layout_share);
         mLayoutSetting = mRootView.findViewById(R.id.layout_setting);
+        mLayoutFeedback = mRootView.findViewById(R.id.layout_feedback);
         mLayoutCourseMg = mRootView.findViewById(R.id.layout_course_mg);
+        mLayoutAbout = mRootView.findViewById(R.id.layout_about);
         mLayoutOverwriteLocal = mRootView.findViewById(R.id.layout_overwrite_local);
         mLayoutUpload = mRootView.findViewById(R.id.layout_upload);
-
         mCivAvator = mRootView.findViewById(R.id.profile_image);
-
         initToolbar();
     }
 
@@ -120,6 +128,8 @@ public class HomeFragment extends BaseFragment implements HomeContract.View,
         mLayoutOverwriteLocal.setOnClickListener(this);
         mLayoutUpload.setOnClickListener(this);
         mLayoutSetting.setOnClickListener(this);
+        mLayoutFeedback.setOnClickListener(this);
+        mLayoutAbout.setOnClickListener(this);
         mLayoutCourseMg.setOnClickListener(this);
     }
 
@@ -145,32 +155,54 @@ public class HomeFragment extends BaseFragment implements HomeContract.View,
             case R.id.layout_course_mg:
                 courseManage();
                 break;
+            case R.id.layout_feedback:
+                feedbackDialog();
+                break;
+            case R.id.layout_about:
+                about();
+                break;
             default:
                 break;
         }
     }
 
     private void addSelectDialog() {
-        DialogHelper helper = new DialogHelper();
-        String[] selectAddMenu = {"手动添加", "导入方正课表"};
-        helper.showListDialog(activity, null, selectAddMenu, new DialogListener() {
-            @Override
-            public void onItemClick(DialogInterface dialog, int which) {
-                switch (which) {
-                    case 0:
-                        userAdd();
-                        break;
-                    case 1:
-                        autoAdd();
-                        break;
-                    default:
-                        break;
-                }
-            }
-        });
+        new DialogHelper().buildBottomListDialog(activity, new String[]{"手动添加", "方正课表", "导入分享"},
+                new DialogListener() {
+                    @Override
+                    public void onItemClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                        switch (which) {
+                            case 0:
+                                userAdd();
+                                break;
+                            case 1:
+                                fangZhengAdd();
+                                break;
+                            case 2:
+                                scanQRCode();
+                                break;
+                            default:
+                                break;
+                        }
+                    }
+                }).show();
     }
 
-    private void autoAdd() {
+    @Override
+    public boolean onMenuItemClick(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.action_sign_out:
+                signOut();
+                break;
+            case R.id.action_add:
+                addSelectDialog();
+                break;
+        }
+        return false;
+    }
+
+    private void fangZhengAdd() {
         startActivity(new Intent(activity, SchoolActivity.class));
     }
 
@@ -187,6 +219,80 @@ public class HomeFragment extends BaseFragment implements HomeContract.View,
     }
 
 
+    private void about() {
+        startActivity(new Intent(activity, AboutActivity.class));
+    }
+
+    /**
+     * 反馈弹窗
+     */
+    private void feedbackDialog() {
+        new DialogHelper().buildBottomListDialog(activity, new String[]{"提交反馈", "QQ反馈"},
+                new DialogListener() {
+                    @Override
+                    public void onItemClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                        switch (which) {
+                            case 0:
+                                htmlFeedback();
+                                break;
+                            case 1:
+                                qqFeedback();
+                                break;
+                        }
+                    }
+                }).show();
+    }
+
+    /**
+     * QQ反馈
+     */
+    public void qqFeedback() {
+        if (!QQIsAvailable()) {
+            showMassage(getString(R.string.qq_not_installed));
+            return;
+        }
+        String url1 = "mqqwpa://im/chat?chat_type=wpa&uin=" + getString(R.string.qq_number);
+        Intent i1 = new Intent(Intent.ACTION_VIEW, Uri.parse(url1));
+        i1.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        i1.setAction(Intent.ACTION_VIEW);
+        if (getContext() != null && getContext().getApplicationContext() != null) {
+            getContext().getApplicationContext().startActivity(i1);
+        }
+    }
+
+    /**
+     * 检查是否安装QQ
+     */
+    private boolean QQIsAvailable() {
+        final PackageManager mPackageManager = app.mContext.getPackageManager();
+        List<PackageInfo> pinfo = mPackageManager.getInstalledPackages(0);
+        if (pinfo != null) {
+            for (int i = 0; i < pinfo.size(); i++) {
+                String pn = pinfo.get(i).packageName;
+                if (pn.equals("com.tencent.mobileqq")) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    /**
+     * 网页反馈
+     */
+    private void htmlFeedback() {
+        Intent intent = new Intent(activity, Html5Activity.class);
+        Bundle bundle = new Bundle();
+        bundle.putString("url", Url.URL_FEEDBACK);
+        bundle.putString("title", "反馈");
+        intent.putExtra("bundle", bundle);
+        startActivity(intent);
+    }
+
+    /**
+     * Activity返回回调
+     */
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -204,6 +310,9 @@ public class HomeFragment extends BaseFragment implements HomeContract.View,
         }
     }
 
+    /**
+     * 权限回调
+     */
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
                                            @NonNull int[] grantResults) {
@@ -211,14 +320,15 @@ public class HomeFragment extends BaseFragment implements HomeContract.View,
         RequestPermission.onRequestPermissionsResult(requestCode, permissions, grantResults);
     }
 
-
+    /**
+     * 显示缓存的信息
+     */
     @Override
     public void showCacheData() {
         String email = Cache.instance().getEmail();
         if (!TextUtils.isEmpty(email)) {
             UserWrapper.User user = new UserWrapper.User();
             user.setEmail(email);
-
             signInPage(user);
         }
     }
@@ -235,6 +345,9 @@ public class HomeFragment extends BaseFragment implements HomeContract.View,
         mProgressDialog.hideProgressDialog();
     }
 
+    /**
+     * 未登录模式
+     */
     @Override
     public void noSignInPage() {
         if (!isActive()) {
@@ -253,6 +366,9 @@ public class HomeFragment extends BaseFragment implements HomeContract.View,
         mCivAvator.setImageResource(R.drawable.ic_avator_black_24dp);
     }
 
+    /**
+     * 已登录模式
+     */
     @Override
     public void signInPage(UserWrapper.User user) {
         if (!isActive()) {
@@ -265,6 +381,9 @@ public class HomeFragment extends BaseFragment implements HomeContract.View,
         updateShowAvator(user.getEmail());
     }
 
+    /**
+     * 请登录
+     */
     @Override
     public void pleaseLoginIn() {
         if (!isActive()) {
@@ -274,6 +393,9 @@ public class HomeFragment extends BaseFragment implements HomeContract.View,
         startActivity(new Intent(activity, SignActivity.class));
     }
 
+    /**
+     * 更新头像
+     */
     @Override
     public void updateShowAvator(@NonNull String email) {
         if (!isActive()) {
@@ -303,12 +425,18 @@ public class HomeFragment extends BaseFragment implements HomeContract.View,
                 dialogView, null, ScreenUtils.dp2px(220), null);
     }
 
+    /**
+     * 克隆云数据成功
+     */
     @Override
     public void cloudToLocalSucceed() {
         startActivity(new Intent(activity, MgActivity.class));
         activity.finish();
     }
 
+    /**
+     * newInstance
+     */
     public static HomeFragment newInstance() {
 
         Bundle args = new Bundle();
@@ -339,7 +467,6 @@ public class HomeFragment extends BaseFragment implements HomeContract.View,
             @Override
             public void onClick(View v) {
                 dialogHelper.hideCustomDialog();
-//                mPresenter.createQRCode(getResources());
                 mPresenter.showGroup();
             }
         });
@@ -375,7 +502,9 @@ public class HomeFragment extends BaseFragment implements HomeContract.View,
                 });
     }
 
-
+    /**
+     * 课表列表弹窗
+     */
     @Override
     public void showGroupDialog(List<CourseGroup> groups) {
         DialogHelper helper = new DialogHelper();
@@ -396,12 +525,18 @@ public class HomeFragment extends BaseFragment implements HomeContract.View,
         });
     }
 
+    /**
+     * 因此注销菜单
+     */
     private void hideSignOutMenu(boolean hide) {
         if (TextUtils.isEmpty(Cache.instance().getEmail())) {
             mToolbar.getMenu().findItem(R.id.action_sign_out).setVisible(hide);
         }
     }
 
+    /**
+     * toolbar点击
+     */
     @Override
     public void close() {
         super.close();
@@ -418,19 +553,9 @@ public class HomeFragment extends BaseFragment implements HomeContract.View,
         }
     }
 
-    @Override
-    public boolean onMenuItemClick(MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.action_sign_out:
-                signOut();
-                break;
-            case R.id.action_add:
-                addSelectDialog();
-                break;
-        }
-        return false;
-    }
-
+    /**
+     * 注销
+     */
     private void signOut() {
         Cache.instance().clearCookie().setEmail(null);
 

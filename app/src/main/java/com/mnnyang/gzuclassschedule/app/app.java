@@ -17,7 +17,6 @@ import okhttp3.OkHttpClient;
 
 /**
  * Created by mnnyang on 17-11-1.
- * TODO 登录页面细节intent
  */
 
 public class app extends Application {
@@ -51,27 +50,6 @@ public class app extends Application {
                 .build();
         OkHttpUtils.initClient(okHttpClient);
     }
-
-    //static class LocalCookieJar implements CookieJar {
-    //    List<Cookie> cookies;
-    //
-    //    @Override
-    //    public List<Cookie> loadForRequest(HttpUrl arg0) {
-    //        if (cookies != null)
-    //            return cookies;
-    //        return new ArrayList<Cookie>();
-    //    }
-    //
-    //    @Override
-    //    public void saveFromResponse(HttpUrl arg0, List<Cookie> cookies) {
-    //        System.out.println("----------------saveFromResponse");
-    //        for (Cookie cookie : cookies) {
-    //            System.out.println(cookie);
-    //        }
-    //        this.cookies = cookies;
-    //    }
-    //
-    //}
 
     private void initUtils() {
         ToastUtils.init(mContext);

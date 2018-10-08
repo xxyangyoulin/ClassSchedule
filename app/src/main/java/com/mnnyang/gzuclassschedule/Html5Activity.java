@@ -1,16 +1,26 @@
 package com.mnnyang.gzuclassschedule;
 
 import android.annotation.SuppressLint;
+import android.content.ClipData;
+import android.content.ClipboardManager;
+import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Message;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.KeyEvent;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.CookieManager;
+import android.webkit.DownloadListener;
 import android.webkit.GeolocationPermissions;
 import android.webkit.WebChromeClient;
 import android.webkit.WebResourceError;
@@ -19,10 +29,13 @@ import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.LinearLayout;
+import android.widget.Toast;
 
 import com.mnnyang.gzuclassschedule.custom.SmoothProgress;
 import com.mnnyang.gzuclassschedule.utils.LogUtil;
 import com.mnnyang.gzuclassschedule.utils.ToastUtils;
+
+import static android.content.ClipDescription.MIMETYPE_TEXT_URILIST;
 
 
 /**
@@ -83,6 +96,13 @@ public class Html5Activity extends BaseActivity {
             mWebView.addJavascriptInterface(mJavaScriptInterface, "android");
         }
 
+        mWebView.setDownloadListener(new DownloadListener() {
+            @Override
+            public void onDownloadStart(String url, String userAgent, String contentDisposition, String mimetype, long contentLength) {
+                downloadByBrowser(url);
+            }
+        });
+
         saveData(mWebSettings);
 
         newWin(mWebSettings);
@@ -92,7 +112,18 @@ public class Html5Activity extends BaseActivity {
 
         mWebView.setWebViewClient(webViewClient);
         mWebView.loadUrl(mUrl);
+    }
 
+    /**
+     * 通过浏览器下载
+     *
+     * @param url
+     */
+    private void downloadByBrowser(String url) {
+        Intent intent = new Intent(Intent.ACTION_VIEW);
+        intent.addCategory(Intent.CATEGORY_BROWSABLE);
+        intent.setData(Uri.parse(url));
+        startActivity(intent);
     }
 
     @Override
@@ -107,6 +138,12 @@ public class Html5Activity extends BaseActivity {
         super.onResume();
         mWebView.onResume();
         mWebView.resumeTimers();
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.toolbar_html5, menu);
+        return true;
     }
 
     /**
@@ -252,8 +289,50 @@ public class Html5Activity extends BaseActivity {
             case android.R.id.home:
                 finish();
                 break;
+            case R.id.action_exter_open:
+                exterOpen();
+                break;
+            case R.id.action_share:
+                share();
+                break;
+            case R.id.action_copy_url:
+                copyUrl();
+                break;
+            case R.id.action_refresh:
+                mWebView.reload();
+                break;
+
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    private void copyUrl() {
+        ClipboardManager cm = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
+        cm.setPrimaryClip(ClipData.newPlainText(mWebView.getTitle(), mWebView.getUrl()));
+        Snackbar.make(mLayout, "复制成功！", Snackbar.LENGTH_SHORT).setAction("确定",
+                new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                    }
+                }).show();
+    }
+
+    private void share() {
+        Intent intent = new Intent(Intent.ACTION_SEND);
+        intent.setType("text/plain");
+        intent.putExtra(Intent.EXTRA_TEXT, mWebView.getUrl());
+        startActivity(Intent.createChooser(intent, mWebView.getTitle()));
+    }
+
+    //外部浏览器打开
+    private void exterOpen() {
+        try {
+            Uri uri = Uri.parse(mWebView.getUrl());
+            Intent intent = new Intent(Intent.ACTION_VIEW, uri);
+            startActivity(intent);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @Override

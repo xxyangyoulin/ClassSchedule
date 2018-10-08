@@ -2,6 +2,8 @@ package com.mnnyang.gzuclassschedule.utils;
 
 import android.util.Log;
 
+import com.mnnyang.gzuclassschedule.BuildConfig;
+
 /**
  * 日志工具<br>
  * Created by mnnyang on 17-4-8.
@@ -11,7 +13,7 @@ public class LogUtil {
 
     private static final String STRING = "------->";
     private static final String SUFFIX = "<-------";
-    private static final boolean SHOW = true;
+    private static final boolean SHOW = BuildConfig.LOG_DEBUG;
 
     //信息级别
     public static void i(Object tag, String msg) {

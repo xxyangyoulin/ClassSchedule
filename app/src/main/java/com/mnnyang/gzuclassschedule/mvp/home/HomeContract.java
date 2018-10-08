@@ -6,7 +6,6 @@ import android.support.annotation.NonNull;
 import com.mnnyang.gzuclassschedule.BasePresenter;
 import com.mnnyang.gzuclassschedule.BaseView;
 import com.mnnyang.gzuclassschedule.data.beanv2.CourseGroup;
-import com.mnnyang.gzuclassschedule.data.beanv2.DownCourseWrapper;
 import com.mnnyang.gzuclassschedule.data.beanv2.UserWrapper;
 
 import java.util.List;

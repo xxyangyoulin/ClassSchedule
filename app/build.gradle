@@ -15,11 +15,15 @@ android {
 
     buildTypes {
         release {
-            minifyEnabled false
+            minifyEnabled true
+            zipAlignEnabled true
+            shrinkResources true
+            buildConfigField "boolean", "LOG_DEBUG", "false"
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
         debug {
             minifyEnabled false
+            buildConfigField "boolean", "LOG_DEBUG", "true"
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
 
@@ -66,7 +70,7 @@ dependencies {
 
     implementation 'de.hdodenhof:circleimageview:2.2.0'
 
-    implementation ('com.github.yuzhiqiang1993:zxing:2.2.0'){
+    implementation('com.github.yuzhiqiang1993:zxing:2.2.0') {
         exclude group: 'com.android.support'
     }
 

@@ -11,9 +11,4 @@
         android:id="@+id/action_sign_out"
         android:title="退出登录"
         app:showAsAction="never" />
-
-    <!--<item-->
-        <!--android:id="@+id/action_check_update"-->
-        <!--android:title="检查更新"-->
-        <!--app:showAsAction="never" />-->
 </menu>

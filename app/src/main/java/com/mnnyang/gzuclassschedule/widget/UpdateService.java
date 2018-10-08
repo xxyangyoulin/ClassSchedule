@@ -37,10 +37,7 @@ public class UpdateService extends RemoteViewsService {
 
     private void initData() {
         //TODO
-        long group_id = Preferences.getLong(
-                getString(R.string.app_preference_current_cs_name_id), 0);
-        //CourseDbDao dao = CourseDbDao.instance();
-        //final ArrayList<Course> courses = dao.loadCourses(group_id);
+        long group_id = Preferences.getLong(getString(R.string.app_preference_current_cs_name_id), 0);
         mCurrentWeek = AppUtils.getCurrentWeek(getBaseContext());
 
         List<CourseV2> courseV2s = Cache.instance().getCourseV2Dao()

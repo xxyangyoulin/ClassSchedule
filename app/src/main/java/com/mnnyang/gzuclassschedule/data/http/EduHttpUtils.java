@@ -151,7 +151,6 @@ public class EduHttpUtils {
 
                     @Override
                     public void onResponse(String response, int id) {
-                        System.out.println(response);
                         Url.VIEWSTATE_POST_CODE = ParseCourse.parseViewStateCode(response);
                         callback.onSuccess(response);
                     }

@@ -1,17 +1,28 @@
 package com.mnnyang.gzuclassschedule.utils;
 
 import android.app.Activity;
+import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.graphics.drawable.ColorDrawable;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AlertDialog;
 import android.text.TextUtils;
+import android.view.Gravity;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.Window;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.BaseAdapter;
 import android.widget.LinearLayout;
+import android.widget.ListView;
+
+import com.mnnyang.gzuclassschedule.R;
 
 import java.lang.reflect.Field;
+import java.util.List;
 
 /**
  * 对话框工具
@@ -70,7 +81,7 @@ public class DialogHelper {
     /**
      * List对话框
      */
-    public void showListDialog(@NonNull Activity activity,  String title,
+    public void showListDialog(@NonNull Activity activity, String title,
                                @NonNull String[] items, @NonNull final DialogListener listener) {
 
         AlertDialog.Builder builder = new AlertDialog.Builder(activity);
@@ -144,6 +155,52 @@ public class DialogHelper {
         if (window != null) {
             window.setLayout(dialogWidth, LinearLayout.LayoutParams.WRAP_CONTENT);
         }
+    }
+
+    /**
+     * 底部弹窗
+     */
+    public Dialog buildBottomDialog(Activity activity, View layoutView) {
+        Dialog bottomDialog = new Dialog(activity, R.style.BottomDialog);
+        bottomDialog.setContentView(layoutView);
+        ViewGroup.LayoutParams layoutParams = layoutView.getLayoutParams();
+        layoutParams.width = activity.getResources().getDisplayMetrics().widthPixels;
+        layoutView.setLayoutParams(layoutParams);
+        bottomDialog.getWindow().setGravity(Gravity.BOTTOM);
+        bottomDialog.getWindow().setWindowAnimations(R.style.BottomDialog_Animation);
+
+        return bottomDialog;
+    }
+
+    /**
+     * 底部列表弹窗
+     */
+    public Dialog buildBottomListDialog(Activity activity, String[] items, final DialogListener listener) {
+        ListView listView = new ListView(activity.getApplicationContext());
+        listView.setDivider(new ColorDrawable(activity.getResources().getColor(R.color.color_divider)));
+        listView.setDividerHeight(1);
+        listView.setBackgroundColor(activity.getResources().getColor(R.color.white_f1));
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(activity, R.layout.adapter_bottom_dialog_sytle1, items);
+        listView.setAdapter(adapter);
+
+
+        final Dialog bottomDialog = new Dialog(activity, R.style.BottomDialog);
+
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                listener.onItemClick(bottomDialog, position);
+            }
+        });
+
+        bottomDialog.setContentView(listView);
+        ViewGroup.LayoutParams layoutParams = listView.getLayoutParams();
+        layoutParams.width = activity.getResources().getDisplayMetrics().widthPixels;
+        listView.setLayoutParams(layoutParams);
+        bottomDialog.getWindow().setGravity(Gravity.BOTTOM);
+        bottomDialog.getWindow().setWindowAnimations(R.style.BottomDialog_Animation);
+
+        return bottomDialog;
     }
 
 

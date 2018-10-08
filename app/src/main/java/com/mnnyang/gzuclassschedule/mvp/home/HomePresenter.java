@@ -327,7 +327,6 @@ public class HomePresenter implements HomeContract.Presenter {
 
         JSONObject result = buildJsonOfAllCourse();
         MyHttpUtils utils = new MyHttpUtils();
-        System.out.println("-------" + result.toString());
 
         utils.uploadCourse(result.toString(), new HttpCallback<BaseBean>() {
             @Override

@@ -137,6 +137,34 @@
                     android:src="@drawable/ic_chevron_right_black_24dp" />
             </LinearLayout>
 
+            <LinearLayout
+                android:id="@+id/layout_course_mg"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/ripple_second_button"
+                android:clickable="true"
+                android:focusable="true"
+                android:padding="@dimen/margin_16dp">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="管理课表"
+                    android:textSize="16sp" />
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/ic_chevron_right_black_24dp" />
+            </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1px"
+                android:layout_marginLeft="@dimen/margin_16dp"
+                android:background="#50919191" />
+
             <View
                 android:layout_width="match_parent"
                 android:layout_height="1px"
@@ -148,7 +176,7 @@
                 android:id="@+id/layout_share"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="?attr/selectableItemBackground"
+                android:background="@drawable/ripple_second_button"
                 android:clickable="true"
                 android:focusable="true"
                 android:padding="@dimen/margin_16dp">
@@ -157,7 +185,7 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="分享课程"
+                    android:text="分享课表"
                     android:textSize="16sp" />
 
                 <ImageView
@@ -165,48 +193,14 @@
                     android:layout_height="wrap_content"
                     android:src="@drawable/ic_chevron_right_black_24dp" />
             </LinearLayout>
-
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1px"
-                android:layout_marginLeft="@dimen/margin_16dp"
-                android:background="#50919191" />
-
-            <LinearLayout
-                android:id="@+id/layout_course_mg"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="?attr/selectableItemBackground"
-                android:clickable="true"
-                android:focusable="true"
-                android:padding="@dimen/margin_16dp">
-
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="课表管理"
-                    android:textSize="16sp" />
-
-                <ImageView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:src="@drawable/ic_chevron_right_black_24dp" />
-            </LinearLayout>
-
-
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1px"
-                android:layout_marginLeft="@dimen/margin_16dp"
-                android:background="#50919191" />
 
 
             <LinearLayout
                 android:id="@+id/layout_setting"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="?attr/selectableItemBackground"
+                android:layout_marginTop="@dimen/margin_8dp"
+                android:background="@drawable/ripple_second_button"
                 android:clickable="true"
                 android:focusable="true"
                 android:padding="@dimen/margin_16dp">
@@ -216,6 +210,58 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="设置"
+                    android:textSize="16sp" />
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/ic_chevron_right_black_24dp" />
+            </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1px"
+                android:layout_marginLeft="@dimen/margin_16dp"
+                android:background="#50919191" />
+
+
+            <LinearLayout
+                android:id="@+id/layout_feedback"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/ripple_second_button"
+                android:clickable="true"
+                android:focusable="true"
+                android:padding="@dimen/margin_16dp">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="反馈"
+                    android:textSize="16sp" />
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/ic_chevron_right_black_24dp" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/layout_about"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/ripple_second_button"
+                android:clickable="true"
+                android:focusable="true"
+                android:layout_marginTop="@dimen/margin_8dp"
+                android:padding="@dimen/margin_16dp">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="关于"
                     android:textSize="16sp" />
 
                 <ImageView
