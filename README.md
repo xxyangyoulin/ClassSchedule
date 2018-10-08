@@ -1,8 +1,11 @@
 <div align=center><h2>MD课表</h2><div align=center>
 
-<div align=center><img width="150" height="150" src="https://github.com/mnnyang/GzuClassSchedule/blob/master/img/ic_launcher-web.png"/></div>
+<div align=center>
+    <img width="150" height="150" src="https://github.com/mnnyang/GzuClassSchedule/blob/master/img/ic_launcher-web.png"/></div>
 
-<div align=center>一款Android平台 Material design 课程表</div>
+<div align=center>
+    一款Android平台 Material design 课程表
+</div>
 
 <!--more-->
 
