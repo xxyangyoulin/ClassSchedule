@@ -1,7 +1,7 @@
 <div align=center><h2 style="width:100%;text-align:center">MD课表</h2></div>
 
 <div align=center><img style="display:black;margin:10px auto;" src="https://github.com/mnnyang/GzuClassSchedule/blob/master/img/ic_launcher-web.png" width="150" height="auto"/></div>
-
+<div align=center>http://md.xxyangyoulin.cn</div>
   
     
 一款Android平台 Material design 课程表。
