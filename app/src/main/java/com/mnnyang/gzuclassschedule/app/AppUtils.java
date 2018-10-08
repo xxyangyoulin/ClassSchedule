@@ -200,10 +200,7 @@ public class AppUtils {
      * 复制旧数据的数据
      */
     public static void copyOldData(Context context) {
-        boolean first_enter_app = Preferences.getBoolean(context.getString(R.string.app_preference_app_is_first_start), true);
-        if (first_enter_app) {
             migrateData(context);
-        }
     }
 
     /**

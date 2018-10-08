@@ -17,14 +17,12 @@ import java.util.List;
 
 public interface CourseContract {
     interface Presenter extends BasePresenter {
-        void loadBackground();
         void updateCourseViewData(long csNameId);
         void deleteCourse(long courseId);
     }
 
     interface View extends BaseView<Presenter> {
         void initFirstStart();
-        void setBackground(Bitmap background);
         void setCourseData(List<CourseV2> courses);
         void updateCoursePreference();
     }

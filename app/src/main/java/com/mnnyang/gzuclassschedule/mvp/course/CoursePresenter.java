@@ -46,52 +46,6 @@ public class CoursePresenter implements CourseContract.Presenter {
     }
 
     @Override
-    public void loadBackground() {
-        String path = Preferences.getString(app.mContext.getString(R.string.app_preference_bg_iamge_path), "");
-        if (!TextUtils.isEmpty(path)) {
-            loadImage(path);
-        }
-    }
-
-    private void loadImage(final String path) {
-        Observable.create(new ObservableOnSubscribe<Bitmap>() {
-            @Override
-            public void subscribe(ObservableEmitter<Bitmap> emitter) throws Exception {
-                Bitmap bitmap = ImageResizer.decodeSampledBitmapFromFile(path,
-                        ScreenUtils.getSWidth(), 0);
-                if (bitmap == null) {
-                    emitter.onError(new FileNotFoundException());
-                } else {
-                    emitter.onNext(bitmap);
-                }
-                emitter.onComplete();
-            }
-        }).subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Observer<Bitmap>() {
-                    @Override
-                    public void onSubscribe(Disposable d) {
-
-                    }
-
-                    @Override
-                    public void onNext(Bitmap bitmap) {
-                        mView.setBackground(bitmap);
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-                        e.printStackTrace();
-                    }
-
-                    @Override
-                    public void onComplete() {
-
-                    }
-                });
-    }
-
-    @Override
     public void updateCourseViewData(final long csNameId) {
         Observable.create(new ObservableOnSubscribe<List<CourseV2>>() {
             @Override

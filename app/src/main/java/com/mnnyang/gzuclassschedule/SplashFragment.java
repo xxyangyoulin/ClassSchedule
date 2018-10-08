@@ -30,14 +30,6 @@ public class SplashFragment extends DialogFragment {
                 | View.SYSTEM_UI_FLAG_LAYOUT_STABLE);
 
         getDialog().getWindow().setWindowAnimations(R.style.animate_fade_in_dialog);
-
-        new Handler().postDelayed(new Runnable() {
-
-            @Override
-            public void run() {
-                dismiss();
-            }
-        }, 3000);
     }
 
 

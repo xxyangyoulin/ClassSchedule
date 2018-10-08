@@ -4,7 +4,6 @@ import android.animation.ValueAnimator;
 import android.annotation.SuppressLint;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
@@ -41,7 +40,6 @@ import com.mnnyang.gzuclassschedule.data.greendao.CourseV2Dao;
 import com.mnnyang.gzuclassschedule.mvp.add.AddActivity;
 import com.mnnyang.gzuclassschedule.mvp.home.HomeActivity;
 import com.mnnyang.gzuclassschedule.mvp.mg.MgActivity;
-import com.mnnyang.gzuclassschedule.utils.ActivityUtil;
 import com.mnnyang.gzuclassschedule.utils.DialogHelper;
 import com.mnnyang.gzuclassschedule.utils.DialogListener;
 import com.mnnyang.gzuclassschedule.utils.LogUtil;
@@ -74,8 +72,8 @@ public class CourseActivity extends BaseActivity implements CourseContract.View,
     private CourseView mCourseViewV2;
     private LinearLayout mLayoutWeekGroup;
     private LinearLayout mLayoutNodeGroup;
-    private int WEEK_TEXT_SIZE = 13;
-    private int NODE_TEXT_SIZE = 12;
+    private int WEEK_TEXT_SIZE = 12;
+    private int NODE_TEXT_SIZE = 11;
     private int NODE_WIDTH = 28;
     private TextView mMMonthTextView;
     private RecyclerView mRvSelectWeek;
@@ -125,6 +123,7 @@ public class CourseActivity extends BaseActivity implements CourseContract.View,
         }
         SelectWeekAdapter selectWeekAdapter = new SelectWeekAdapter(R.layout.adapter_select_week, strings);
         mRvSelectWeek.setAdapter(selectWeekAdapter);
+        mRvSelectWeek.scrollToPosition(AppUtils.getCurrentWeek(getBaseContext())-1);
 
         mRvSelectWeek.addOnLayoutChangeListener(new View.OnLayoutChangeListener() {
             @Override
@@ -139,6 +138,7 @@ public class CourseActivity extends BaseActivity implements CourseContract.View,
             @Override
             public void onItemClick(View view, final RecyclerBaseAdapter.ViewHolder holder) {
                 mCurrentWeekCount = holder.getAdapterPosition() + 1;
+
                 AppUtils.PreferencesCurrentWeek(getBaseContext(), mCurrentWeekCount);
                 mCourseViewV2.setCurrentIndex(mCurrentWeekCount);
                 mCourseViewV2.resetView();
@@ -203,7 +203,7 @@ public class CourseActivity extends BaseActivity implements CourseContract.View,
             textView.setGravity(Gravity.CENTER);
 
             textView.setWidth(0);
-            textView.setTextColor(0xd0212121);
+            textView.setTextColor(getResources().getColor(R.color.primary_text));
             LinearLayout.LayoutParams params;
 
             if (i == -1) {
@@ -319,7 +319,7 @@ public class CourseActivity extends BaseActivity implements CourseContract.View,
     private void deleteCancelSnackBar(final CourseV2 course) {
         course.setDisplayable(false);
         mCourseViewV2.resetView();
-        Snackbar.make(mMMonthTextView, "删除成功！", Snackbar.LENGTH_LONG).setAction("撤销",
+        Snackbar.make(mMMonthTextView, "删除成功！☆\\(￣▽￣)/", Snackbar.LENGTH_LONG).setAction("撤销",
                 new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
@@ -377,8 +377,9 @@ public class CourseActivity extends BaseActivity implements CourseContract.View,
         if (!isFirst) {
             return;
         }
-        CourseGroupDao groupDao = Cache.instance().getCourseGroupDao();
+        Preferences.putBoolean(getString(R.string.app_preference_app_is_first_start), false);
 
+        CourseGroupDao groupDao = Cache.instance().getCourseGroupDao();
         CourseGroup defaultGroup = groupDao
                 .queryBuilder()
                 .where(CourseGroupDao.Properties.CgName.eq("默认课表"))
@@ -391,33 +392,31 @@ public class CourseActivity extends BaseActivity implements CourseContract.View,
             insert = defaultGroup.getCgId();
         }
 
-        Preferences.putLong(getString(R.string.app_preference_current_cs_name_id), insert);
-
         //migrate old data
         AppUtils.copyOldData(this);
-
-        Preferences.putBoolean(getString(R.string.app_preference_app_is_first_start), false);
-
-        if (CourseDbDao.instance().loadCsNameList().size() > 0) {
-            isV1Update();
-        }
-
+        Preferences.putLong(getString(R.string.app_preference_current_cs_name_id), insert);
         showOnceSplash();
     }
 
     private void showOnceSplash() {
-        new SplashFragment().show(getSupportFragmentManager(), "splash");
+        final SplashFragment splashFragment = new SplashFragment();
+        splashFragment.show(getSupportFragmentManager(), "splash");
+        new Handler().postDelayed(new Runnable() {
+
+            @Override
+            public void run() {
+                splashFragment.dismiss();
+                if (CourseDbDao.instance().loadCsNameList().size() > 0) {
+                    isV1Update();
+                }
+            }
+        }, 3000);
     }
 
     private void isV1Update() {
         LogUtil.e(this, "属于从1.x升级上来");
         toast("请选择正在使用的课表");
         startActivity(new Intent(this, MgActivity.class));
-    }
-
-    @Override
-    public void setBackground(Bitmap bitmap) {
-
     }
 
     @Override
@@ -475,7 +474,6 @@ public class CourseActivity extends BaseActivity implements CourseContract.View,
 
     @Override
     public void onBackPressed() {
-        //TODO 保留返回任务？
         // super.onBackPressed();
         moveTaskToBack(false);
     }
