@@ -1,6 +1,6 @@
 <h2 style="width:100%;text-align:center">MD课表</h2>
 
-<img style="display:black;margin:10px auto;" src="https://github.com/mnnyang/GzuClassSchedule/blob/master/img/ic_launcher-web.png" width="60" height="auto"></img>
+<div align=center><img width="150" height="150" src="https://github.com/mnnyang/GzuClassSchedule/blob/master/img/ic_launcher-web.png"/></div>
 
 <div style="width=100%;text-align:center">一款Android平台 Material design 课程表</div>
 
@@ -16,14 +16,14 @@
 - 虽然都是方正课表，但是每个学校的格式千变万化，难免有的格式没做解析适配。
 
 #### 更新日志
-- v2.0.0
-    添加同步功能；
-    添加扫码分享课表功能；
-    添加任意周数规则支持；
-    重构个人设置界面；
-    修改已知bug；
-- v1.3.2
-    解决同一课表不同周数提示冲突的问题。
+- v2.0.0  
+    添加同步功能；  
+    添加扫码分享课表功能；  
+    添加任意周数规则支持；  
+    重构个人设置界面；  
+    修改已知bug；  
+- v1.3.2  
+    解决同一课表不同周数提示冲突的问题。  
 
 #### **酷安上架 [前往下载](https://www.coolapk.com/apk/com.mnnyang.gzuclassschedule)**
 
