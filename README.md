@@ -19,7 +19,9 @@
 
 #### 截图预览
 
-<img src="https://github.com/mnnyang/GzuClassSchedule/blob/master/img/Screenshot_2018-04-09-18-34-33-470_com.mnnyang.gz.png" width="260" height="auto"><img src="https://github.com/mnnyang/GzuClassSchedule/blob/master/img/Screenshot_2018-04-09-18-34-39-425_com.mnnyang.gz.png" width="260" height="auto"><img src="https://github.com/mnnyang/GzuClassSchedule/blob/master/img/Screenshot_2018-04-09-18-44-47-384_com.mnnyang.gz.png" width="260" height="auto">
+<img src="https://github.com/mnnyang/GzuClassSchedule/blob/master/img/show1.png" width="260" height="auto"><img src="https://github.com/mnnyang/GzuClassSchedule/blob/master/img/show2.png" width="260" height="auto">
+<img src="https://github.com/mnnyang/GzuClassSchedule/blob/master/img/show3.png" width="260" height="auto"><img src="https://github.com/mnnyang/GzuClassSchedule/blob/master/img/show4.png" width="260" height="auto">
+<img src="https://github.com/mnnyang/GzuClassSchedule/blob/master/img/show8.png" width="260" height="auto"><img src="https://github.com/mnnyang/GzuClassSchedule/blob/master/img/show9.png" width="260" height="auto">
 
 #### 使用到的开源库
 
