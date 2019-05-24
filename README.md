@@ -13,6 +13,8 @@
 3. 支持任意周数，分享课表，登录同步。
 4. 使用MVP模式。第一次使用MVP练手，还有较多需要改进的地方；
 
+#### 备份逻辑后台
+https://github.com/mnnyang/python_django_class_schedule
 
 #### 已知Bug: 
 - 虽然都是方正课表，但是每个学校的格式千变万化，难免有的格式没做解析适配。
